@@ -1,0 +1,98 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Custom design tokens (for body, scrollbar, etc.) */
+    --color-bg-root: linear-gradient(154.29deg, #0a1222 3.27%, #230a33 30.79%, #0b1d35 75.38%, #0a1222 101.95%);
+    --color-bg-main: #091121;
+    --color-bg-light: #48117c;
+    --color-bg-block: #261a3d;
+    --color-bg-card: #261a3d;
+    --color-bg-card-hover: #342148;
+    --color-bg-text-block: #342148;
+    --color-bg-options: #342148;
+    --color-button: #d2189a;
+    --color-button-gradient: linear-gradient(90deg, #8a18d2 0%, #2c3378 100%);
+    --color-option-green: #38af00;
+    --color-option-blue: #047bf6;
+    --color-accent: #c487ff;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #8f8f8f;
+    --color-text-muted: #8f8f8f;
+    --color-border-main: #342148;
+    --radius: 0.75rem;
+
+    /* ShadcnUI (HSL without hsl()) */
+    --background: 222 47% 5%;
+    --foreground: 0 0% 100%;
+    --card: 222 39% 10%;
+    --card-foreground: 0 0% 100%;
+    --popover: 222 39% 10%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 271 91% 65%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 222 39% 15%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 222 39% 15%;
+    --muted-foreground: 215 14% 60%;
+    --accent: 187 94% 43%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 217 33% 25%;
+    --input: 217 33% 25%;
+    --ring: 271 91% 65%;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: var(--color-bg-root);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+
+// Selection
+::selection {
+  background: color-mix(in srgb, var(--color-accent) 30%, transparent);
+  color: var(--color-text-primary);
+}
+
+.container {
+
+}
+
+// Hide scrollbar utility
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
