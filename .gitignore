@@ -37,6 +37,10 @@ yarn-error.log*
 .env*
 !.env.example
 
+# deploy key (private + public — never commit)
+.deploy-key
+.deploy-key.pub
+
 # vercel
 .vercel
 

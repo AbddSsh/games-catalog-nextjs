@@ -2,23 +2,31 @@ import type { IHomePage, ISeoLandingPage } from "../model/page.types";
 import { getLocales } from "@/entities/locale";
 
 export async function getHomePage(locale: string): Promise<IHomePage> {
+  const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
   try {
     const { apiGet } = await import("@/shared/api");
-    return await apiGet<IHomePage>("/pages/home", { locale });
+    return await apiGet<IHomePage>("/pages/home", {
+      locale,
+      next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.PAGE_HOME, CACHE_TAGS.PAGE_HOME_LOCALE(locale)] },
+    });
   } catch {
-    // Если страница недоступна для этой локали, пробуем fallback
     try {
       const locales = await getLocales();
       const currentLocale = locales.find((l) => l.code === locale);
       if (currentLocale?.fallback) {
         const { apiGet } = await import("@/shared/api");
-        return await apiGet<IHomePage>("/pages/home", { locale: currentLocale.fallback });
+        return await apiGet<IHomePage>("/pages/home", {
+          locale: currentLocale.fallback,
+          next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.PAGE_HOME, CACHE_TAGS.PAGE_HOME_LOCALE(currentLocale.fallback)] },
+        });
       }
-      // Если нет fallback, пробуем локаль по умолчанию
       const defaultLocale = locales.find((l) => l.isDefault);
       if (defaultLocale) {
         const { apiGet } = await import("@/shared/api");
-        return await apiGet<IHomePage>("/pages/home", { locale: defaultLocale.code });
+        return await apiGet<IHomePage>("/pages/home", {
+          locale: defaultLocale.code,
+          next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.PAGE_HOME, CACHE_TAGS.PAGE_HOME_LOCALE(defaultLocale.code)] },
+        });
       }
     } catch {
       // Игнорируем ошибки fallback

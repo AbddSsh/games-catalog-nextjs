@@ -22,6 +22,8 @@ export async function getGames(params: {
   const { locale, q, page, elements, ...otherParams } = params;
   
   // If search query exists, use search endpoint with only locale, q, page, elements
+  const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
+  const nextCache = { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.GAMES] };
   if (q && q.trim().length > 0) {
     return apiGet<IPaginatedResponse<IGameBase>>("/games/search", {
       locale,
@@ -30,10 +32,9 @@ export async function getGames(params: {
         ...(page && { page }),
         ...(elements && { elements }),
       },
+      next: nextCache,
     });
   }
-  
-  // Otherwise use regular games endpoint with all filters
   return apiGet<IPaginatedResponse<IGameBase>>("/games", {
     locale,
     params: {
@@ -42,6 +43,7 @@ export async function getGames(params: {
       ...(elements && { elements }),
       ...(params.sort && { sort: params.sort }),
     } as Record<string, string | number | undefined>,
+    next: nextCache,
   });
 }
 
@@ -51,7 +53,11 @@ export async function getGameBySlug(
 ): Promise<IGameDetail | null> {
   try {
     const { apiGet } = await import("@/shared/api");
-    return await apiGet<IGameDetail>(`/games/${slug}`, { locale });
+    const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
+    return await apiGet<IGameDetail>(`/games/${slug}`, {
+      locale,
+      next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.GAMES, CACHE_TAGS.GAME(slug)] },
+    });
   } catch {
     return null;
   }
@@ -86,9 +92,11 @@ export async function getGamesByFilter(
 export async function getAllGameSlugs(): Promise<string[]> {
   try {
     const { apiGet } = await import("@/shared/api");
+    const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
     const response = await apiGet<IPaginatedResponse<IGameBase>>("/games", {
       locale: "en",
       params: { elements: 1000 },
+      next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.GAMES] },
     });
     return response.items.map((game) => game.slug);
   } catch {

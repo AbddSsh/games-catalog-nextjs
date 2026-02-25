@@ -11,6 +11,12 @@ interface IPaginationProps {
   locale: string;
   basePath?: string;
   showLoadMore?: boolean;
+  /** Текущее кол-во запрашиваемых элементов (для кнопки "Show More") */
+  currentElements?: number;
+  /** Шаг увеличения элементов при нажатии "Show More" */
+  elementsStep?: number;
+  /** Всего элементов (скрыть Show More когда currentElements >= totalItems) */
+  totalItems?: number;
   translations?: {
     loadMore: string;
     back: string;
@@ -24,6 +30,9 @@ export function Pagination({
   locale,
   basePath = "/catalog",
   showLoadMore = true,
+  currentElements,
+  elementsStep = 12,
+  totalItems = 0,
   translations,
 }: IPaginationProps) {
   const router = useRouter();
@@ -36,6 +45,16 @@ export function Pagination({
     } else {
       params.delete("page");
     }
+    const queryString = params.toString();
+    router.push(`/${locale}${basePath}${queryString ? `?${queryString}` : ""}`, { scroll: false });
+  };
+
+  const loadMore = () => {
+    if (currentElements == null || totalItems == null) return;
+    const nextElements = currentElements + elementsStep;
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("elements", String(nextElements));
+    params.delete("page");
     const queryString = params.toString();
     router.push(`/${locale}${basePath}${queryString ? `?${queryString}` : ""}`, { scroll: false });
   };
@@ -75,13 +94,15 @@ export function Pagination({
 
   const hasNextPage = currentPage < totalPages;
   const hasPrevPage = currentPage > 1;
+  const hasMoreItems =
+    currentElements != null && totalItems != null && currentElements < totalItems;
 
   return (
     <div className="space-y-4">
-      {/* Show More Button */}
-      {showLoadMore && hasNextPage && (
+      {/* Show More: увеличивает кол-во запрашиваемых элементов (12 → 24 → 36 …) */}
+      {showLoadMore && hasMoreItems && (
         <Button
-          onClick={() => goToPage(currentPage + 1)}
+          onClick={loadMore}
           className="w-full bg-gradient-button text-white font-bold hover:opacity-90 transition-opacity"
         >
           <ChevronDown className="mr-2 h-4 w-4" />

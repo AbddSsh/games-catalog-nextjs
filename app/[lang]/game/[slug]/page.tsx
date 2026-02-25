@@ -4,6 +4,7 @@ import { GameView } from "@/views/game";
 import { getGameBySlug, getAllGameSlugs } from "@/entities/game";
 import { getTranslations } from "@/entities/translations";
 import { getLocales } from "@/entities/locale";
+import { getCanonicalUrl } from "@/shared/lib";
 import { ROUTES } from "@/shared/router";
 
 interface IGamePageProps {
@@ -32,7 +33,7 @@ export async function generateMetadata({
       title: game.seo.title,
       description: game.seo.description,
       alternates: {
-        canonical: `${process.env.NEXT_PUBLIC_SITE_URL}/${lang}/${ROUTES.GAME}/${game.slug}`,
+        canonical: getCanonicalUrl(lang, `${ROUTES.GAME}/${game.slug}`),
       },
     };
   } catch {

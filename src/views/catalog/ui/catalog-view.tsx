@@ -8,12 +8,16 @@ import { ViewModeToggle, type TViewMode } from "@/features/view-mode-toggle";
 import { SortSelect, type TSortOption } from "@/features/sort-select";
 import { Breadcrumbs, type IBreadcrumbItem } from "@/shared/ui";
 import type { IAppliedFilters } from "@/entities/filter";
+import { ROUTES } from "@/shared/router";
+
+const ELEMENTS_PER_PAGE = 12;
 
 interface ICatalogViewProps {
   locale: string;
   searchQuery?: string;
   filters?: IAppliedFilters;
   page?: number;
+  elements?: number;
   viewMode?: TViewMode;
   sort?: TSortOption;
   translations: {
@@ -34,12 +38,11 @@ export async function CatalogView({
   searchQuery,
   filters = {},
   page = 1,
+  elements = ELEMENTS_PER_PAGE,
   viewMode = "grid",
   sort = "recommended",
   translations,
 }: ICatalogViewProps) {
-  const ELEMENTS_PER_PAGE = 12;
-
   // Fetch data in parallel
   const [gamesResponse, filtersConfig] = await Promise.all([
     getGames({
@@ -50,7 +53,7 @@ export async function CatalogView({
       platforms: filters.platforms?.join(","),
       features: filters.features?.join(","),
       page,
-      elements: ELEMENTS_PER_PAGE,
+      elements,
       sort,
     }),
     getFilters(locale),
@@ -119,12 +122,16 @@ export async function CatalogView({
           />
 
           {/* Pagination */}
-          {pagination.totalPages > 1 && (
+          {(pagination.totalPages > 1 || games.length < pagination.totalItems) && (
             <Suspense fallback={null}>
               <Pagination
                 currentPage={pagination.page}
                 totalPages={pagination.totalPages}
                 locale={locale}
+                basePath={ROUTES.CATALOG}
+                currentElements={elements}
+                elementsStep={ELEMENTS_PER_PAGE}
+                totalItems={pagination.totalItems}
                 translations={{
                   loadMore: translations.loadMore,
                   back: translations.back,

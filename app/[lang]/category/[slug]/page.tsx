@@ -4,8 +4,10 @@ import { CategoryView } from "@/views/category";
 import { getCategoryBySlug, getAllCategorySlugs } from "@/entities/category";
 import { getLocales } from "@/entities/locale";
 import { getTranslations } from "@/entities/translations";
+import { getCanonicalUrl } from "@/shared/lib";
 import type { TViewMode } from "@/features/view-mode-toggle";
 import type { TSortOption } from "@/features/sort-select";
+import { ROUTES } from "@/shared/router";
 
 interface ICategoryPageProps {
   params: Promise<{
@@ -36,6 +38,9 @@ export async function generateMetadata({
   return {
     title: data.category.seo.title,
     description: data.category.seo.description,
+    alternates: {
+      canonical: getCanonicalUrl(lang, `${ROUTES.CATEGORY}/${slug}`),
+    },
   };
 }
 

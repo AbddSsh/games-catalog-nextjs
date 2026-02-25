@@ -3,6 +3,7 @@ import { HomeView } from "@/views/home";
 import { getHomePage } from "@/entities/page";
 import { getLocales } from "@/entities/locale";
 import { getTranslations } from "@/entities/translations";
+import { getCanonicalUrl } from "@/shared/lib";
 
 interface IHomePageProps {
   params: Promise<{
@@ -23,7 +24,7 @@ export async function generateMetadata({
     title: pageConfig.seo.title || translations?.meta.default_title,
     description: pageConfig.seo.description || translations?.meta.default_description,
     alternates: {
-      canonical: pageConfig.seo.canonical,
+      canonical: getCanonicalUrl(lang),
     },
   };
 }

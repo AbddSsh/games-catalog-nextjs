@@ -1,9 +1,19 @@
 import { ENV } from "@/shared/config";
 import type { IApiError } from "@/shared/types";
 
+/** Опции кэша Next.js: revalidate (сек, 0 = каждый запрос) + теги для on-demand revalidation. */
+export interface INextCacheOptions {
+  /** Секунды до ревалидации; 0 = ревалидировать при каждом запросе. Временно для разработки. */
+  revalidate?: number | false;
+  /** Теги для revalidateTag() — точечная инвалидация по запросу с бэка */
+  tags?: string[];
+}
+
 export interface IFetchOptions extends Omit<RequestInit, "method" | "body"> {
   locale?: string;
   params?: Record<string, string | number | boolean | undefined>;
+  /** Опции кэша Next.js (revalidate, tags). Работает только в Server Components / Route Handlers. */
+  next?: INextCacheOptions;
 }
 
 export interface IApiClientConfig {
@@ -89,14 +99,16 @@ export async function apiGet<T>(
   const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 секунд таймаут
 
   try {
+    const { next: nextCache, ...restFetchOptions } = fetchOptions as IFetchOptions & { next?: INextCacheOptions };
     const response = await fetch(url, {
-      ...fetchOptions,
+      ...restFetchOptions,
       method: "GET",
       headers: {
         ...DEFAULT_CONFIG.defaultHeaders,
-        ...fetchOptions.headers,
+        ...restFetchOptions.headers,
       },
       signal: controller.signal,
+      ...(nextCache && Object.keys(nextCache).length > 0 ? { next: nextCache } : {}),
     });
     clearTimeout(timeoutId);
     return handleResponse<T>(response);

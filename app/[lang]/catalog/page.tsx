@@ -3,8 +3,10 @@ import { notFound } from "next/navigation";
 import { CatalogView } from "@/views/catalog";
 import { getTranslations } from "@/entities/translations";
 import { getLocales } from "@/entities/locale";
+import { getCanonicalUrl } from "@/shared/lib";
 import type { TViewMode } from "@/features/view-mode-toggle";
 import type { TSortOption } from "@/features/sort-select";
+import { ROUTES } from "@/shared/router";
 
 interface ICatalogPageProps {
   params: Promise<{
@@ -17,6 +19,7 @@ interface ICatalogPageProps {
     platforms?: string;
     features?: string;
     page?: string;
+    elements?: string;
     view?: string;
     sort?: string;
   }>;
@@ -38,6 +41,9 @@ export async function generateMetadata({
   return {
     title: `Game Catalog | ${translations.meta.default_title}`,
     description: translations.meta.default_description,
+    alternates: {
+      canonical: getCanonicalUrl(lang, `${ROUTES.CATALOG}`),
+    },
   };
 }
 
@@ -67,6 +73,7 @@ export default async function CatalogPage({
   };
 
   const page = search.page ? parseInt(search.page, 10) : 1;
+  const elements = search.elements ? Math.max(12, parseInt(search.elements, 10)) : 12;
   const viewMode = (search.view === "list" ? "list" : "grid") as TViewMode;
   const sort = (search.sort || "recommended") as TSortOption;
 
@@ -82,6 +89,7 @@ export default async function CatalogPage({
       searchQuery={search.q}
       filters={filters}
       page={page}
+      elements={elements}
       viewMode={viewMode}
       sort={sort}
       translations={{
