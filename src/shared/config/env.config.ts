@@ -3,4 +3,5 @@ export const ENV = {
   SITE_URL: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   IS_PRODUCTION: process.env.NODE_ENV === "production",
   IS_DEVELOPMENT: process.env.NODE_ENV === "development",
+  REVALIDATION_SECRET: process.env.REVALIDATION_SECRET || "",
 } as const;

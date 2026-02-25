@@ -12,5 +12,8 @@ export interface ILocaleConfig {
 
 export async function getLocales(): Promise<ILocaleConfig[]> {
   const { apiGet } = await import("@/shared/api");
-  return apiGet<ILocaleConfig[]>("/locales");
+  const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
+  return apiGet<ILocaleConfig[]>("/locales", {
+    next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.LOCALES] },
+  });
 }

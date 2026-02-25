@@ -19,7 +19,6 @@ export interface IGameBase {
   name: string;
   shortDescription: string;
   image: string;
-  icon: string;
   genres: string[];
   settings: string[];
   platforms: string[];

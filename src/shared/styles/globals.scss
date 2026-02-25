@@ -53,6 +53,21 @@
   box-sizing: border-box;
 }
 
+/* Фон через fixed-слой: в Chrome/FF фон viewport может игнорировать html/body */
+html {
+  min-height: 100%;
+}
+
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  // background: linear-gradient(180deg, var(--color-bg-light) 0%, var(--color-bg-main) 100%);
+  background: var(--color-bg-root);
+  pointer-events: none;
+}
+
 body {
   background: var(--color-bg-root);
   color: var(--color-text-primary);
