@@ -62,7 +62,7 @@ export async function CategoryView({
         <div className="absolute inset-0 flex flex-col justify-end">
           <div className="space-y-5 max-w-[1400px] mx-auto w-full px-[25px] pb-10">
             {/* Breadcrumbs on banner */}
-            <Breadcrumbs items={breadcrumbs} className="text-text-primary font-normal" />
+            {/* <Breadcrumbs items={breadcrumbs} className="text-text-primary font-normal" /> */}
 
             {/* Category Title */}
             <h1 className="text-[54px] font-bold text-text-primary md:text-5xl">

@@ -58,10 +58,11 @@ jobs:
             NEXT_PUBLIC_SITE_URL=${{ secrets.NEXT_PUBLIC_SITE_URL }}
             NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
             REVALIDATION_SECRET=${{ secrets.REVALIDATION_SECRET }}
+            PORT=3001
             ENVEOF
 
             npm run build
 
-            pm2 delete games-nextjs || true
-            pm2 start npm --name games-nextjs -- start
+            pm2 delete game-site-frontend || true
+            export PORT=3001 && pm2 start npm --name game-site-frontend -- start
             pm2 save

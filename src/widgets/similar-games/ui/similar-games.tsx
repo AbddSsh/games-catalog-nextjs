@@ -29,7 +29,7 @@ export function SimilarGames({
           >
             <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded">
               <Image
-                src={game.icon || "/images/placeholder.jpg"}
+                src={game?.bannerImage || "/images/placeholder.jpg"}
                 alt={game.name}
                 fill
                 className="object-cover"

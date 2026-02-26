@@ -97,7 +97,7 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
             })}
           </ul>
         </nav>
-        <RevalidateButtons />
+        {/* <RevalidateButtons /> */}
         {/* Copyright */}
         <div className="mt-8 text-center text-xs text-text-muted">
           {translations.footer.copyright}

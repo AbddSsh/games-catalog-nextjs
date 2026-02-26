@@ -8,7 +8,7 @@ export type TCtaType = "play" | "download";
 export interface IRelatedGame {
   slug: string;
   name: string;
-  icon: string;
+  bannerImage: string;
 }
 
 // Game card (lists, catalog, carousels, search)
@@ -18,7 +18,8 @@ export interface IGameBase {
   slug: string;
   name: string;
   shortDescription: string;
-  image: string;
+  cardImage: string;
+  bannerImage: string;
   genres: string[];
   settings: string[];
   platforms: string[];

@@ -59,7 +59,7 @@ function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardP
       {/* Image with badges */}
       <div className="relative w-[257px] aspect-[1/1.45] flex-shrink-0 overflow-hidden rounded-[16px]">
         <Image
-          src={game.image || "/images/placeholder-game.jpg"}
+          src={game.cardImage || "/images/placeholder-game.jpg"}
           alt={game.name}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
@@ -111,7 +111,7 @@ function GameCardList({ game, locale, className, translations }: Omit<IGameCardP
       {/* Image - aspect ratio 1:1.5 */}
       <div className="relative w-44 aspect-[1/1.44] flex-shrink-0 overflow-hidden rounded-[12px]">
         <Image
-          src={game.image || "/images/placeholder-game.jpg"}
+          src={game.cardImage || "/images/placeholder-game.jpg"}
           alt={game.name}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"

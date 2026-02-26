@@ -6,8 +6,7 @@ import { ChevronRight } from "lucide-react";
 import { cn } from "@/shared/lib";
 import { GameCard } from "@/features/game-card";
 import type { ICategoryCard } from "@/entities/category";
-import type { IGameBase } from "@/entities/game";
-import type { IPaginatedResponse } from "@/shared/types";
+import { getGames, type IGameBase } from "@/entities/game";
 
 interface IGenresTabsProps {
   categories: ICategoryCard[];
@@ -43,22 +42,11 @@ export function GenresTabs({
     const loadGames = async () => {
       setIsLoading(true);
       try {
-        const params = new URLSearchParams({
+        const result = await getGames({
           locale,
-          elements: String(GAMES_LIMIT),
+          elements: GAMES_LIMIT,
+          ...(activeTab !== "all" && { category: activeTab }),
         });
-
-        if (activeTab !== "all") {
-          params.set("category", activeTab);
-        }
-
-        const response = await fetch(`/api/games?${params.toString()}`);
-        
-        if (!response.ok) {
-          throw new Error(`Failed to fetch games: ${response.statusText}`);
-        }
-
-        const result: IPaginatedResponse<IGameBase> = await response.json();
         setActiveGames(result.items);
       } catch (error) {
         console.error("Failed to load games:", error);

@@ -2,7 +2,7 @@ import { Skeleton } from "@/shared/ui";
 
 export default function Loading() {
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pt-[40px]">
       {/* Hero skeleton */}
       <Skeleton className="h-64 w-full rounded-[20px] md:h-80" />
 

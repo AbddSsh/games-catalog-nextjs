@@ -68,7 +68,7 @@ export async function CatalogView({
   ];
 
   return (
-    <div className="flex flex-col gap-10 lg:flex-row">
+    <div className="flex flex-col gap-10 lg:flex-row pt-[40px]">
       {/* Filters Sidebar */}
       <aside className="w-full lg:max-w-64 lg:w-[20vw] flex-shrink-0">
         <Suspense fallback={<div className="h-96 animate-pulse bg-bg-card rounded-lg" />}>
@@ -84,7 +84,7 @@ export async function CatalogView({
       <div className="flex flex-col gap-6 w-full">
 
         {/* Breadcrumbs */}
-        <Breadcrumbs items={breadcrumbs} />
+        {/* <Breadcrumbs items={breadcrumbs} /> */}
 
         {/* Games Content */}
         <div className="flex-1 space-y-6">

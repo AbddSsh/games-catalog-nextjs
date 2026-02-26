@@ -70,7 +70,7 @@ export async function HomeView({ locale }: IHomeViewProps) {
     );
 
     return (
-      <div className="space-y-9">
+      <div className="space-y-9 pt-[40px]">
         {/* Hero Carousel */}
         <HeroCarousel
           games={heroGames.items}
