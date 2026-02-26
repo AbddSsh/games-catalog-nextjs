@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Fragment } from "react";
+import { useState, Fragment, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Play, ChevronLeft, ChevronRight } from "lucide-react";
@@ -9,6 +9,7 @@ import {
   Carousel,
   CarouselContent,
   CarouselItem,
+  type CarouselApi,
 } from "@/shared/ui";
 import { cn } from "@/shared/lib";
 import type { IGameDetail } from "@/entities/game";
@@ -34,10 +35,17 @@ interface IGameViewProps {
 export function GameView({ game, locale, translations }: IGameViewProps) {
   const [activeTab, setActiveTab] = useState<"overview" | "features">("overview");
   const [selectedImage, setSelectedImage] = useState(0);
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
+
+  // Автоскролл ленты миниатюр к активному слайду, если он вне зоны видимости
+  useEffect(() => {
+    if (carouselApi == null) return;
+    carouselApi.scrollTo(selectedImage, true);
+  }, [carouselApi, selectedImage]);
 
   // All media (video thumbnail + screenshots)
   const allMedia = [
-    game.image, // Main image / video thumbnail
+    // game.videoUrl,
     ...game.screenshots,
   ];
 
@@ -69,7 +77,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
         {/* Background Image */}
         <div className="relative w-full">
           <Image
-            src={game.image || "/images/placeholder-game.jpg"}
+            src={game.bannerImage || "/images/placeholder-game.jpg"}
             alt={game.name}
             width={1920}
             height={600}
@@ -84,7 +92,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
         <div className="absolute inset-0 flex flex-col justify-end">
           <div className="max-w-[1400px] mx-auto w-full px-4 pb-8">
             {/* Breadcrumbs */}
-            <Breadcrumbs items={breadcrumbs} className="mb-4 text-text-secondary" />
+            {/* <Breadcrumbs items={breadcrumbs} className="mb-4 text-text-secondary" /> */}
 
             {/* Game Info Row */}
             <div className="flex items-start justify-between gap-6">
@@ -206,7 +214,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
               {/* Screenshots Gallery */}
               {allMedia.length > 1 && (
                 <div className="mt-6">
-                  <Carousel opts={{ align: "start" }} className="w-full">
+                  <Carousel opts={{ align: "start" }} setApi={setCarouselApi} className="w-full">
                     <CarouselContent className="-ml-2">
                       {allMedia.map((src, index) => (
                         <CarouselItem key={index} className="pl-2 basis-1/4 sm:basis-1/5 lg:basis-1/6">
@@ -253,7 +261,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                     {/* Card Image */}
                     <div className="relative aspect-video w-full overflow-hidden rounded-lg">
                       <Image
-                        src={relatedGame.icon}
+                        src={relatedGame?.bannerImage}
                         alt={relatedGame.name}
                         fill
                         className="object-cover"

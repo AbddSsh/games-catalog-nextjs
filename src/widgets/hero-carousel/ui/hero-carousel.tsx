@@ -144,7 +144,7 @@ export function HeroCarousel({
       {/* Background Image */}
       <div className="relative w-full">
         <Image
-          src={currentGame.image || "/images/placeholder-hero.jpg"}
+          src={currentGame.bannerImage || "/images/placeholder-hero.jpg"}
           alt={currentGame.name}
           priority
           width={1920}

@@ -129,7 +129,7 @@ export default async function LangLayout({
               "@context": "https://schema.org",
               "@type": "Organization",
               "name": "MoneySwap",
-              "url": process.env.NEXT_PUBLIC_SITE_BASE_URL,
+              "url": process.env.NEXT_PUBLIC_SITE_URL,
               "logo": "/og_logo.svg",
               "description": "MoneySwap - удобный помощник для поиска обменников в любой точке мира",
               "sameAs": [
@@ -181,7 +181,7 @@ export default async function LangLayout({
           translations={translations}
         />
 
-        <main className="max-w-[1400px] flex-grow w-full py-[40px] mobile-xl:px-[25px] px-[15px]">
+        <main className="max-w-[1400px] flex-grow w-full pb-[40px] mobile-xl:px-[25px] px-[15px]">
           {children}
         </main>
 
