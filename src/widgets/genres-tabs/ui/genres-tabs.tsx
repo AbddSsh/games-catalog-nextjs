@@ -7,6 +7,7 @@ import { cn } from "@/shared/lib";
 import { GameCard } from "@/features/game-card";
 import type { ICategoryCard } from "@/entities/category";
 import { getGames, type IGameBase } from "@/entities/game";
+import { ROUTES } from "@/shared/router";
 
 interface IGenresTabsProps {
   categories: ICategoryCard[];
@@ -148,10 +149,10 @@ export function GenresTabs({
         <Link
           href={
             activeTab === "all"
-              ? `/${locale}/catalog`
-              : `/${locale}/category/${activeTab}`
+              ? `/${locale}${ROUTES.CATALOG}`
+              : `/${locale}${ROUTES.CATEGORY}/${activeTab}`
           }
-          className="inline-flex items-center gap-1 text-[12px] font-black text-button hover:text-button/80 transition-colors"
+          className="uppercase inline-flex items-center gap-1 text-[12px] font-black text-button hover:text-button/80 transition-colors"
         >
           {translations?.seeAll || "VIEW ALL"}
           <ChevronRight className="h-4 w-4" />

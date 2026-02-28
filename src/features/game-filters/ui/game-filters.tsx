@@ -10,6 +10,7 @@ import {
   AccordionTrigger,
 } from "@/shared/ui";
 import type { IFilters, IAppliedFilters } from "@/entities/filter";
+import { ROUTES } from "@/shared/router";
 
 interface IGameFiltersProps {
   filters: IFilters;
@@ -68,7 +69,7 @@ export function GameFilters({
       if (filters.platforms?.length) params.set("platforms", filters.platforms.join(","));
       if (filters.features?.length) params.set("features", filters.features.join(","));
       const queryString = params.toString();
-      router.push(`/${locale}/catalog${queryString ? `?${queryString}` : ""}`);
+      router.push(`/${locale}${ROUTES.CATALOG}${queryString ? `?${queryString}` : ""}`);
     },
     [router, searchParams, locale]
   );
@@ -98,7 +99,7 @@ export function GameFilters({
     const q = searchParams.get("q");
     if (q) params.set("q", q);
     const queryString = params.toString();
-    router.push(`/${locale}/catalog${queryString ? `?${queryString}` : ""}`);
+    router.push(`/${locale}${ROUTES.CATALOG}${queryString ? `?${queryString}` : ""}`);
   }, [router, locale, searchParams]);
 
   const filterGroups = [

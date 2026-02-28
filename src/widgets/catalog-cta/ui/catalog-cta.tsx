@@ -19,6 +19,7 @@ export function CatalogCta({ data, locale }: ICatalogCtaProps) {
             src={data.image}
             alt=""
             fill
+            quality={100}
             className="object-cover"
             priority
           />

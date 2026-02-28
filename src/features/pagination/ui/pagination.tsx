@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui";
+import { ROUTES } from "@/shared/router";
 
 interface IPaginationProps {
   currentPage: number;
@@ -28,7 +29,7 @@ export function Pagination({
   currentPage,
   totalPages,
   locale,
-  basePath = "/catalog",
+  basePath = ROUTES.CATALOG,
   showLoadMore = true,
   currentElements,
   elementsStep = 12,
