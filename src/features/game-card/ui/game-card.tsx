@@ -1,8 +1,13 @@
+"use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Loader } from "lucide-react";
 import { cn } from "@/shared/lib";
+import { Skeleton } from "@/shared/ui";
 import type { IGameBase } from "@/entities/game";
+import { ROUTES } from "@/shared/router";
 
 export type TGameCardVariant = "grid" | "list";
 
@@ -39,8 +44,42 @@ function GameBadge({
   );
 }
 
+function GameCardImage({
+  src,
+  alt,
+  className,
+  sizes,
+}: {
+  src: string;
+  alt: string;
+  className?: string;
+  sizes?: string;
+}) {
+  const [isLoading, setIsLoading] = useState(true);
+  const handleImageLoad = () => setIsLoading(false);
+
+  return (
+    <>
+      {isLoading && (
+        <Skeleton className="absolute inset-0 flex items-center justify-center bg-muted z-[1]">
+          <Loader className="animate-spin size-6 text-muted-foreground" />
+        </Skeleton>
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        fill
+        quality={100}
+        sizes={sizes}
+        className={cn(className, "transition-[transform,opacity] duration-300", isLoading ? "opacity-0" : "opacity-100")}
+        onLoad={handleImageLoad}
+      />
+    </>
+  );
+}
+
 function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardProps, "variant">) {
-  const gameUrl = `/${locale}/game/${game.slug}`;
+  const gameUrl = `/${locale}${ROUTES.GAME}/${game.slug}`;
   const isDownload = game.ctaType !== "play";
   const platformBadge = isDownload ? translations?.download : translations?.browser;
   const hasFreeBadge = game.tags.some(
@@ -58,10 +97,9 @@ function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardP
     >
       {/* Image with badges */}
       <div className="relative w-[257px] aspect-[1/1.45] flex-shrink-0 overflow-hidden rounded-[16px]">
-        <Image
+        <GameCardImage
           src={game.cardImage || "/images/placeholder-game.jpg"}
           alt={game.name}
-          fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="300px"
         />
@@ -92,7 +130,7 @@ function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardP
 }
 
 function GameCardList({ game, locale, className, translations }: Omit<IGameCardProps, "variant">) {
-  const gameUrl = `/${locale}/game/${game.slug}`;
+  const gameUrl = `/${locale}${ROUTES.GAME}/${game.slug}`;
   const isDownload = game.ctaType !== "play";
   const platformBadge = isDownload ? translations?.download : translations?.browser;
   const hasFreeBadge = game.tags.some(
@@ -110,10 +148,9 @@ function GameCardList({ game, locale, className, translations }: Omit<IGameCardP
     >
       {/* Image - aspect ratio 1:1.5 */}
       <div className="relative w-44 aspect-[1/1.44] flex-shrink-0 overflow-hidden rounded-[12px]">
-        <Image
+        <GameCardImage
           src={game.cardImage || "/images/placeholder-game.jpg"}
           alt={game.name}
-          fill
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="200px"
         />

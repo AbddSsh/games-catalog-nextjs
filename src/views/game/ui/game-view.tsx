@@ -14,6 +14,7 @@ import {
 import { cn } from "@/shared/lib";
 import type { IGameDetail } from "@/entities/game";
 import gameCatalogIcon from "@/shared/icons/game-catalog-icon.png";
+import { ROUTES } from "@/shared/router";
 
 interface IGameViewProps {
   game: IGameDetail;
@@ -57,15 +58,15 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
     if (game.platforms?.length) params.set("platforms", game.platforms.join(","));
     if (game.features?.length) params.set("features", game.features.join(","));
     const queryString = params.toString();
-    return `/${locale}/catalog${queryString ? `?${queryString}` : ""}`;
+    return `/${locale}${ROUTES.CATALOG}${queryString ? `?${queryString}` : ""}`;
   };
 
   // Breadcrumbs - need translations passed from parent
   const breadcrumbs: IBreadcrumbItem[] = [
     { label: translations.home, href: `/${locale}` },
-    { label: translations.games, href: `/${locale}/catalog` },
+    { label: translations.games, href: `/${locale}${ROUTES.CATALOG}` },
     ...(game.genres[0]
-      ? [{ label: game.genres[0], href: `/${locale}/category/${game.genres[0].toLowerCase()}` }]
+      ? [{ label: game.genres[0], href: `/${locale}${ROUTES.CATEGORY}/${game.genres[0].toLowerCase()}` }]
       : []),
     { label: game.name },
   ];
@@ -81,6 +82,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
             alt={game.name}
             width={1920}
             height={600}
+            quality={100}
             className="w-full h-auto object-cover"
             priority
           />
@@ -136,7 +138,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                   size="lg"
                   className="bg-button hover:bg-button/90 text-white font-bold text-[28px] px-10 py-3 gap-4 rounded-full h-[58px]"
                 >
-                  <Image src={gameCatalogIcon} alt="game catalog" width={40} className="size-10 object-contain h-auto" />
+                  <Image src={gameCatalogIcon} alt="game catalog" width={40} quality={100} className="size-10 object-contain h-auto" />
                   {translations.playNow.toUpperCase()}
                 </Button>
               </Link>
@@ -161,6 +163,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                   src={allMedia[selectedImage] || "/images/placeholder-game.jpg"}
                   alt={game.name}
                   fill
+                  quality={100}
                   className="object-cover"
                 />
                 {/* Video play button (only on first slide if video exists) */}
@@ -231,6 +234,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                               src={src}
                               alt={`${game.name} screenshot ${index + 1}`}
                               fill
+                              quality={100}
                               className="object-cover"
                             />
                           </button>
@@ -255,7 +259,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                 {game.relatedGames.slice(0, 3).map((relatedGame) => (
                   <Link
                     key={relatedGame.slug}
-                    href={`/${locale}/game/${relatedGame.slug}`}
+                    href={`/${locale}${ROUTES.GAME}/${relatedGame.slug}`}
                     className="group block overflow-hidden rounded-[9px] transition-colors hover:opacity-90"
                   >
                     {/* Card Image */}
@@ -264,6 +268,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                         src={relatedGame?.bannerImage}
                         alt={relatedGame.name}
                         fill
+                        quality={100}
                         className="object-cover"
                       />
                       {/* Free badge */}

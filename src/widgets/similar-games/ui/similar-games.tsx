@@ -32,6 +32,7 @@ export function SimilarGames({
                 src={game?.bannerImage || "/images/placeholder.jpg"}
                 alt={game.name}
                 fill
+                quality={100}
                 className="object-cover"
               />
             </div>

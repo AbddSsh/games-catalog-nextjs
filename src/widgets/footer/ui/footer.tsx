@@ -7,6 +7,7 @@ import { cn } from "@/shared/lib";
 import type { INavItem } from "@/shared/types";
 import type { ITranslations } from "@/entities/translations";
 import { RevalidateButtons } from "@/features/revalidate-buttons";
+import { ROUTES } from "@/shared/router";
 
 interface IFooterProps {
   locale: string;
@@ -55,12 +56,12 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
   
   // Default footer navigation items from translations
   const DEFAULT_FOOTER_NAV: INavItem[] = [
-    { label: translations.common.games, href: "/catalog", icon: "gamepad" },
-    { label: translations.home.top_games, href: "/catalog?features=best-pick" },
-    { label: translations.home.top_games, href: "/catalog?features=top-2025" },
-    { label: translations.common.games, href: "/catalog?features=new" },
-    { label: translations.common.games, href: "/catalog?platforms=browser" },
-    { label: translations.common.games, href: "/catalog?platforms=download" },
+    { label: translations.common.games, href: ROUTES.CATALOG, icon: "gamepad" },
+    { label: translations.home.top_games, href: ROUTES.CATALOG + "?features=best-pick" },
+    { label: translations.home.top_games, href: ROUTES.CATALOG + "?features=top-2025" },
+    { label: translations.common.games, href: ROUTES.CATALOG + "?features=new" },
+    { label: translations.common.games, href: ROUTES.CATALOG + "?platforms=browser" },
+    { label: translations.common.games, href: ROUTES.CATALOG + "?platforms=download" },
   ];
   
   // Use provided navigation or default

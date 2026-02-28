@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { ICategoryCard } from "@/entities/category";
+import { ROUTES } from "@/shared/router";
 
 interface IPopularGenresProps {
   categories: ICategoryCard[];
@@ -29,7 +30,7 @@ export function PopularGenres({
         <h2 className="text-xl font-bold text-text-primary">{title}</h2>
         {hasMore && (
           <Link
-            href={`/${locale}/catalog`}
+            href={`/${locale}${ROUTES.CATALOG}`}
             className="flex items-center gap-1 text-sm font-medium text-accent-primary hover:underline"
           >
             View all
@@ -43,7 +44,7 @@ export function PopularGenres({
         {visibleCategories.map((category) => (
           <Link
             key={category.slug}
-            href={`/${locale}/category/${category.slug}`}
+            href={`/${locale}${ROUTES.CATEGORY}/${category.slug}`}
             className="group flex flex-col items-center gap-2 rounded-lg border border-border-main bg-bg-card p-4 text-center transition-all hover:border-accent-primary hover:shadow-md"
           >
             {/* Icon placeholder */}

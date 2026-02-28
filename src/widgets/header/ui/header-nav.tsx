@@ -12,6 +12,7 @@ import browserGamesIcon from "@/shared/icons/browser-games-icon.svg";
 import onlineGamesIcon from "@/shared/icons/online-games-icon.svg";
 import downloadGamesIcon from "@/shared/icons/download-games-icon.svg";
 import { cn } from "@/shared/lib";
+import { ROUTES } from "@/shared/router";
 
 interface IHeaderNavProps {
   locale: string;
@@ -60,10 +61,10 @@ export function HeaderNav({ locale, items, translations }: IHeaderNavProps) {
   
   // Use default items if none provided - labels from translations
   const DEFAULT_NAV_ITEMS = [
-    { label: translations.common.games.toUpperCase(), href: "/catalog", icon: gameCatalogIcon, hasDropdown: true },
-    { label: translations.common.games.toUpperCase(), href: "/catalog?platforms=browser", icon: browserGamesIcon },
-    { label: translations.common.games.toUpperCase(), href: "/catalog?platforms=online", icon: onlineGamesIcon },
-    { label: translations.common.games.toUpperCase(), href: "/catalog?platforms=download", icon: downloadGamesIcon },
+    { label: translations.common.games.toUpperCase(), href: ROUTES.CATALOG, icon: gameCatalogIcon, hasDropdown: true },
+    { label: translations.common.games.toUpperCase(), href: ROUTES.CATALOG + "?platforms=browser", icon: browserGamesIcon },
+    { label: translations.common.games.toUpperCase(), href: ROUTES.CATALOG + "?platforms=online", icon: onlineGamesIcon },
+    { label: translations.common.games.toUpperCase(), href: ROUTES.CATALOG + "?platforms=download", icon: downloadGamesIcon },
   ];
   
   // Use default items if none provided
@@ -100,6 +101,7 @@ export function HeaderNav({ locale, items, translations }: IHeaderNavProps) {
                 alt=""
                 width={16}
                 height={16}
+                quality={100}
                 className="opacity-50"
               />
             )}

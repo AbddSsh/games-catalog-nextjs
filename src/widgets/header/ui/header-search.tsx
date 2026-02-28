@@ -5,10 +5,11 @@ import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { Search, X } from "lucide-react";
 import { Input } from "@/shared/ui";
 import { useDebounce } from "@/shared/hooks";
+import { ROUTES } from "@/shared/router";
 
 const DEBOUNCE_DELAY = 300;
 const MIN_SEARCH_LENGTH = 2;
-const catalogPath = (locale: string) => `/${locale}/catalog`;
+const catalogPath = (locale: string) => `/${locale}${ROUTES.CATALOG}`;
 
 interface IHeaderSearchProps {
   locale: string;
