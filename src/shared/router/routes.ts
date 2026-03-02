@@ -3,6 +3,7 @@ export const ROUTES = {
   CATALOG: "/catalog",
   CATEGORY: "/category",
   GAME: "/game",
+  PRIVACY: "/privacy",
 } as const;
 
 export type ROUTES_TYPE = typeof ROUTES[keyof typeof ROUTES];

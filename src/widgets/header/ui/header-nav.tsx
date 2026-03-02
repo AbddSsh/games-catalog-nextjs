@@ -78,7 +78,7 @@ export function HeaderNav({ locale, items, translations }: IHeaderNavProps) {
     : DEFAULT_NAV_ITEMS;
 
   return (
-    <nav className="grid grid-cols-[1fr_repeat(3,0.5fr)] items-center gap-4 justify-items-end">
+    <nav className="grid md:grid-cols-[1fr_repeat(3,0.5fr)] grid-cols-2 items-center md:gap-4 gap-2 justify-items-end">
       {navItems.map((item, index) => {
         const href = `/${locale}${item.href}`;
         const isActive = isLinkActive(item.href, pathname, searchParams);
@@ -89,7 +89,7 @@ export function HeaderNav({ locale, items, translations }: IHeaderNavProps) {
             href={href}
             className={cn(
               "flex items-center gap-2 text-xs font-black uppercase tracking-wide transition-colors",
-              index === 0 && "justify-self-start",
+              index === 0 && "justify-self-start", index === 2 && "justify-self-start md:justify-self-end",
               isActive
                 ? "text-accent-purple"
                 : "text-text-primary hover:text-accent-purple"

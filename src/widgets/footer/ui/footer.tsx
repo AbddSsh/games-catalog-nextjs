@@ -98,6 +98,15 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
             })}
           </ul>
         </nav>
+        {/* Privacy Policy link */}
+        <div className="mt-6 flex justify-center">
+          <Link
+            href={`/${locale}${ROUTES.PRIVACY}`}
+            className="text-[12px] font-black text-text-primary transition-colors hover:text-accent-purple"
+          >
+            Privacy Policy
+          </Link>
+        </div>
         {/* <RevalidateButtons /> */}
         {/* Copyright */}
         <div className="mt-8 text-center text-xs text-text-muted">
