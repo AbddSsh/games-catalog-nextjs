@@ -86,6 +86,7 @@ export default async function LangLayout({
   return (
     <html lang={locale} className={`dark ${nunitoSans.variable}`}>
       <head>
+        <meta name="google-site-verification" content="1Pa-5zedmxoqMHGTpMiVKO-1_e0ijaTC81Tt0RY2urg" />
         <meta name="msapplication-TileColor" content="#091121" />
         <meta name="theme-color" content="#091121" />
         {/* Google Tag Manager */}
