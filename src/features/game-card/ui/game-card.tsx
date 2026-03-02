@@ -96,7 +96,7 @@ function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardP
       )}
     >
       {/* Image with badges */}
-      <div className="relative w-[257px] aspect-[1/1.45] flex-shrink-0 overflow-hidden rounded-[16px]">
+      <div className="relative aspect-[1/1.45] flex-shrink-0 overflow-hidden rounded-[16px]">
         <GameCardImage
           src={game.cardImage || "/images/placeholder-game.jpg"}
           alt={game.name}
