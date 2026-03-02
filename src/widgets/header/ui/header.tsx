@@ -23,8 +23,8 @@ interface IHeaderProps {
 export function Header({ locale, locales, navigation = [], translations }: IHeaderProps) {
   return (
     <header className="sticky top-0 z-40 w-full">
-      <section className="flex items-center bg-bg-light h-[70px]">
-        <div className="flex items-center justify-between gap-4 max-w-[1400px] mx-auto w-full py-4 px-[25px]">
+      <section className="flex items-center bg-bg-light md:h-[70px] h-fit">
+        <div className="flex items-center justify-between gap-4 max-w-[1400px] mx-auto w-full py-4 md:px-[25px] px-[16px]">
           <Link href={`/${locale}`} className="max-w-[120px] h-[31px] min-w-[70px]">
             <Image
               src={"/logo.svg"}
@@ -39,13 +39,15 @@ export function Header({ locale, locales, navigation = [], translations }: IHead
               <LanguageSelector currentLocale={locale} locales={locales} />
             </Suspense>
             <Suspense fallback={null}>
-              <HeaderSearch locale={locale} placeholder={translations.common.search} />
+              <div className="hidden md:block">
+                <HeaderSearch locale={locale} placeholder={translations.common.search} />
+              </div>
             </Suspense>
           </div>
         </div>
       </section>
       <section className="bg-bg-main">
-        <div className="grid  items-center max-w-[1400px] mx-auto w-full py-4 px-[25px] h-[60px]">
+        <div className="grid  items-center max-w-[1400px] mx-auto w-full py-4 md:px-[25px] px-[16px] md:h-[60px] h-fit">
           <Suspense fallback={null}>
             <HeaderNav locale={locale} items={navigation} translations={translations} />
           </Suspense>

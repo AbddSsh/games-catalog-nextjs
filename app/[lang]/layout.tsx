@@ -10,6 +10,7 @@ import "@/shared/styles/globals.scss";
 import NextTopLoader from "nextjs-toploader";
 import Head from "next/head";
 import { Suspense } from "react";
+import Script from "next/script";
 
 const nunitoSans = Nunito_Sans({
   subsets: ["latin", "cyrillic"],
@@ -163,6 +164,19 @@ export default async function LangLayout({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body className={`${nunitoSans.className} flex flex-col min-h-screen items-center`}>
+        {/* Google tag (gtag.js) */}
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-XB7PJXXQPN"
+          strategy="afterInteractive"
+        />
+        <Script id="gtag-init" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-XB7PJXXQPN');
+          `}
+        </Script>
         <NextTopLoader
           color="#A855F7"
           initialPosition={0.08}

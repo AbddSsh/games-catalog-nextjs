@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Button } from "@/shared/ui";
 import { ROUTES } from "@/shared/router";
+import "@/shared/styles/globals.scss";
 
 export default function NotFound() {
   return (
