@@ -83,9 +83,21 @@ export default async function LangLayout({
     notFound();
   }
 
+  const GTM_ID = "GTM-MZZ4MGGH";
+
   return (
     <html lang={locale} className={`dark ${nunitoSans.variable}`}>
       <head>
+        {/* Google Tag Manager - as high in head as possible */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');`,
+          }}
+        />
         <meta name="google-site-verification" content="1Pa-5zedmxoqMHGTpMiVKO-1_e0ijaTC81Tt0RY2urg" />
         <meta name="msapplication-TileColor" content="#091121" />
         <meta name="theme-color" content="#091121" />
@@ -165,6 +177,16 @@ export default async function LangLayout({
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <body className={`${nunitoSans.className} flex flex-col min-h-screen items-center`}>
+        {/* Google Tag Manager (noscript) */}
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: "none", visibility: "hidden" }}
+            title="Google Tag Manager"
+          />
+        </noscript>
         {/* Google tag (gtag.js) */}
         <Script
           src="https://www.googletagmanager.com/gtag/js?id=G-XB7PJXXQPN"
