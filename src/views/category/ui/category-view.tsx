@@ -73,7 +73,7 @@ export async function CategoryView({
             </h1>
 
             {/* Description */}
-            <h2 className="max-w-[70vw] text-xs text-text-primary font-normal">
+            <h2 className="ml-1 max-w-[70vw] text-xs text-text-primary font-normal">
               {category.description}
             </h2>
           </div>

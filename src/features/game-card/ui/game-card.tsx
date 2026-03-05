@@ -121,7 +121,7 @@ function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardP
           {game.name}
         </h3>
         {/* Genres */}
-        <p className="truncate text-sm font-bold text-[#66537A]">
+        <p className="truncate text-sm font-bold text-text-secondary">
           {game.genres.join(", ")}
         </p>
       </div>

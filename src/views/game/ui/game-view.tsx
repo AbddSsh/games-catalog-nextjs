@@ -131,7 +131,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                   </div>
                 </div>
                 {/* Genres */}
-                <p className="mt-4 text-sm font-normal text-text-primary">
+                <p className="ml-1 mt-4 text-sm font-normal text-text-primary">
                   {game.genres.join(", ")}
                 </p>
               </div>
