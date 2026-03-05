@@ -30,10 +30,15 @@ export function HeaderSearch({
   const [query, setQuery] = useState(initialQuery);
   const debouncedQuery = useDebounce(query, DEBOUNCE_DELAY);
   const isOurPushRef = useRef(false);
+  const skipRedirectOnceRef = useRef(false);
 
-  // Синхронизация URL → state только при заходе на каталог (pathname/locale), не при каждом searchParams
+  // Синхронизация URL → state при заходе на каталог; при уходе — сброс query и флаг "один раз не редиректить"
   useEffect(() => {
-    if (pathname !== catalogPath(locale)) return;
+    if (pathname !== catalogPath(locale)) {
+      setQuery("");
+      skipRedirectOnceRef.current = true;
+      return;
+    }
     if (isOurPushRef.current) {
       isOurPushRef.current = false;
       return;
@@ -41,12 +46,16 @@ export function HeaderSearch({
     setQuery(searchParams.get("q") || "");
   }, [pathname, locale, searchParams]);
 
-  // Обновление URL по debounced значению (односторонне: инпут → URL)
+  // Обновление URL по debounced значению: на каталоге — синхронизация q; не на каталоге — переход в каталог с q (кроме одного срабатывания после ухода с каталога)
   useEffect(() => {
     const trimmed = debouncedQuery.trim();
     const urlQ = searchParams.get("q") || "";
 
     if (pathname !== catalogPath(locale)) {
+      if (skipRedirectOnceRef.current) {
+        skipRedirectOnceRef.current = false;
+        return;
+      }
       if (trimmed.length >= MIN_SEARCH_LENGTH) {
         isOurPushRef.current = true;
         router.push(`${catalogPath(locale)}?q=${encodeURIComponent(trimmed)}`);
