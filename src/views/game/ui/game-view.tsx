@@ -92,7 +92,15 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
 
         {/* Hero Content */}
         <div className="absolute inset-0 flex flex-col justify-end">
-          <div className="max-w-[1400px] mx-auto w-full px-4 pb-8">
+          {/* Clickable banner overlay — opens tracking link in new tab */}
+          <Link
+            href={game.trackingLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="absolute inset-0 z-0"
+            aria-hidden
+          />
+          <div className="max-w-[1400px] mx-auto w-full px-4 pb-8 relative z-10">
             {/* Breadcrumbs */}
             {/* <Breadcrumbs items={breadcrumbs} className="mb-4 text-text-secondary" /> */}
 
