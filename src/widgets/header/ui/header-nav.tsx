@@ -11,7 +11,7 @@ import gameCatalogIcon from "@/shared/icons/game-catalog-icon.svg";
 import browserGamesIcon from "@/shared/icons/browser-games-icon.svg";
 import onlineGamesIcon from "@/shared/icons/online-games-icon.svg";
 import downloadGamesIcon from "@/shared/icons/download-games-icon.svg";
-import { cn } from "@/shared/lib";
+import { cn, localePath } from "@/shared/lib";
 import { ROUTES } from "@/shared/router";
 
 interface IHeaderNavProps {
@@ -80,7 +80,7 @@ export function HeaderNav({ locale, items, translations }: IHeaderNavProps) {
   return (
     <nav className="grid md:grid-cols-[1fr_repeat(3,0.5fr)] grid-cols-2 items-center md:gap-4 gap-2 justify-items-end">
       {navItems.map((item, index) => {
-        const href = `/${locale}${item.href}`;
+        const href = localePath(locale, item.href);
         const isActive = isLinkActive(item.href, pathname, searchParams);
 
         return (

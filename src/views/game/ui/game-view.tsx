@@ -11,7 +11,7 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/shared/ui";
-import { cn } from "@/shared/lib";
+import { cn, localePath, buildFilterParam } from "@/shared/lib";
 import type { IGameDetail } from "@/entities/game";
 import gameCatalogIcon from "@/shared/icons/game-catalog-icon.png";
 import { ROUTES } from "@/shared/router";
@@ -50,23 +50,23 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
     ...game.screenshots,
   ];
 
-  // Build catalog URL with filters from game data
+  // Build catalog URL with filters from game data (URL uses __ separator)
   const buildCatalogUrl = () => {
     const params = new URLSearchParams();
-    if (game.genres?.length) params.set("genres", game.genres.join(","));
-    if (game.settings?.length) params.set("settings", game.settings.join(","));
-    if (game.platforms?.length) params.set("platforms", game.platforms.join(","));
-    if (game.features?.length) params.set("features", game.features.join(","));
+    if (game.genres?.length) params.set("genres", buildFilterParam(game.genres));
+    if (game.settings?.length) params.set("settings", buildFilterParam(game.settings));
+    if (game.platforms?.length) params.set("platforms", buildFilterParam(game.platforms));
+    if (game.features?.length) params.set("features", buildFilterParam(game.features));
     const queryString = params.toString();
-    return `/${locale}${ROUTES.CATALOG}${queryString ? `?${queryString}` : ""}`;
+    return `${localePath(locale, ROUTES.CATALOG)}${queryString ? `?${queryString}` : ""}`;
   };
 
   // Breadcrumbs - need translations passed from parent
   const breadcrumbs: IBreadcrumbItem[] = [
-    { label: translations.home, href: `/${locale}` },
-    { label: translations.games, href: `/${locale}${ROUTES.CATALOG}` },
+    { label: translations.home, href: localePath(locale) },
+    { label: translations.games, href: localePath(locale, ROUTES.CATALOG) },
     ...(game.genres[0]
-      ? [{ label: game.genres[0], href: `/${locale}${ROUTES.CATEGORY}/${game.genres[0].toLowerCase()}` }]
+      ? [{ label: game.genres[0], href: localePath(locale, `${ROUTES.CATEGORY}/${game.genres[0].toLowerCase()}`) }]
       : []),
     { label: game.name },
   ];
@@ -259,7 +259,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                 {game.relatedGames.slice(0, 3).map((relatedGame) => (
                   <Link
                     key={relatedGame.slug}
-                    href={`/${locale}${ROUTES.GAME}/${relatedGame.slug}`}
+                    href={localePath(locale, `${ROUTES.GAME}/${relatedGame.slug}`)}
                     className="group block overflow-hidden rounded-[9px] transition-colors hover:opacity-90"
                   >
                     {/* Card Image */}

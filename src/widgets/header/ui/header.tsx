@@ -12,6 +12,7 @@ import type { ILocaleConfig } from "@/entities/locale";
 import type { ITranslations } from "@/entities/translations";
 import Image from "next/image";
 import Link from "next/link";
+import { localePath } from "@/shared/lib";
 
 interface IHeaderProps {
   locale: string;
@@ -25,7 +26,7 @@ export function Header({ locale, locales, navigation = [], translations }: IHead
     <header className="sticky top-0 z-40 w-full">
       <section className="flex items-center bg-bg-light md:h-[70px] h-fit">
         <div className="flex items-center justify-between gap-4 max-w-[1400px] mx-auto w-full py-4 md:px-[25px] px-[16px]">
-          <Link href={`/${locale}`} className="max-w-[120px] h-[31px] min-w-[70px]">
+          <Link href={localePath(locale)} className="max-w-[120px] h-[31px] min-w-[70px]">
             <Image
               src={"/logo.svg"}
               alt="logo"

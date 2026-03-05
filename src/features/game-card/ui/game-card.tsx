@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Loader } from "lucide-react";
-import { cn } from "@/shared/lib";
+import { cn, localePath } from "@/shared/lib";
 import { Skeleton } from "@/shared/ui";
 import type { IGameBase } from "@/entities/game";
 import { ROUTES } from "@/shared/router";
@@ -79,7 +79,7 @@ function GameCardImage({
 }
 
 function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardProps, "variant">) {
-  const gameUrl = `/${locale}${ROUTES.GAME}/${game.slug}`;
+  const gameUrl = localePath(locale, `${ROUTES.GAME}/${game.slug}`);
   const isDownload = game.ctaType !== "play";
   const platformBadge = isDownload ? translations?.download : translations?.browser;
   const hasFreeBadge = game.tags.some(
@@ -130,7 +130,7 @@ function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardP
 }
 
 function GameCardList({ game, locale, className, translations }: Omit<IGameCardProps, "variant">) {
-  const gameUrl = `/${locale}${ROUTES.GAME}/${game.slug}`;
+  const gameUrl = localePath(locale, `${ROUTES.GAME}/${game.slug}`);
   const isDownload = game.ctaType !== "play";
   const platformBadge = isDownload ? translations?.download : translations?.browser;
   const hasFreeBadge = game.tags.some(

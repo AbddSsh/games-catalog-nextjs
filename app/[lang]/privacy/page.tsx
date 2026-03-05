@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { getLocales } from "@/entities/locale";
 import { getTranslations } from "@/entities/translations";
-import { getCanonicalUrl } from "@/shared/lib";
+import { getCanonicalUrl, getAlternatesLanguages } from "@/shared/lib";
 import { ROUTES } from "@/shared/router";
 import { PrivacyView } from "@/views/privacy";
 
@@ -23,12 +23,14 @@ export async function generateMetadata({
   const { lang } = await params;
   const translations = await getTranslations(lang);
   const siteName = translations?.meta.default_title ?? "Site";
+  const languages = await getAlternatesLanguages(ROUTES.PRIVACY.replace(/^\//, ""));
   return {
     title: `Privacy Policy | ${siteName}`,
     description:
       "This Privacy Policy explains how information is handled when you visit and use this website. We do not collect personally identifiable information.",
     alternates: {
       canonical: getCanonicalUrl(lang, ROUTES.PRIVACY.replace(/^\//, "")),
+      languages,
     },
   };
 }

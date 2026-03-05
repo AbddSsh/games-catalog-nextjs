@@ -4,7 +4,7 @@ import { GameView } from "@/views/game";
 import { getGameBySlug, getAllGameSlugs } from "@/entities/game";
 import { getTranslations } from "@/entities/translations";
 import { getLocales } from "@/entities/locale";
-import { getCanonicalUrl } from "@/shared/lib";
+import { getCanonicalUrl, getAlternatesLanguages } from "@/shared/lib";
 import { ROUTES } from "@/shared/router";
 
 interface IGamePageProps {
@@ -29,11 +29,14 @@ export async function generateMetadata({
       };
     }
 
+    const pathSegments = `${ROUTES.GAME}/${game.slug}`.replace(/^\//, "");
+    const languages = await getAlternatesLanguages(pathSegments);
     return {
       title: game.seo.title,
       description: game.seo.description,
       alternates: {
-        canonical: getCanonicalUrl(lang, `${ROUTES.GAME}/${game.slug}`),
+        canonical: getCanonicalUrl(lang, pathSegments),
+        languages,
       },
     };
   } catch {

@@ -9,6 +9,7 @@ import { SortSelect, type TSortOption } from "@/features/sort-select";
 import { Breadcrumbs, type IBreadcrumbItem } from "@/shared/ui";
 import type { IAppliedFilters } from "@/entities/filter";
 import { ROUTES } from "@/shared/router";
+import { localePath } from "@/shared/lib";
 
 const ELEMENTS_PER_PAGE = 12;
 
@@ -63,7 +64,7 @@ export async function CatalogView({
 
   // Need translations passed from parent
   const breadcrumbs: IBreadcrumbItem[] = [
-    { label: translations.games, href: `/${locale}` },
+    { label: translations.games, href: localePath(locale) },
     { label: translations.games },
   ];
 

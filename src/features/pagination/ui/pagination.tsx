@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, ChevronDown } from "lucide-react";
 import { cn } from "@/shared/lib";
 import { Button } from "@/shared/ui";
 import { ROUTES } from "@/shared/router";
+import { localePath } from "@/shared/lib";
 
 interface IPaginationProps {
   currentPage: number;
@@ -47,7 +48,7 @@ export function Pagination({
       params.delete("page");
     }
     const queryString = params.toString();
-    router.push(`/${locale}${basePath}${queryString ? `?${queryString}` : ""}`, { scroll: false });
+    router.push(`${localePath(locale, basePath)}${queryString ? `?${queryString}` : ""}`, { scroll: false });
   };
 
   const loadMore = () => {
@@ -57,7 +58,7 @@ export function Pagination({
     params.set("elements", String(nextElements));
     params.delete("page");
     const queryString = params.toString();
-    router.push(`/${locale}${basePath}${queryString ? `?${queryString}` : ""}`, { scroll: false });
+    router.push(`${localePath(locale, basePath)}${queryString ? `?${queryString}` : ""}`, { scroll: false });
   };
 
   // Generate page numbers to show

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { IRelatedGame } from "@/entities/game";
+import { localePath } from "@/shared/lib";
 
 interface ISimilarGamesProps {
   games: IRelatedGame[];
@@ -24,7 +25,7 @@ export function SimilarGames({
         {games.map((game) => (
           <Link
             key={game.slug}
-            href={`/${locale}/game/${game.slug}`}
+            href={localePath(locale, `/game/${game.slug}`)}
             className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-bg-card-hover"
           >
             <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded">

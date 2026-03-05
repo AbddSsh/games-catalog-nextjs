@@ -4,7 +4,7 @@ import { CategoryView } from "@/views/category";
 import { getCategoryBySlug, getAllCategorySlugs } from "@/entities/category";
 import { getLocales } from "@/entities/locale";
 import { getTranslations } from "@/entities/translations";
-import { getCanonicalUrl } from "@/shared/lib";
+import { getCanonicalUrl, getAlternatesLanguages } from "@/shared/lib";
 import type { TViewMode } from "@/features/view-mode-toggle";
 import type { TSortOption } from "@/features/sort-select";
 import { ROUTES } from "@/shared/router";
@@ -35,11 +35,14 @@ export async function generateMetadata({
     };
   }
 
+  const pathSegments = `${ROUTES.CATEGORY}/${slug}`.replace(/^\//, "");
+  const languages = await getAlternatesLanguages(pathSegments);
   return {
     title: data.category.seo.title,
     description: data.category.seo.description,
     alternates: {
-      canonical: getCanonicalUrl(lang, `${ROUTES.CATEGORY}/${slug}`),
+      canonical: getCanonicalUrl(lang, pathSegments),
+      languages,
     },
   };
 }
