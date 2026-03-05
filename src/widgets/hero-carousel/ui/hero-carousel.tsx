@@ -25,14 +25,10 @@ export function HeroCarousel({
   games,
   locale,
   label = "Today's Best Pick",
-  autoPlayInterval = 5000,
+  autoPlayInterval = 4000,
   translations,
 }: IHeroCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [isDragging, setIsDragging] = useState(false);
-  const [dragOffset, setDragOffset] = useState(0);
-  const startXRef = useRef(0);
-  const carouselRef = useRef<HTMLDivElement>(null);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
   const stopAutoPlay = useCallback(() => {
@@ -50,77 +46,36 @@ export function HeroCarousel({
     setCurrentIndex((prev) => (prev + 1) % games.length);
   }, [games.length]);
 
-  const goToPrev = useCallback(() => {
-    setCurrentIndex((prev) => (prev - 1 + games.length) % games.length);
-  }, [games.length]);
-
   useEffect(() => {
-    if (games.length <= 1 || isDragging) return;
+    if (games.length <= 1) return;
 
     autoPlayRef.current = setInterval(goToNext, autoPlayInterval);
     return () => stopAutoPlay();
-  }, [games.length, goToNext, autoPlayInterval, isDragging, stopAutoPlay]);
-
-  const handleDragStart = useCallback((clientX: number) => {
-    setIsDragging(true);
-    setDragOffset(0);
-    startXRef.current = clientX;
-    stopAutoPlay();
-  }, [stopAutoPlay]);
-
-  const handleDragMove = useCallback((clientX: number) => {
-    if (!isDragging) return;
-    setDragOffset(clientX - startXRef.current);
-  }, [isDragging]);
-
-  const handleDragEnd = useCallback(() => {
-    if (!isDragging) return;
-
-    const THRESHOLD = 50;
-    if (Math.abs(dragOffset) > THRESHOLD) {
-      if (dragOffset < 0) goToNext();
-      else goToPrev();
-    }
-
-    setIsDragging(false);
-    setDragOffset(0);
-  }, [isDragging, dragOffset, goToNext, goToPrev]);
-
-  const handleMouseDown = useCallback((e: React.MouseEvent) => handleDragStart(e.clientX), [handleDragStart]);
-  const handleMouseMove = useCallback((e: React.MouseEvent) => handleDragMove(e.clientX), [handleDragMove]);
-  const handleTouchStart = useCallback((e: React.TouchEvent) => handleDragStart(e.touches[0].clientX), [handleDragStart]);
-  const handleTouchMove = useCallback((e: React.TouchEvent) => handleDragMove(e.touches[0].clientX), [handleDragMove]);
+  }, [games.length, goToNext, autoPlayInterval, stopAutoPlay]);
 
   if (games.length === 0) return null;
 
   const trackOffset = -(currentIndex * 100);
-  const dragPercent = carouselRef.current
-    ? (dragOffset / carouselRef.current.offsetWidth) * 100
-    : 0;
 
   return (
-    <section
-      ref={carouselRef}
-      className="relative overflow-hidden rounded-[20px] cursor-grab active:cursor-grabbing select-none"
-      onMouseDown={handleMouseDown}
-      onMouseMove={handleMouseMove}
-      onMouseUp={handleDragEnd}
-      onMouseLeave={handleDragEnd}
-      onTouchStart={handleTouchStart}
-      onTouchMove={handleTouchMove}
-      onTouchEnd={handleDragEnd}
-    >
+    <section className="relative overflow-hidden rounded-[20px]">
       {/* Slide Track */}
       <div
         className="flex"
         style={{
           gap: `${SLIDE_GAP}px`,
-          transform: `translateX(calc(${trackOffset + dragPercent}% - ${currentIndex * SLIDE_GAP}px))`,
-          transition: isDragging ? "none" : `transform ${TRANSITION_DURATION}ms cubic-bezier(0.25, 0.1, 0.25, 1)`,
+          transform: `translateX(calc(${trackOffset}% - ${currentIndex * SLIDE_GAP}px))`,
+          transition: `transform ${TRANSITION_DURATION}ms cubic-bezier(0.25, 0.1, 0.25, 1)`,
         }}
       >
         {games.map((game, index) => (
           <div key={game.slug ?? index} className="w-full flex-shrink-0 relative rounded-[20px] overflow-hidden h-[26vw]">
+            <Link
+              href={localePath(locale, `/game/${game.slug}`)}
+              className="absolute inset-0 z-10 block"
+            >
+              <span className="sr-only">{game.name}</span>
+            </Link>
             <Image
               src={game.bannerImage || "/images/placeholder-hero.jpg"}
               alt={game.name}
@@ -129,24 +84,26 @@ export function HeroCarousel({
               quality={100}
               className="object-cover"
             />
-            <div className="absolute inset-0 -bottom-10 bg-gradient-to-t from-bg-main/95 via-bg-main/70 to-transparent" />
+            <div className="absolute inset-0 -bottom-10 bg-gradient-to-t from-bg-main/95 via-bg-main/70 to-transparent pointer-events-none" />
 
             {/* Per-slide content */}
-            <div className="absolute left-10 bottom-10 flex items-center">
+            <div className="absolute left-10 bottom-10 flex items-center z-20 pointer-events-none">
               <div className="max-w-xl grid grid-rows-[1fr_auto] gap-5">
                 <div>
                   <h2 className="text-sm font-bold text-text-primary line-clamp-3">
                     {game.shortDescription}
                   </h2>
                 </div>
-                <Link href={localePath(locale, `/game/${game.slug}`)}>
-                  <Button
-                    size="lg"
-                    className="rounded-full text-base bg-button hover:bg-button/90 text-white font-bold px-8"
-                  >
-                    {translations?.moreDetails || "MORE DETAILS"}
-                  </Button>
-                </Link>
+                <span className="pointer-events-auto w-fit">
+                  <Link href={localePath(locale, `/game/${game.slug}`)}>
+                    <Button
+                      size="lg"
+                      className="rounded-full text-base bg-button hover:bg-button/90 text-white font-bold px-8"
+                    >
+                      {translations?.moreDetails || "MORE DETAILS"}
+                    </Button>
+                  </Link>
+                </span>
               </div>
             </div>
           </div>
@@ -164,7 +121,7 @@ export function HeroCarousel({
 
       {/* Navigation Dots */}
       {games.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3">
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3 z-30" role="group" aria-label="Carousel navigation">
           {games.map((_, index) => (
             <button
               key={index}
