@@ -12,6 +12,7 @@ import {
 import type { IGameBase } from "@/entities/game";
 import type { IGameSectionConfig } from "@/entities/page";
 import { ROUTES } from "@/shared/router";
+import { localePath } from "@/shared/lib";
 
 interface IGameSectionsProps {
   sections: Array<{
@@ -89,7 +90,7 @@ function CarouselHeader({ config, locale }: { config: IGameSectionConfig, locale
   return (
     <div className="flex items-center justify-between mb-5">
       <div className="flex items-center gap-2">
-        <Link href={`/${locale}${ROUTES.CATALOG}?features=${config.filter}`} className="text-3xl font-bold text-text-primary">{config.title}</Link>
+        <Link href={`${localePath(locale, ROUTES.CATALOG)}?features=${config.filter}`} className="text-3xl font-bold text-text-primary">{config.title}</Link>
         <ChevronRight className="h-6 w-6 text-text-primary" />
       </div>
       {/* Navigation arrows */}

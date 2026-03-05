@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useSearchParams, usePathname } from "next/navigation";
 import { Gamepad2 } from "lucide-react";
-import { cn } from "@/shared/lib";
+import { cn, localePath } from "@/shared/lib";
 import type { INavItem } from "@/shared/types";
 import type { ITranslations } from "@/entities/translations";
 import { RevalidateButtons } from "@/features/revalidate-buttons";
@@ -79,7 +79,7 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
               return (
                 <li key={item.href || index}>
                   <Link
-                    href={`/${locale}${item.href}`}
+                    href={localePath(locale, item.href)}
                     className={cn(
                       "flex items-center gap-2 text-[12px] font-black transition-colors",
                       isActive
@@ -101,7 +101,7 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
         {/* Privacy Policy link */}
         <div className="mt-6 flex justify-center">
           <Link
-            href={`/${locale}${ROUTES.PRIVACY}`}
+            href={localePath(locale, ROUTES.PRIVACY)}
             className="text-[12px] font-black text-text-primary transition-colors hover:text-accent-purple"
           >
             Privacy Policy

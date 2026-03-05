@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
-import { cn } from "@/shared/lib";
+import { cn, localePath } from "@/shared/lib";
 import { GameCard } from "@/features/game-card";
 import type { ICategoryCard } from "@/entities/category";
 import { getGames, type IGameBase } from "@/entities/game";
@@ -149,8 +149,8 @@ export function GenresTabs({
         <Link
           href={
             activeTab === "all"
-              ? `/${locale}${ROUTES.CATALOG}`
-              : `/${locale}${ROUTES.CATEGORY}/${activeTab}`
+              ? localePath(locale, ROUTES.CATALOG)
+              : localePath(locale, `${ROUTES.CATEGORY}/${activeTab}`)
           }
           className="uppercase inline-flex items-center gap-1 text-[12px] font-black text-button hover:text-button/80 transition-colors"
         >

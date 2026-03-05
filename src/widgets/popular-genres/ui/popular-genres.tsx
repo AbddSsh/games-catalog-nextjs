@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 import type { ICategoryCard } from "@/entities/category";
 import { ROUTES } from "@/shared/router";
+import { localePath } from "@/shared/lib";
 
 interface IPopularGenresProps {
   categories: ICategoryCard[];
@@ -44,7 +45,7 @@ export function PopularGenres({
         {visibleCategories.map((category) => (
           <Link
             key={category.slug}
-            href={`/${locale}${ROUTES.CATEGORY}/${category.slug}`}
+            href={localePath(locale, `${ROUTES.CATEGORY}/${category.slug}`)}
             className="group flex flex-col items-center gap-2 rounded-lg border border-border-main bg-bg-card p-4 text-center transition-all hover:border-accent-primary hover:shadow-md"
           >
             {/* Icon placeholder */}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Button } from "@/shared/ui";
 import type { ICatalogCtaSection } from "@/entities/page";
 import { ROUTES } from "@/shared/router";
+import { localePath } from "@/shared/lib";
 
 interface ICatalogCtaProps {
   data: ICatalogCtaSection;
@@ -36,7 +37,7 @@ export function CatalogCta({ data, locale }: ICatalogCtaProps) {
         <p className="mb-8 text-xl text-white">
           {data.subtitle}
         </p>
-        <Link href={`/${locale}/${ROUTES.CATALOG}`}>
+        <Link href={localePath(locale, ROUTES.CATALOG)}>
           <Button
             className="h-12 rounded-full bg-gradient-to-r from-[#8A18D2] to-[#2C3378] px-8 text-sm font-bold uppercase text-white transition-all hover:scale-105"
           >

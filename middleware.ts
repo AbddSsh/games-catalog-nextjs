@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   LOCALE_COOKIE_NAME,
   DEFAULT_LOCALE,
-  parseAcceptLanguage,
-  isLocaleSupported,
 } from "@/shared/config";
 
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
@@ -29,12 +27,16 @@ function setCachedLocaleCodes(codes: string[]): void {
   };
 }
 
+// МОК (раскомментировать если бэк не отдаёт локали):
+// const MOCK_LOCALE_CODES = ["en", "sk", "pt"];
+
 async function fetchLocaleCodes(origin: string): Promise<string[]> {
+  // МОК: return MOCK_LOCALE_CODES;
+
   const cached = getCachedLocaleCodes();
   if (cached) return cached;
 
   if (!API_BASE) {
-    // Dev/mock: fetch from same-origin route (reads data/locales or mock)
     try {
       const base = origin.replace(/\/$/, "");
       const res = await fetch(`${base}/api/locales`);
@@ -77,14 +79,15 @@ async function fetchLocaleCodes(origin: string): Promise<string[]> {
 export async function middleware(request: NextRequest) {
   const { pathname, origin } = request.nextUrl;
   const localeCodes = await fetchLocaleCodes(origin);
+  const nonDefaultLocales = localeCodes.filter((c) => c !== DEFAULT_LOCALE);
 
-  const pathnameLocale = localeCodes.find(
+  // 1) Path starts with a non-default locale (/sk, /pt, etc.) — pass through, set cookie
+  const pathnameLocale = nonDefaultLocales.find(
     (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
   );
 
   if (pathnameLocale) {
     const response = NextResponse.next();
-
     const cookieLocale = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
     if (cookieLocale !== pathnameLocale) {
       response.cookies.set(LOCALE_COOKIE_NAME, pathnameLocale, {
@@ -93,29 +96,24 @@ export async function middleware(request: NextRequest) {
         sameSite: "lax",
       });
     }
-
     return response;
   }
 
-  let locale: string;
-  const cookieLocale = request.cookies.get(LOCALE_COOKIE_NAME)?.value;
-  if (cookieLocale && isLocaleSupported(cookieLocale, localeCodes)) {
-    locale = cookieLocale;
-  } else {
-    const acceptLanguage = request.headers.get("Accept-Language");
-    locale = parseAcceptLanguage(acceptLanguage, localeCodes);
+  // 2) Path starts with /en — redirect to the same path without /en (canonical)
+  if (pathname.startsWith(`/${DEFAULT_LOCALE}/`) || pathname === `/${DEFAULT_LOCALE}`) {
+    const stripped = pathname.replace(new RegExp(`^/${DEFAULT_LOCALE}`), "") || "/";
+    const newUrl = new URL(stripped, request.url);
+    newUrl.search = request.nextUrl.search;
+    return NextResponse.redirect(newUrl, 301);
   }
 
-  // If path starts with a locale-like segment (/xx or /xxx), replace it; otherwise prepend locale
-  const pathWithoutFirstSegment =
-    /^\/[a-z]{2,3}(\/|$)/i.test(pathname)
-      ? (pathname.replace(/^\/[^/]+/, "") || "/")
-      : pathname;
-  const newUrl = new URL(`/${locale}${pathWithoutFirstSegment}`, request.url);
-  newUrl.search = request.nextUrl.search;
+  // 3) No locale prefix — this is default locale (en). Rewrite internally to /en/...
+  const rewritePath = `/${DEFAULT_LOCALE}${pathname === "/" ? "" : pathname}`;
+  const rewriteUrl = new URL(rewritePath, request.url);
+  rewriteUrl.search = request.nextUrl.search;
 
-  const response = NextResponse.redirect(newUrl);
-  response.cookies.set(LOCALE_COOKIE_NAME, locale, {
+  const response = NextResponse.rewrite(rewriteUrl);
+  response.cookies.set(LOCALE_COOKIE_NAME, DEFAULT_LOCALE, {
     path: "/",
     maxAge: 60 * 60 * 24 * 365,
     sameSite: "lax",

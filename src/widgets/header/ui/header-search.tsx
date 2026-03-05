@@ -6,10 +6,11 @@ import { Search, X } from "lucide-react";
 import { Input } from "@/shared/ui";
 import { useDebounce } from "@/shared/hooks";
 import { ROUTES } from "@/shared/router";
+import { localePath } from "@/shared/lib";
 
 const DEBOUNCE_DELAY = 300;
 const MIN_SEARCH_LENGTH = 2;
-const catalogPath = (locale: string) => `/${locale}${ROUTES.CATALOG}`;
+const catalogPath = (locale: string) => localePath(locale, ROUTES.CATALOG);
 
 interface IHeaderSearchProps {
   locale: string;

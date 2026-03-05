@@ -7,6 +7,7 @@ import { SortSelect, type TSortOption } from "@/features/sort-select";
 import { Breadcrumbs, type IBreadcrumbItem } from "@/shared/ui";
 import type { ICategoryWithGames } from "@/entities/category";
 import { ROUTES } from "@/shared/router";
+import { localePath } from "@/shared/lib";
 
 interface ICategoryViewProps {
   data: ICategoryWithGames;
@@ -36,8 +37,8 @@ export async function CategoryView({
 
   // Need translations passed from parent
   const breadcrumbs: IBreadcrumbItem[] = [
-    { label: translations.home, href: `/${locale}` },
-    { label: translations.games, href: `/${locale}${ROUTES.CATALOG}` },
+    { label: translations.home, href: localePath(locale) },
+    { label: translations.games, href: localePath(locale, ROUTES.CATALOG) },
     { label: category.name },
   ];
 

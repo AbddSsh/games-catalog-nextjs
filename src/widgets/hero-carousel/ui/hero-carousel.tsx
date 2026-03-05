@@ -6,6 +6,10 @@ import Link from "next/link";
 import { Button } from "@/shared/ui";
 import { cn } from "@/shared/lib";
 import type { IGameBase } from "@/entities/game";
+import { localePath } from "@/shared/lib";
+
+const TRANSITION_DURATION = 500;
+const SLIDE_GAP = 12;
 
 interface IHeroCarouselProps {
   games: IGameBase[];
@@ -26,10 +30,17 @@ export function HeroCarousel({
 }: IHeroCarouselProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  const [startX, setStartX] = useState(0);
-  const [currentX, setCurrentX] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
+  const startXRef = useRef(0);
   const carouselRef = useRef<HTMLDivElement>(null);
   const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
+
+  const stopAutoPlay = useCallback(() => {
+    if (autoPlayRef.current) {
+      clearInterval(autoPlayRef.current);
+      autoPlayRef.current = null;
+    }
+  }, []);
 
   const goToSlide = useCallback((index: number) => {
     setCurrentIndex(index);
@@ -43,143 +54,106 @@ export function HeroCarousel({
     setCurrentIndex((prev) => (prev - 1 + games.length) % games.length);
   }, [games.length]);
 
-  // Auto-play
   useEffect(() => {
     if (games.length <= 1 || isDragging) return;
 
     autoPlayRef.current = setInterval(goToNext, autoPlayInterval);
-    return () => {
-      if (autoPlayRef.current) {
-        clearInterval(autoPlayRef.current);
-      }
-    };
-  }, [games.length, goToNext, autoPlayInterval, isDragging]);
+    return () => stopAutoPlay();
+  }, [games.length, goToNext, autoPlayInterval, isDragging, stopAutoPlay]);
 
-  // Mouse handlers for desktop
-  const handleMouseDown = useCallback((e: React.MouseEvent) => {
+  const handleDragStart = useCallback((clientX: number) => {
     setIsDragging(true);
-    setStartX(e.clientX);
-    setCurrentX(e.clientX);
-    if (autoPlayRef.current) {
-      clearInterval(autoPlayRef.current);
-    }
-  }, []);
+    setDragOffset(0);
+    startXRef.current = clientX;
+    stopAutoPlay();
+  }, [stopAutoPlay]);
 
-  const handleMouseMove = useCallback((e: React.MouseEvent) => {
+  const handleDragMove = useCallback((clientX: number) => {
     if (!isDragging) return;
-    setCurrentX(e.clientX);
+    setDragOffset(clientX - startXRef.current);
   }, [isDragging]);
 
-  const handleMouseUp = useCallback(() => {
+  const handleDragEnd = useCallback(() => {
     if (!isDragging) return;
-    
-    const diff = startX - currentX;
-    const threshold = 50; // Minimum drag distance to trigger slide change
 
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        goToNext();
-      } else {
-        goToPrev();
-      }
+    const THRESHOLD = 50;
+    if (Math.abs(dragOffset) > THRESHOLD) {
+      if (dragOffset < 0) goToNext();
+      else goToPrev();
     }
 
     setIsDragging(false);
-    setStartX(0);
-    setCurrentX(0);
-  }, [isDragging, startX, currentX, goToNext, goToPrev]);
+    setDragOffset(0);
+  }, [isDragging, dragOffset, goToNext, goToPrev]);
 
-  // Touch handlers for mobile
-  const handleTouchStart = useCallback((e: React.TouchEvent) => {
-    setIsDragging(true);
-    setStartX(e.touches[0].clientX);
-    setCurrentX(e.touches[0].clientX);
-    if (autoPlayRef.current) {
-      clearInterval(autoPlayRef.current);
-    }
-  }, []);
+  const handleMouseDown = useCallback((e: React.MouseEvent) => handleDragStart(e.clientX), [handleDragStart]);
+  const handleMouseMove = useCallback((e: React.MouseEvent) => handleDragMove(e.clientX), [handleDragMove]);
+  const handleTouchStart = useCallback((e: React.TouchEvent) => handleDragStart(e.touches[0].clientX), [handleDragStart]);
+  const handleTouchMove = useCallback((e: React.TouchEvent) => handleDragMove(e.touches[0].clientX), [handleDragMove]);
 
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (!isDragging) return;
-    setCurrentX(e.touches[0].clientX);
-  }, [isDragging]);
+  if (games.length === 0) return null;
 
-  const handleTouchEnd = useCallback(() => {
-    if (!isDragging) return;
-    
-    const diff = startX - currentX;
-    const threshold = 50; // Minimum drag distance to trigger slide change
-
-    if (Math.abs(diff) > threshold) {
-      if (diff > 0) {
-        goToNext();
-      } else {
-        goToPrev();
-      }
-    }
-
-    setIsDragging(false);
-    setStartX(0);
-    setCurrentX(0);
-  }, [isDragging, startX, currentX, goToNext, goToPrev]);
-
-  if (games.length === 0) {
-    return null;
-  }
-
-  const currentGame = games[currentIndex];
+  const trackOffset = -(currentIndex * 100);
+  const dragPercent = carouselRef.current
+    ? (dragOffset / carouselRef.current.offsetWidth) * 100
+    : 0;
 
   return (
-    <section 
+    <section
       ref={carouselRef}
       className="relative overflow-hidden rounded-[20px] cursor-grab active:cursor-grabbing select-none"
       onMouseDown={handleMouseDown}
       onMouseMove={handleMouseMove}
-      onMouseUp={handleMouseUp}
-      onMouseLeave={handleMouseUp}
+      onMouseUp={handleDragEnd}
+      onMouseLeave={handleDragEnd}
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
-      onTouchEnd={handleTouchEnd}
+      onTouchEnd={handleDragEnd}
     >
-      {/* Background Image */}
-      <div className="relative w-full">
-        <Image
-          src={currentGame.bannerImage || "/images/placeholder-hero.jpg"}
-          alt={currentGame.name}
-          priority
-          width={1920}
-          height={600}
-          quality={100}
-          className="w-full h-auto object-cover"
-        />
-        {/* Gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-bg-main/95 via-bg-main/70 to-transparent" />
-      </div>
+      {/* Slide Track */}
+      <div
+        className="flex"
+        style={{
+          gap: `${SLIDE_GAP}px`,
+          transform: `translateX(calc(${trackOffset + dragPercent}% - ${currentIndex * SLIDE_GAP}px))`,
+          transition: isDragging ? "none" : `transform ${TRANSITION_DURATION}ms cubic-bezier(0.25, 0.1, 0.25, 1)`,
+        }}
+      >
+        {games.map((game, index) => (
+          <div key={game.slug ?? index} className="w-full flex-shrink-0 relative rounded-[20px] overflow-hidden h-[26vw]">
+            <Image
+              src={game.bannerImage || "/images/placeholder-hero.jpg"}
+              alt={game.name}
+              priority={index === 0}
+              fill
+              quality={100}
+              className="object-cover"
+            />
+            <div className="absolute inset-0 -bottom-10 bg-gradient-to-t from-bg-main/95 via-bg-main/70 to-transparent" />
 
-      {/* Content */}
-      <div className="absolute left-10 bottom-10 flex items-center">
-          <div className="max-w-xl grid grid-rows-[1fr_auto] gap-5">
-
-            {/* Description */}
-            <div>
-              <h2 className="text-sm font-bold text-text-primary line-clamp-3">
-                {currentGame.shortDescription}
-              </h2>
+            {/* Per-slide content */}
+            <div className="absolute left-10 bottom-10 flex items-center">
+              <div className="max-w-xl grid grid-rows-[1fr_auto] gap-5">
+                <div>
+                  <h2 className="text-sm font-bold text-text-primary line-clamp-3">
+                    {game.shortDescription}
+                  </h2>
+                </div>
+                <Link href={localePath(locale, `/game/${game.slug}`)}>
+                  <Button
+                    size="lg"
+                    className="rounded-full text-base bg-button hover:bg-button/90 text-white font-bold px-8"
+                  >
+                    {translations?.moreDetails || "MORE DETAILS"}
+                  </Button>
+                </Link>
+              </div>
             </div>
-
-            {/* CTA Button */}
-              <Link href={`/${locale}/game/${currentGame.slug}`}>
-                <Button
-                  size="lg"
-                  className="rounded-full text-base bg-button hover:bg-button/90 text-white font-bold px-8"
-                >
-                  {translations?.moreDetails || "MORE DETAILS"}
-                </Button>
-              </Link>
           </div>
+        ))}
       </div>
 
-      {/* Ribbon Badge - "TODAY'S BEST PICK" */}
+      {/* Ribbon Badge */}
       <div className="absolute right-0 top-0 overflow-hidden h-32 w-32">
         <div className="absolute right-[-35px] top-[32px] w-[170px] rotate-45 bg-accent-purple py-2 text-center shadow-lg">
           <span className="text-xs font-bold uppercase tracking-wider text-white">

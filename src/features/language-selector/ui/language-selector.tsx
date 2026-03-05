@@ -10,6 +10,7 @@ import {
 } from "@/shared/ui";
 import type { ILocaleConfig } from "@/entities/locale";
 import { GlobalLanguageIcon } from "@/shared/icons";
+import { DEFAULT_LOCALE } from "@/shared/config";
 
 interface ILanguageSelectorProps {
   currentLocale: string;
@@ -28,7 +29,6 @@ export function LanguageSelector({ currentLocale, locales }: ILanguageSelectorPr
     const savedPosition = sessionStorage.getItem(SCROLL_POSITION_KEY);
     if (savedPosition) {
       const position = parseInt(savedPosition, 10);
-      // Use setTimeout to ensure the page has rendered
       setTimeout(() => {
         window.scrollTo(0, position);
         sessionStorage.removeItem(SCROLL_POSITION_KEY);
@@ -39,18 +39,31 @@ export function LanguageSelector({ currentLocale, locales }: ILanguageSelectorPr
   const handleLocaleChange = (newLocale: string) => {
     if (newLocale === currentLocale) return;
 
-    // Save current scroll position
     const scrollPosition = window.scrollY || window.pageYOffset;
     sessionStorage.setItem(SCROLL_POSITION_KEY, scrollPosition.toString());
 
-    const segments = pathname.split("/");
-    segments[1] = newLocale;
-    const newPath = segments.join("/") || `/${newLocale}`;
+    const nonDefaultCodes = locales.map((l) => l.code).filter((c) => c !== DEFAULT_LOCALE);
+
+    // Strip current locale prefix from pathname to get the "bare" path
+    let barePath = pathname;
+    const currentPrefix = nonDefaultCodes.find(
+      (c) => pathname.startsWith(`/${c}/`) || pathname === `/${c}`
+    );
+    if (currentPrefix) {
+      barePath = pathname.replace(new RegExp(`^/${currentPrefix}`), "") || "/";
+    }
+
+    // Build new path
+    let newPath: string;
+    if (newLocale === DEFAULT_LOCALE) {
+      newPath = barePath;
+    } else {
+      newPath = `/${newLocale}${barePath === "/" ? "" : barePath}`;
+    }
 
     const search = searchParams.toString();
     const fullPath = search ? `${newPath}?${search}` : newPath;
 
-    // Use scroll: false to prevent automatic scroll to top
     router.push(fullPath, { scroll: false });
   };
 

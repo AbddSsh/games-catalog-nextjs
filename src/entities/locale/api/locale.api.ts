@@ -10,10 +10,48 @@ export interface ILocaleConfig {
   currency: string;
 }
 
+const MOCK_LOCALES: ILocaleConfig[] = [
+  {
+    code: "en",
+    language: "en",
+    name: "English",
+    nativeName: "English",
+    status: "active",
+    isDefault: true,
+    fallback: null,
+    dateFormat: "MM/DD/YYYY",
+    currency: "USD",
+  },
+  {
+    code: "sk",
+    language: "sk",
+    name: "Slovak",
+    nativeName: "Slovenčina",
+    status: "active",
+    isDefault: false,
+    fallback: "en",
+    dateFormat: "DD.MM.YYYY",
+    currency: "EUR",
+  },
+  {
+    code: "pt",
+    language: "pt",
+    name: "Portuguese",
+    nativeName: "Português",
+    status: "active",
+    isDefault: false,
+    fallback: "en",
+    dateFormat: "DD/MM/YYYY",
+    currency: "EUR",
+  },
+];
+
 export async function getLocales(): Promise<ILocaleConfig[]> {
   const { apiGet } = await import("@/shared/api");
   const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
   return apiGet<ILocaleConfig[]>("/locales", {
     next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.LOCALES] },
   });
+  // МОК (раскомментировать если бэк не отдаёт локали):
+  // return Promise.resolve(MOCK_LOCALES);
 }

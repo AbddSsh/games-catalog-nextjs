@@ -1,6 +1,9 @@
-// Client-safe exports only
 export { cn } from "./utils";
+export { localePath } from "./locale-path.util";
+export {
+  FILTER_PARAM_SEPARATOR,
+  parseFilterParam,
+  buildFilterParam,
+} from "./filter-param.util";
 
-// Server-only exports should be imported directly:
-// import { getLocale } from "@/shared/lib/get-locale";
-export { getCanonicalUrl } from "./canonical.util";
+export { getCanonicalUrl, getAlternatesLanguages } from "./canonical.util";
