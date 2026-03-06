@@ -53,10 +53,10 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
   // Build catalog URL with filters from game data (URL uses __ separator)
   const buildCatalogUrl = () => {
     const params = new URLSearchParams();
-    if (game.genres?.length) params.set("genres", buildFilterParam(game.genres));
-    if (game.settings?.length) params.set("settings", buildFilterParam(game.settings));
-    if (game.platforms?.length) params.set("platforms", buildFilterParam(game.platforms));
-    if (game.features?.length) params.set("features", buildFilterParam(game.features));
+    if (game.genres?.length) params.set("genres", buildFilterParam((game.genres ?? []).map((g) => (typeof g === "string" ? g : g.slug))));
+    if (game.settings?.length) params.set("settings", buildFilterParam(game.settings.map((s) => s.slug)));
+    if (game.platforms?.length) params.set("platforms", buildFilterParam(game.platforms.map((p) => p.slug)));
+    if (game.features?.length) params.set("features", buildFilterParam(game.features.map((f) => f.slug)));
     const queryString = params.toString();
     return `${localePath(locale, ROUTES.CATALOG)}${queryString ? `?${queryString}` : ""}`;
   };
@@ -66,7 +66,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
     { label: translations.home, href: localePath(locale) },
     { label: translations.games, href: localePath(locale, ROUTES.CATALOG) },
     ...(game.genres[0]
-      ? [{ label: game.genres[0], href: localePath(locale, `${ROUTES.CATEGORY}/${game.genres[0].toLowerCase()}`) }]
+      ? [{ label: game.genres[0].name, href: localePath(locale, `${ROUTES.CATEGORY}/${game.genres[0].slug}`) }]
       : []),
     { label: game.name },
   ];
@@ -112,28 +112,49 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                   <h1 className="text-4xl font-bold text-text-primary md:text-5xl">
                     {game.name}
                   </h1>
-                  {/* Badges */}
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="rounded-[4px] bg-option-blue px-2 py-1 text-xs font-normal text-white">
-                      {game.ctaType === "play" ? translations.browser : translations.download}
-                    </span>
-                    {game.tags.slice(0, 2).map((tag) => {
-                      const isFreeTag = tag.toLowerCase() === "free" || tag.toLowerCase() === "zadarmo";
-                      return (
-                        <span
-                          key={tag}
-                          className="rounded-[4px] bg-option-green px-2 py-1 text-xs font-normal text-white"
-                        >
-                          {isFreeTag ? translations.freeToPlay : tag}
-                        </span>
-                      );
-                    })}
-                  </div>
+                  {/* Badges: platforms (синий, строки или объекты), tags (строки или объекты с color из API) */}
+                  {(game.platforms?.length > 0 || game.tags?.length > 0) && (
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      {game.platforms?.map((p, idx) => {
+                        const isObj = typeof p === "object" && p !== null && "name" in p;
+                        const label = isObj ? (p as { name: string }).name : String(p);
+                        const key = isObj ? (p as { slug: string }).slug : `p-${idx}`;
+                        return (
+                          <span
+                            key={key}
+                            className="rounded-[4px] bg-option-blue px-2 py-1 text-xs font-normal text-white"
+                          >
+                            {label}
+                          </span>
+                        );
+                      })}
+                      {game.tags?.map((tag, idx) => {
+                        const isObj = typeof tag === "object" && tag !== null && "name" in tag;
+                        const name = isObj ? (tag as { name: string }).name : String(tag);
+                        const color = isObj && (tag as { color?: string }).color ? (tag as { color: string }).color : undefined;
+                        const key = isObj ? (tag as { slug: string }).slug : `tag-${idx}`;
+                        return (
+                          <span
+                            key={key}
+                            className={cn(
+                              "rounded-[4px] px-2 py-1 text-xs font-normal text-white",
+                              !color && "bg-bg-text-block"
+                            )}
+                            style={color ? { backgroundColor: color } : undefined}
+                          >
+                            {name}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
                 {/* Genres */}
-                <p className="ml-1 mt-4 text-sm font-normal text-text-primary">
-                  {game.genres.join(", ")}
-                </p>
+                {(game.genres?.length ?? 0) > 0 && (
+                  <p className="ml-1 mt-4 text-sm font-normal text-text-primary">
+                    {(game.genres ?? []).map((g) => (typeof g === "string" ? g : g.name)).join(", ")}
+                  </p>
+                )}
               </div>
 
               {/* CTA Button */}
@@ -270,7 +291,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                     href={localePath(locale, `${ROUTES.GAME}/${relatedGame.slug}`)}
                     className="group block overflow-hidden rounded-[9px] transition-colors hover:opacity-90"
                   >
-                    {/* Card Image */}
+                    {/* Card Image: теги поверх картинки сверху */}
                     <div className="relative aspect-video w-full overflow-hidden rounded-lg">
                       <Image
                         src={relatedGame?.bannerImage}
@@ -279,21 +300,64 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                         quality={100}
                         className="object-cover"
                       />
-                      {/* Free badge */}
-                      <span className="absolute left-2 top-2 rounded-full bg-option-green px-2 py-0.5 text-xs font-medium text-white">
-                        {translations.freeToPlay}
-                      </span>
+                      {(relatedGame.tags?.length ?? 0) > 0 && (
+                        <div className="absolute left-2 top-2 flex flex-wrap gap-1">
+                          {relatedGame.tags?.map((tag, idx) => {
+                            const isObj = typeof tag === "object" && tag !== null && "name" in tag;
+                            const name = isObj ? (tag as { name: string }).name : String(tag);
+                            const color = isObj && (tag as { color?: string }).color ? (tag as { color: string }).color : undefined;
+                            const key = isObj ? (tag as { slug: string }).slug : `tag-${idx}`;
+                            return (
+                              <span
+                                key={key}
+                                className={cn(
+                                  "rounded-full px-2 py-0.5 text-xs font-medium text-white",
+                                  !color && "bg-option-green"
+                                )}
+                                style={color ? { backgroundColor: color } : undefined}
+                              >
+                                {name}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
-                    {/* Card Info */}
+                    {/* Под названием: platforms (синий), genres (фиолетовый) */}
                     <div className="mt-2">
                       <h3 className="font-bold text-sm text-text-primary group-hover:text-accent-purple line-clamp-1">
                         {relatedGame.name}
                       </h3>
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        <span className="rounded-[4px] bg-option-blue px-2 py-0.5 text-xs font-medium text-white">
-                          {translations.browser}
-                        </span>
-                      </div>
+                      {(relatedGame.platforms?.length > 0 || relatedGame.genres?.length > 0) && (
+                        <div className="mt-2 flex flex-wrap gap-1">
+                          {relatedGame.platforms?.map((p, idx) => {
+                            const isObj = typeof p === "object" && p !== null && "name" in p;
+                            const label = isObj ? (p as { name: string }).name : String(p);
+                            const key = isObj ? (p as { slug: string }).slug : `p-${idx}`;
+                            return (
+                              <span
+                                key={key}
+                                className="rounded-[4px] bg-option-blue px-2 py-0.5 text-xs font-medium text-white"
+                              >
+                                {label}
+                              </span>
+                            );
+                          })}
+                          {relatedGame.genres?.map((g, idx) => {
+                            const isObj = typeof g === "object" && g !== null && "name" in g;
+                            const label = isObj ? (g as { name: string }).name : String(g);
+                            const key = isObj ? (g as { slug: string }).slug : `g-${idx}`;
+                            return (
+                              <span
+                                key={key}
+                                className="rounded-[4px] bg-accent-purple px-2 py-0.5 text-xs font-medium text-white"
+                              >
+                                {label}
+                              </span>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   </Link>
                   ))}
@@ -381,7 +445,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
               {game.facts.map((fact, index) => (
                 <Fragment key={index}>
                   <dt className="max-w-fit whitespace-normal text-text-primary text-xs font-normal">{fact.title}:</dt>
-                  <dd className="text-start text-text-primary text-xs font-black">
+                  <dd className="text-start text-text-primary text-xs font-black whitespace-pre-line">
                     {fact.text}
                   </dd>
                 </Fragment>

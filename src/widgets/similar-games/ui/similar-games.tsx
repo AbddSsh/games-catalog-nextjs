@@ -26,20 +26,34 @@ export function SimilarGames({
           <Link
             key={game.slug}
             href={localePath(locale, `/game/${game.slug}`)}
-            className="flex items-center gap-3 rounded-lg p-2 transition-colors hover:bg-bg-card-hover"
+            className="flex flex-col gap-1 rounded-lg p-2 transition-colors hover:bg-bg-card-hover"
           >
-            <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded">
-              <Image
-                src={game?.bannerImage || "/images/placeholder.jpg"}
-                alt={game.name}
-                fill
-                quality={100}
-                className="object-cover"
-              />
+            <div className="flex items-center gap-3">
+              <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded">
+                <Image
+                  src={game?.bannerImage || "/images/placeholder.jpg"}
+                  alt={game.name}
+                  fill
+                  quality={100}
+                  className="object-cover"
+                />
+              </div>
+              <span className="flex-1 text-sm font-medium text-text-secondary hover:text-text-primary truncate">
+                {game.name}
+              </span>
             </div>
-            <span className="flex-1 text-sm font-medium text-text-secondary hover:text-text-primary truncate">
-              {game.name}
-            </span>
+            {game.platforms?.length > 0 && (
+              <div className="flex flex-wrap gap-1 ml-12">
+                {game.platforms.slice(0, 2).map((p) => (
+                  <span
+                    key={p.slug}
+                    className="rounded-[4px] bg-option-blue px-2 py-0.5 text-xs font-medium text-white"
+                  >
+                    {p.name}
+                  </span>
+                ))}
+              </div>
+            )}
           </Link>
         ))}
       </div>
