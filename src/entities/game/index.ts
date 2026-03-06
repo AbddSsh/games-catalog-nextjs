@@ -1,5 +1,7 @@
 export type {
   TCtaType,
+  IRefSlugName,
+  IRefTag,
   IRelatedGame,
   IGameBase,
   IGameDetail,

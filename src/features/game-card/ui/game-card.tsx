@@ -23,27 +23,6 @@ interface IGameCardProps {
   };
 }
 
-function GameBadge({
-  children,
-  variant = "browser",
-}: {
-  children: React.ReactNode;
-  variant?: "browser" | "download" | "free";
-}) {
-  return (
-    <span
-      className={cn(
-        "rounded-full px-2 py-0.5 text-xs font-medium text-white w-fit",
-        variant === "browser" && "bg-option-blue",
-        variant === "download" && "bg-accent-pink",
-        variant === "free" && "bg-option-green"
-      )}
-    >
-      {children}
-    </span>
-  );
-}
-
 function GameCardImage({
   src,
   alt,
@@ -78,14 +57,9 @@ function GameCardImage({
   );
 }
 
-function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardProps, "variant">) {
+function GameCardGrid({ game, locale, className }: Omit<IGameCardProps, "variant">) {
   const gameUrl = localePath(locale, `${ROUTES.GAME}/${game.slug}`);
-  const isDownload = game.ctaType !== "play";
-  const platformBadge = isDownload ? translations?.download : translations?.browser;
-  const hasFreeBadge = game.tags.some(
-    (tag) => tag.toLowerCase() === "free" || tag.toLowerCase() === "zadarmo" || tag.toLowerCase() === "new"
-  );
-  const freeBadgeText = translations?.freeToPlay;
+  const tags = game.tags ?? [];
 
   return (
     <Link
@@ -95,7 +69,7 @@ function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardP
         className
       )}
     >
-      {/* Image with badges */}
+      {/* Image with badges — только tags */}
       <div className="relative aspect-[1/1.45] flex-shrink-0 overflow-hidden rounded-[16px]">
         <GameCardImage
           src={game.cardImage || "/images/placeholder-game.jpg"}
@@ -103,15 +77,28 @@ function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardP
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="300px"
         />
-        {/* Badges in top-right corner */}
-        <div className="absolute right-2 top-2 flex flex-col gap-1 items-end">
-          {platformBadge && (
-            <GameBadge variant={isDownload ? "download" : "browser"}>{platformBadge}</GameBadge>
-          )}
-          {hasFreeBadge && freeBadgeText && (
-            <GameBadge variant="free">{freeBadgeText}</GameBadge>
-          )}
-        </div>
+        {tags.length > 0 && (
+          <div className="absolute right-2 top-2 flex flex-col gap-1 items-end">
+            {tags.map((tag, idx) => {
+              const isObj = typeof tag === "object" && tag !== null && "name" in tag;
+              const name = isObj ? (tag as { name: string }).name : String(tag);
+              const color = isObj && (tag as { color?: string }).color ? (tag as { color: string }).color : undefined;
+              const key = isObj ? (tag as { slug: string }).slug : `t-${idx}`;
+              return (
+                <span
+                  key={key}
+                  className={cn(
+                    "rounded-full px-2 py-0.5 text-xs font-medium text-white w-fit",
+                    !color && "bg-bg-text-block"
+                  )}
+                  style={color ? { backgroundColor: color } : undefined}
+                >
+                  {name}
+                </span>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Content */}
@@ -122,21 +109,17 @@ function GameCardGrid({ game, locale, className, translations }: Omit<IGameCardP
         </h3>
         {/* Genres */}
         <p className="truncate text-sm font-bold text-text-secondary">
-          {game.genres.join(", ")}
+          {(game.genres ?? []).map((g) => (typeof g === "string" ? g : g.name)).join(", ")}
         </p>
       </div>
     </Link>
   );
 }
 
-function GameCardList({ game, locale, className, translations }: Omit<IGameCardProps, "variant">) {
+function GameCardList({ game, locale, className }: Omit<IGameCardProps, "variant">) {
   const gameUrl = localePath(locale, `${ROUTES.GAME}/${game.slug}`);
-  const isDownload = game.ctaType !== "play";
-  const platformBadge = isDownload ? translations?.download : translations?.browser;
-  const hasFreeBadge = game.tags.some(
-    (tag) => tag.toLowerCase() === "free" || tag.toLowerCase() === "zadarmo" || tag.toLowerCase() === "new"
-  );
-  const freeBadgeText = translations?.freeToPlay;
+  const tags = game.tags ?? [];
+  const genres = game.genres ?? [];
 
   return (
     <Link
@@ -163,25 +146,43 @@ function GameCardList({ game, locale, className, translations }: Omit<IGameCardP
           {game.name}
         </h3>
 
-        {/* Badges */}
+        {/* Только tags + genres */}
         <div className="flex flex-wrap gap-2">
-          {platformBadge && (
-            <GameBadge variant={isDownload ? "download" : "browser"}>{platformBadge}</GameBadge>
+          {tags.length > 0 && (
+            <>
+              {tags.map((tag, idx) => {
+                const isObj = typeof tag === "object" && tag !== null && "name" in tag;
+                const name = isObj ? (tag as { name: string }).name : String(tag);
+                const color = isObj && (tag as { color?: string }).color ? (tag as { color: string }).color : undefined;
+                const key = isObj ? (tag as { slug: string }).slug : `t-${idx}`;
+                return (
+                  <span
+                    key={key}
+                    className={cn(
+                      "rounded-full px-2 py-0.5 text-xs font-medium text-white w-fit",
+                      !color && "bg-bg-text-block"
+                    )}
+                    style={color ? { backgroundColor: color } : undefined}
+                  >
+                    {name}
+                  </span>
+                );
+              })}
+            </>
           )}
-          {hasFreeBadge && freeBadgeText && (
-            <GameBadge variant="free">{freeBadgeText}</GameBadge>
+          {genres.length > 0 && (
+            <div className="flex flex-nowrap gap-2 ml-3">
+              {genres.map((genre, index) => (
+                <span
+                  key={typeof genre === "string" ? genre : genre.slug}
+                  className="text-[#A869E4] font-bold text-sm"
+                >
+                  {typeof genre === "string" ? genre : genre.name}
+                  {index < genres.length - 1 && ", "}
+                </span>
+              ))}
+            </div>
           )}
-          {/* Genre badges */}
-          <div className="flex flex-nowrap gap-2 ml-3">
-            {game.genres.map((genre, index) => (
-              <span
-                key={genre}
-                className="text-[#A869E4] font-bold text-sm"
-              >
-                {genre}{index < game.genres.length - 1 && ", "}
-              </span>
-            ))}
-          </div>
         </div>
 
         {/* Description */}

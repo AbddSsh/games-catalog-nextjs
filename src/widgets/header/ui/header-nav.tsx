@@ -63,8 +63,8 @@ export function HeaderNav({ locale, items, translations }: IHeaderNavProps) {
   const DEFAULT_NAV_ITEMS = [
     { label: translations.common.games.toUpperCase(), href: ROUTES.CATALOG, icon: gameCatalogIcon, hasDropdown: true },
     { label: translations.common.games.toUpperCase(), href: ROUTES.CATALOG + "?platforms=browser", icon: browserGamesIcon },
-    { label: translations.common.games.toUpperCase(), href: ROUTES.CATALOG + "?platforms=online", icon: onlineGamesIcon },
-    { label: translations.common.games.toUpperCase(), href: ROUTES.CATALOG + "?platforms=download", icon: downloadGamesIcon },
+    { label: translations.common.games.toUpperCase(), href: ROUTES.CATALOG + "?platforms=desktop", icon: onlineGamesIcon },
+    { label: translations.common.games.toUpperCase(), href: ROUTES.CATALOG + "?platforms=top-2026", icon: downloadGamesIcon },
   ];
   
   // Use default items if none provided

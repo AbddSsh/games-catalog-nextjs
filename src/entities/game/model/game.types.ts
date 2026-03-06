@@ -4,11 +4,24 @@ import type { IContentParagraph, ISeoMeta } from "@/shared/types";
 // CTA button type
 export type TCtaType = "play" | "download";
 
+// Ref types for related game (slug + name, or + color for tags)
+export interface IRefSlugName {
+  slug: string;
+  name: string;
+}
+export interface IRefTag extends IRefSlugName {
+  color: string;
+}
+
 // Related game (for sidebar "Similar games")
 export interface IRelatedGame {
   slug: string;
   name: string;
   bannerImage: string;
+  genres: IRefSlugName[];
+  platforms: IRefSlugName[];
+  features: IRefSlugName[];
+  tags: IRefTag[];
 }
 
 // Game card (lists, catalog, carousels, search)
@@ -20,11 +33,11 @@ export interface IGameBase {
   shortDescription: string;
   cardImage: string;
   bannerImage: string;
-  genres: string[];
-  settings: string[];
-  platforms: string[];
-  features: string[];
-  tags: string[];
+  genres: IRefSlugName[];
+  settings: IRefSlugName[];
+  platforms: IRefSlugName[];
+  features: IRefSlugName[];
+  tags: IRefTag[];
   ctaType: TCtaType;
   ctaText: string;
 }
