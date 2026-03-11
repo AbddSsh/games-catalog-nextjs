@@ -7,3 +7,4 @@ export {
   isLocaleSupported,
   parseAcceptLanguage,
 } from "./locale.config";
+export { TRACKING_PARAMS_COOKIE_NAME } from "./tracking.config";

@@ -7,3 +7,5 @@ export {
 } from "./filter-param.util";
 
 export { getCanonicalUrl, getAlternatesLanguages } from "./canonical.util";
+export { appendSearchParamsToUrl } from "./url.util";
+export { getTrackingParamsFromCookie } from "./tracking-params.util";
