@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Fragment, useEffect } from "react";
+import { useState, Fragment, useEffect, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Play, ChevronLeft, ChevronRight } from "lucide-react";
@@ -11,7 +11,8 @@ import {
   CarouselItem,
   type CarouselApi,
 } from "@/shared/ui";
-import { cn, localePath, buildFilterParam } from "@/shared/lib";
+import { cn, localePath, buildFilterParam, appendSearchParamsToUrl } from "@/shared/lib";
+import { useTrackingParams } from "@/shared/hooks";
 import type { IGameDetail } from "@/entities/game";
 import gameCatalogIcon from "@/shared/icons/game-catalog-icon.png";
 import { ROUTES } from "@/shared/router";
@@ -34,6 +35,16 @@ interface IGameViewProps {
 }
 
 export function GameView({ game, locale, translations }: IGameViewProps) {
+  const trackingParams = useTrackingParams();
+  const trackingLinkWithParams = useMemo(
+    () => appendSearchParamsToUrl(game.trackingLink, trackingParams),
+    [game.trackingLink, trackingParams]
+  );
+
+  useEffect(() => {
+    console.log("[GameView] trackingLink (final):", trackingLinkWithParams);
+  }, [trackingLinkWithParams]);
+
   const [activeTab, setActiveTab] = useState<"overview" | "features">("overview");
   const [selectedImage, setSelectedImage] = useState(0);
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
@@ -94,7 +105,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
         <div className="absolute inset-0 flex flex-col justify-end">
           {/* Clickable banner overlay — opens tracking link in new tab */}
           <Link
-            href={game.trackingLink}
+            href={trackingLinkWithParams}
             target="_blank"
             rel="noopener noreferrer"
             className="absolute inset-0 z-0"
@@ -159,7 +170,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
 
               {/* CTA Button */}
               <Link
-                href={game.trackingLink}
+                href={trackingLinkWithParams}
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -232,7 +243,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
               {/* CTA Button under video */}
               <div className="relative z-10 -mt-5">
                 <Link
-                  href={game.trackingLink}
+                  href={trackingLinkWithParams}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="block w-fit mx-auto h-[44px]"
@@ -426,7 +437,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
             </section>
               {/* Bottom CTA */}
               <Link
-                href={game.trackingLink}
+                href={trackingLinkWithParams}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="block h-11 w-fit"

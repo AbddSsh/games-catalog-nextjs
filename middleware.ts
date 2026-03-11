@@ -2,7 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   LOCALE_COOKIE_NAME,
   DEFAULT_LOCALE,
+  TRACKING_PARAMS_COOKIE_NAME,
 } from "@/shared/config";
+
+const TRACKING_COOKIE_MAX_AGE = 30 * 24 * 60 * 60; // 30 дней
+
+/** Все query-параметры запроса. При каждом заходе с новой ссылкой cookie перезаписывается. */
+function getTrackingParamsCookieValue(searchParams: URLSearchParams): string | null {
+  const str = searchParams.toString();
+  return str || null;
+}
+
+function setTrackingParamsCookie(response: NextResponse, value: string): void {
+  response.cookies.set(TRACKING_PARAMS_COOKIE_NAME, value, {
+    path: "/",
+    maxAge: TRACKING_COOKIE_MAX_AGE,
+    sameSite: "lax",
+    httpOnly: false, // нужен доступ с клиента для подстановки в trackingLink
+  });
+}
 
 const CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || "";
@@ -78,6 +96,8 @@ async function fetchLocaleCodes(origin: string): Promise<string[]> {
 
 export async function middleware(request: NextRequest) {
   const { pathname, origin } = request.nextUrl;
+  const trackingCookieValue = getTrackingParamsCookieValue(request.nextUrl.searchParams);
+
   const localeCodes = await fetchLocaleCodes(origin);
   const nonDefaultLocales = localeCodes.filter((c) => c !== DEFAULT_LOCALE);
 
@@ -96,6 +116,7 @@ export async function middleware(request: NextRequest) {
         sameSite: "lax",
       });
     }
+    if (trackingCookieValue) setTrackingParamsCookie(response, trackingCookieValue);
     return response;
   }
 
@@ -104,7 +125,9 @@ export async function middleware(request: NextRequest) {
     const stripped = pathname.replace(new RegExp(`^/${DEFAULT_LOCALE}`), "") || "/";
     const newUrl = new URL(stripped, request.url);
     newUrl.search = request.nextUrl.search;
-    return NextResponse.redirect(newUrl, 301);
+    const response = NextResponse.redirect(newUrl, 301);
+    if (trackingCookieValue) setTrackingParamsCookie(response, trackingCookieValue);
+    return response;
   }
 
   // 3) No locale prefix — this is default locale (en). Rewrite internally to /en/...
@@ -118,6 +141,7 @@ export async function middleware(request: NextRequest) {
     maxAge: 60 * 60 * 24 * 365,
     sameSite: "lax",
   });
+  if (trackingCookieValue) setTrackingParamsCookie(response, trackingCookieValue);
 
   return response;
 }
