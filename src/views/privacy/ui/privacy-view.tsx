@@ -169,6 +169,31 @@ export function PrivacyView({ lastUpdated }: IPrivacyViewProps) {
           Continued use of the Site after changes become effective constitutes
           acceptance of the updated Policy.
         </p>
+
+        <hr className="my-6 border-border-main" />
+
+        <h2 className="text-xl font-semibold text-text-primary">
+          9. Microsoft Clarity and Microsoft Advertising
+        </h2>
+        <p className="mt-2 text-text-primary">
+          We partner with Microsoft Clarity and Microsoft Advertising to capture
+          how you use and interact with our website through behavioral metrics,
+          heatmaps, and session replay to improve and market our products/services.
+          Website usage data is captured using first and third-party cookies and
+          other tracking technologies to determine the popularity of products/services
+          and online activity. Additionally, we use this information for site
+          optimization, fraud/security purposes, and advertising. For more
+          information about how Microsoft collects and uses your data, visit the{' '}
+          <a
+            href="https://privacy.microsoft.com/privacystatement"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary underline hover:no-underline"
+          >
+            Microsoft Privacy Statement
+          </a>
+          .
+        </p>
       </article>
     </div>
   );
