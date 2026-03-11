@@ -289,7 +289,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                   <Link
                     key={relatedGame.slug}
                     href={localePath(locale, `${ROUTES.GAME}/${relatedGame.slug}`)}
-                    className="group block overflow-hidden rounded-[9px] transition-colors hover:opacity-90"
+                    className="group block transition-colors hover:opacity-90"
                   >
                     {/* Card Image: теги поверх картинки сверху */}
                     <div className="relative aspect-video w-full overflow-hidden rounded-lg">
@@ -350,7 +350,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                             return (
                               <span
                                 key={key}
-                                className="rounded-[4px] bg-accent-purple px-2 py-0.5 text-xs font-medium text-white"
+                                className="rounded-[4px] bg-bg-light px-2 py-0.5 text-xs font-medium text-white"
                               >
                                 {label}
                               </span>
