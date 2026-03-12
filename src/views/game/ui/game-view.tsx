@@ -48,6 +48,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
   const [activeTab, setActiveTab] = useState<"overview" | "features">("overview");
   const [selectedImage, setSelectedImage] = useState(0);
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
 
   // Автоскролл ленты миниатюр к активному слайду, если он вне зоны видимости
   useEffect(() => {
@@ -60,6 +61,28 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
     // game.videoUrl,
     ...game.screenshots,
   ];
+
+  const getYoutubeEmbedUrl = (videoUrl: string): string => {
+    try {
+      const url = new URL(videoUrl);
+      if (url.hostname.includes("youtu.be")) {
+        const videoId = url.pathname.replace("/", "");
+        return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+      }
+      if (url.hostname.includes("youtube.com")) {
+        if (url.pathname.startsWith("/embed/")) {
+          return `${url.origin}${url.pathname}?autoplay=1`;
+        }
+        const videoId = url.searchParams.get("v");
+        if (videoId) {
+          return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+        }
+      }
+    } catch {
+      // ignore parse errors, fallback to original URL
+    }
+    return videoUrl;
+  };
 
   // Build catalog URL with filters from game data (URL uses __ separator)
   const buildCatalogUrl = () => {
@@ -199,25 +222,34 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
 
               {/* Main Media with Video Play Button */}
               <div className="relative aspect-video overflow-hidden rounded-[14px]">
-                <Image
-                  src={allMedia[selectedImage] || "/images/placeholder-game.jpg"}
-                  alt={game.name}
-                  fill
-                  quality={100}
-                  className="object-cover"
-                />
+                {selectedImage === 0 && game.videoUrl && isVideoPlaying ? (
+                  <iframe
+                    src={getYoutubeEmbedUrl(game.videoUrl)}
+                    className="absolute inset-0 h-full w-full"
+                    title={game.name}
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    allowFullScreen
+                  />
+                ) : (
+                  <Image
+                    src={allMedia[selectedImage] || "/images/placeholder-game.jpg"}
+                    alt={game.name}
+                    fill
+                    quality={100}
+                    className="object-cover"
+                  />
+                )}
                 {/* Video play button (only on first slide if video exists) */}
-                {selectedImage === 0 && game.videoUrl && (
-                  <Link
-                    href={game.videoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                {selectedImage === 0 && game.videoUrl && !isVideoPlaying && (
+                  <button
+                    type="button"
+                    onClick={() => setIsVideoPlaying(true)}
                     className="absolute inset-0 flex items-center justify-center bg-black/30 transition-colors hover:bg-black/40"
                   >
                     <div className="flex size-[150px] items-center justify-center rounded-full bg-black/70 hover:bg-black/90 transition-colors">
                       <Play className="size-[60px] text-white fill-current" />
                     </div>
-                  </Link>
+                  </button>
                 )}
                 {/* Navigation arrows on image */}
                 {allMedia.length > 1 && (
