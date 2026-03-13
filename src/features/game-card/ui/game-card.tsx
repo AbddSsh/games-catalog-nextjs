@@ -77,6 +77,10 @@ function GameCardGrid({ game, locale, className }: Omit<IGameCardProps, "variant
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="300px"
         />
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[16px] bg-gradient-to-t from-black/65 to-transparent"
+          aria-hidden
+        />
         {tags.length > 0 && (
           <div className="absolute right-2 top-2 flex flex-col gap-1 items-end">
             {tags.map((tag, idx) => {
@@ -99,6 +103,13 @@ function GameCardGrid({ game, locale, className }: Omit<IGameCardProps, "variant
             })}
           </div>
         )}
+        <span
+          className="absolute w-[80%] bottom-16 left-1/2 -translate-x-1/2 opacity-0 translate-y-3 pointer-events-none transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto"
+        >
+          <span className="inline-flex w-full items-center justify-center rounded-full px-5 py-2.5 text-base font-semibold text-white bg-gradient-button transition-transform duration-200 hover:scale-105 hover:brightness-110">
+            View Game
+          </span>
+        </span>
       </div>
 
       {/* Content */}
@@ -125,7 +136,7 @@ function GameCardList({ game, locale, className }: Omit<IGameCardProps, "variant
     <Link
       href={gameUrl}
       className={cn(
-        "group flex gap-10 overflow-hidden transition-all hover:bg-bg-card-hover",
+        "group flex gap-10 overflow-hidden rounded-[16px] transition-all hover:bg-bg-card-hover",
         className
       )}
     >
@@ -137,6 +148,17 @@ function GameCardList({ game, locale, className }: Omit<IGameCardProps, "variant
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="200px"
         />
+        <div
+          className="pointer-events-none absolute inset-0 rounded-[16px] bg-gradient-to-t from-black/65 to-transparent"
+          aria-hidden
+        />
+        <span
+          className="absolute w-[80%] bottom-12 left-1/2 -translate-x-1/2 opacity-0 translate-y-3 pointer-events-none transition-all duration-300 ease-out group-hover:opacity-100 group-hover:translate-y-0 group-hover:pointer-events-auto"
+        >
+          <span className="inline-flex w-full items-center justify-center rounded-full px-5 py-2.5 text-base font-semibold text-white bg-gradient-button transition-transform duration-200 hover:scale-105 hover:brightness-110">
+            View Game
+          </span>
+        </span>
       </div>
 
       {/* Content */}
