@@ -98,13 +98,19 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
             })}
           </ul>
         </nav>
-        {/* Privacy Policy link */}
-        <div className="mt-6 flex justify-center">
+        {/* Privacy Policy & Sitemap links */}
+        <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-1">
           <Link
             href={localePath(locale, ROUTES.PRIVACY)}
             className="text-[12px] font-black text-text-primary transition-colors hover:text-accent-purple"
           >
             Privacy Policy
+          </Link>
+          <Link
+            href={localePath(locale, ROUTES.SITEMAP)}
+            className="text-[12px] font-black text-text-primary transition-colors hover:text-accent-purple"
+          >
+            Sitemap
           </Link>
         </div>
         {/* <RevalidateButtons /> */}

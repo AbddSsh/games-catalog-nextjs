@@ -94,9 +94,16 @@ async function fetchLocaleCodes(origin: string): Promise<string[]> {
   }
 }
 
+/** Пути, которые Next.js отдаёт сам (sitemap, robots) — не переписывать под [lang]. */
+const SKIP_REWRITE_PATHS = ["/sitemap.xml", "/sitemap-index.xml", "/robots.txt"];
+
 export async function middleware(request: NextRequest) {
   const { pathname, origin } = request.nextUrl;
   const trackingCookieValue = getTrackingParamsCookieValue(request.nextUrl.searchParams);
+
+  if (SKIP_REWRITE_PATHS.includes(pathname)) {
+    return NextResponse.next();
+  }
 
   const localeCodes = await fetchLocaleCodes(origin);
   const nonDefaultLocales = localeCodes.filter((c) => c !== DEFAULT_LOCALE);
