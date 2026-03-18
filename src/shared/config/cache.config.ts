@@ -9,6 +9,8 @@ export const CACHE_TAGS = {
   PAGE_HOME_LOCALE: (locale: string) => `page:home:${locale}`,
   GAMES: "games",
   GAME: (slug: string) => `game:${slug}`,
+  PROMO_GAMES: "promo:games",
+  PROMO_GAME: (slug: string) => `promo:game:${slug}`,
   CATEGORIES: "categories",
   CATEGORY: (slug: string) => `category:${slug}`,
 } as const;

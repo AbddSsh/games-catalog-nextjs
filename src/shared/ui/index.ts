@@ -24,6 +24,18 @@ export {
 export { Checkbox } from "./checkbox";
 export { ScrollArea, ScrollBar } from "./scroll-area";
 export {
+  Dialog,
+  DialogTrigger,
+  DialogPortal,
+  DialogClose,
+  DialogOverlay,
+  DialogContent,
+  DialogHeader,
+  DialogFooter,
+  DialogTitle,
+  DialogDescription,
+} from "./dialog";
+export {
   Accordion,
   AccordionItem,
   AccordionTrigger,

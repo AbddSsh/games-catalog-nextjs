@@ -42,6 +42,18 @@ export async function SitemapPage({ locale }: ISitemapPageProps) {
         </Link>
         <Link
           className="w-fit font-medium text-accent-purple hover:underline"
+          href={localePath(locale, ROUTES.PROMO)}
+        >
+          Promo games
+        </Link>
+        <Link
+          className="w-fit font-medium text-accent-purple hover:underline"
+          href={localePath(locale, ROUTES.SAVED)}
+        >
+          Saved games
+        </Link>
+        <Link
+          className="w-fit font-medium text-accent-purple hover:underline"
           href={localePath(locale, ROUTES.PRIVACY)}
         >
           Privacy Policy

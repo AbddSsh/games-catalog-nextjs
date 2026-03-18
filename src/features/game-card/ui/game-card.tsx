@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, MouseEvent } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Loader } from "lucide-react";
+import { Loader, Bookmark, BookmarkCheck } from "lucide-react";
 import { cn, localePath } from "@/shared/lib";
 import { Skeleton } from "@/shared/ui";
 import type { IGameBase } from "@/entities/game";
 import { ROUTES } from "@/shared/router";
+// import { useSavedGames } from "@/shared/hooks/useSavedGames";
 
 export type TGameCardVariant = "grid" | "list";
 
@@ -60,6 +61,13 @@ function GameCardImage({
 function GameCardGrid({ game, locale, className }: Omit<IGameCardProps, "variant">) {
   const gameUrl = localePath(locale, `${ROUTES.GAME}/${game.slug}`);
   const tags = game.tags ?? [];
+  // const { isSaved, toggle } = useSavedGames();
+
+  // const handleToggleSaved = (event: MouseEvent<HTMLButtonElement>) => {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   toggle(game.slug);
+  // };
 
   return (
     <Link
@@ -81,6 +89,19 @@ function GameCardGrid({ game, locale, className }: Omit<IGameCardProps, "variant
           className="pointer-events-none absolute inset-0 rounded-[16px] bg-gradient-to-t from-black/65 to-transparent"
           aria-hidden
         />
+        {/* <button
+          type="button"
+          onClick={handleToggleSaved}
+          className="absolute left-2 top-2 z-[2] inline-flex items-center justify-center rounded-full bg-black/60 p-1.5 text-white hover:bg-black/80"
+          aria-label={isSaved(game.slug) ? "Remove from saved" : "Save game"}
+        >
+          {isSaved(game.slug) ? (
+            <BookmarkCheck className="size-4 text-emerald-400" />
+          ) : (
+            <Bookmark className="size-4" />
+          )}
+        </button> */}
+
         {tags.length > 0 && (
           <div className="absolute right-2 top-2 flex flex-col gap-1 items-end">
             {tags.map((tag, idx) => {
@@ -131,6 +152,13 @@ function GameCardList({ game, locale, className }: Omit<IGameCardProps, "variant
   const gameUrl = localePath(locale, `${ROUTES.GAME}/${game.slug}`);
   const tags = game.tags ?? [];
   const genres = game.genres ?? [];
+  // const { isSaved, toggle } = useSavedGames();
+
+  // const handleToggleSaved = (event: MouseEvent<HTMLButtonElement>) => {
+  //   event.preventDefault();
+  //   event.stopPropagation();
+  //   toggle(game.slug);
+  // };
 
   return (
     <Link
@@ -148,6 +176,19 @@ function GameCardList({ game, locale, className }: Omit<IGameCardProps, "variant
           className="object-cover transition-transform duration-300 group-hover:scale-105"
           sizes="200px"
         />
+        {/* <button
+          type="button"
+          onClick={handleToggleSaved}
+          className="absolute left-2 top-2 z-[2] inline-flex items-center justify-center rounded-full bg-black/60 p-1.5 text-white hover:bg-black/80"
+          aria-label={isSaved(game.slug) ? "Remove from saved" : "Save game"}
+        >
+          {isSaved(game.slug) ? (
+            <BookmarkCheck className="size-4 text-emerald-400" />
+          ) : (
+            <Bookmark className="size-4" />
+          )}
+        </button> */}
+
         <div
           className="pointer-events-none absolute inset-0 rounded-[16px] bg-gradient-to-t from-black/65 to-transparent"
           aria-hidden
