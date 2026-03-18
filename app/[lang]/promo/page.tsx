@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PromoView } from "@/views/promo";
 import { getTranslations } from "@/entities/translations";
+import { getLocales } from "@/entities/locale";
 import { getCanonicalUrl, getAlternatesLanguages } from "@/shared/lib";
 import { ROUTES } from "@/shared/router";
 
@@ -13,8 +14,6 @@ interface IPromoPageProps {
     elements?: string;
   }>;
 }
-
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -32,6 +31,28 @@ export async function generateMetadata({
       languages,
     },
   };
+}
+
+export async function generateStaticParams() {
+  try {
+    const locales = await getLocales();
+
+    // Фильтруем только активные локали
+    const activeLocales = locales.filter((l) => l.status === "active");
+
+    // Генерируем параметры только для локали по умолчанию, чтобы избежать ошибок 404
+    // Остальные локали будут генерироваться динамически при запросе
+    const defaultLocale = activeLocales.find((l) => l.isDefault) || activeLocales[0];
+
+    if (!defaultLocale) {
+      return [];
+    }
+
+    return [{ lang: defaultLocale.code }];
+  } catch {
+    console.error("Error generating static params for promo page");
+    return [];
+  }
 }
 
 export default async function PromoPage({ params, searchParams }: IPromoPageProps) {
