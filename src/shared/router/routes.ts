@@ -3,6 +3,8 @@ export const ROUTES = {
   CATALOG: "/catalog",
   CATEGORY: "/category",
   GAME: "/game",
+  PROMO: "/promo",
+  SAVED: "/saved",
   PRIVACY: "/privacy",
   SITEMAP: "/sitemap",
 } as const;
@@ -15,4 +17,12 @@ export function getCategoryRoute(slug: string): string {
 
 export function getGameRoute(slug: string): string {
   return `${ROUTES.GAME}/${slug}`;
+}
+
+export function getPromoRoute(): string {
+  return ROUTES.PROMO;
+}
+
+export function getSavedRoute(): string {
+  return ROUTES.SAVED;
 }

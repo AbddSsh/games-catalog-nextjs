@@ -112,6 +112,18 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
           >
             Sitemap
           </Link>
+          <Link
+            href={localePath(locale, ROUTES.PROMO)}
+            className="text-[12px] font-black text-text-primary transition-colors hover:text-accent-purple"
+          >
+            Promo
+          </Link>
+          <Link
+            href={localePath(locale, ROUTES.SAVED)}
+            className="text-[12px] font-black text-text-primary transition-colors hover:text-accent-purple"
+          >
+            Saved games
+          </Link>
         </div>
         {/* <RevalidateButtons /> */}
         {/* Copyright */}

@@ -12,6 +12,7 @@ import {
   type CarouselApi,
 } from "@/shared/ui";
 import { cn, localePath, buildFilterParam, appendSearchParamsToUrl } from "@/shared/lib";
+import { getYoutubeEmbedUrl } from "@/shared/lib/video.util";
 import { useTrackingParams } from "@/shared/hooks";
 import type { IGameDetail } from "@/entities/game";
 import gameCatalogIcon from "@/shared/icons/game-catalog-icon.png";
@@ -41,10 +42,6 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
     [game.trackingLink, trackingParams]
   );
 
-  useEffect(() => {
-    console.log("[GameView] trackingLink (final):", trackingLinkWithParams);
-  }, [trackingLinkWithParams]);
-
   const [activeTab, setActiveTab] = useState<"overview" | "features">("overview");
   const [selectedImage, setSelectedImage] = useState(0);
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null);
@@ -61,28 +58,6 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
     // game.videoUrl,
     ...game.screenshots,
   ];
-
-  const getYoutubeEmbedUrl = (videoUrl: string): string => {
-    try {
-      const url = new URL(videoUrl);
-      if (url.hostname.includes("youtu.be")) {
-        const videoId = url.pathname.replace("/", "");
-        return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-      }
-      if (url.hostname.includes("youtube.com")) {
-        if (url.pathname.startsWith("/embed/")) {
-          return `${url.origin}${url.pathname}?autoplay=1`;
-        }
-        const videoId = url.searchParams.get("v");
-        if (videoId) {
-          return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
-        }
-      }
-    } catch {
-      // ignore parse errors, fallback to original URL
-    }
-    return videoUrl;
-  };
 
   // Build catalog URL with filters from game data (URL uses __ separator)
   const buildCatalogUrl = () => {
@@ -149,7 +124,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                   {/* Badges: platforms (синий, строки или объекты), tags (строки или объекты с color из API) */}
                   {(game.platforms?.length > 0 || game.tags?.length > 0) && (
                     <div className="flex flex-wrap items-center gap-2.5">
-                      {game.platforms?.map((p, idx) => {
+                      {/* {game.platforms?.map((p, idx) => {
                         const isObj = typeof p === "object" && p !== null && "name" in p;
                         const label = isObj ? (p as { name: string }).name : String(p);
                         const key = isObj ? (p as { slug: string }).slug : `p-${idx}`;
@@ -161,7 +136,7 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                             {label}
                           </span>
                         );
-                      })}
+                      })} */}
                       {game.tags?.map((tag, idx) => {
                         const isObj = typeof tag === "object" && tag !== null && "name" in tag;
                         const name = isObj ? (tag as { name: string }).name : String(tag);
