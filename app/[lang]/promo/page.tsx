@@ -19,13 +19,12 @@ export async function generateMetadata({
   params,
 }: IPromoPageProps): Promise<Metadata> {
   const { lang } = await params;
-  const translations = await getTranslations(lang);
-  const siteName = translations?.meta?.site_name ?? "Site";
   const pathSegments = ROUTES.PROMO.replace(/^\//, "");
   const languages = await getAlternatesLanguages(pathSegments);
 
   return {
-    title: `Promo games | ${siteName}`,
+    title: `Best Free Online Games (2026) – Play Instantly on Desktop & Browser`,
+    description: `Looking for the best free online games? Explore our top-rated picks, compare features, and start playing instantly with no downloads required.`,
     alternates: {
       canonical: getCanonicalUrl(lang, pathSegments),
       languages,
@@ -56,10 +55,12 @@ export async function generateStaticParams() {
 }
 
 export default async function PromoPage({ params, searchParams }: IPromoPageProps) {
-  const ELEMENTS_PER_PAGE = 10;
+  const ELEMENTS_PER_PAGE = 5;
   const [{ lang }, search] = await Promise.all([params, searchParams]);
   const page = search.page ? parseInt(search.page, 10) : 1;
-  const elements = search.elements ? Math.max(ELEMENTS_PER_PAGE, parseInt(search.elements, 10)) : ELEMENTS_PER_PAGE;
+  const parsedElements = search.elements ? parseInt(search.elements, 10) : ELEMENTS_PER_PAGE;
+  const safeElements = Number.isNaN(parsedElements) ? ELEMENTS_PER_PAGE : Math.max(ELEMENTS_PER_PAGE, parsedElements);
+  const elements = Math.ceil(safeElements / ELEMENTS_PER_PAGE) * ELEMENTS_PER_PAGE;
   const translations = await getTranslations(lang);
   return (
     <PromoView
@@ -69,7 +70,7 @@ export default async function PromoPage({ params, searchParams }: IPromoPageProp
       translations={{
         loadMore: translations?.common?.load_more ?? "Load More",
         back: translations?.common?.back ?? "Back",
-        next: translations?.common?.back ?? "Next",
+        next: translations?.common?.next ?? "Next",
       }}
     />
   );

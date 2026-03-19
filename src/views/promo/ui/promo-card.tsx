@@ -28,8 +28,7 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
 
   const ratingValue = typeof game?.promo?.rating === "number" ? game.promo.rating : 0;
   const votesAmount = game?.promo?.votesAmount ?? 0;
-  const rating5 = Math.max(0, Math.min(5, ratingValue / 20));
-  const filledStars = Math.floor(rating5);
+  const ratingPercent = Math.max(0, Math.min(100, ratingValue));
 
   return (
     <>
@@ -96,7 +95,7 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
         </div>
 
         {/* Right: controls + tags */}
-        <div className="w-full md:w-1/3 md:max-w-none md:flex-[0_0_33%] my-[30px] rounded-[18px] bg-white/[0.03] p-[25px] border-[1px] border-[#4D3C5C]/50">
+        <div className="w-full xl:w-1/3 xl:max-w-none xl:flex-[0_0_33%] md:w-[45%] md:max-w-none md:flex-[0_0_45%] my-[30px] rounded-[18px] bg-white/[0.03] p-[25px] border-[1px] border-[#4D3C5C]/50">
               <div className="flex items-center justify-between gap-5">
                 <div className="flex gap-3">
                   {game?.videoUrl && (
@@ -106,7 +105,7 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
                         setIsVideoOpen(true);
                         setIsInfoOpen(false);
                       }}
-                      className="w-full flex items-center gap-2 rounded-[6px] border border-white/10 bg-white/5 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#C3B4DB] hover:bg-white/10"
+                      className="text-button w-full flex items-center gap-2 rounded-[6px] border border-white/10 bg-white/5 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide hover:bg-white/10"
                     >
                       <Play className="size-4" />
                       Video
@@ -118,7 +117,7 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
                       setIsVideoOpen(false);
                       setIsInfoOpen(true);
                     }}
-                    className="w-full flex items-center gap-2 rounded-[6px] border border-white/10 bg-white/5 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-[#C3B4DB] hover:bg-white/10"
+                    className="text-button w-full flex items-center gap-2 rounded-[6px] border border-white/10 bg-white/5 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide hover:bg-white/10"
                   >
                     <Info className="size-4" />
                     Info
@@ -126,13 +125,22 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1 text-yellow-300">
-                    {Array.from({ length: 5 }).map((_, idx) => (
-                      <Star
-                        key={`star-${idx}`}
-                        className={idx < filledStars ? "size-4 fill-current" : "size-4"}
-                      />
-                    ))}
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: 5 }).map((_, idx) => {
+                      const STAR_FILL_PERCENT = Math.max(0, Math.min(100, (ratingPercent - idx * 20) * 5));
+
+                      return (
+                        <div key={`star-${idx}`} className="relative size-4">
+                          <Star className="size-4 text-white/25 fill-current" />
+                          <div
+                            className="absolute inset-y-0 left-0 overflow-hidden"
+                            style={{ width: `${STAR_FILL_PERCENT}%` }}
+                          >
+                            <Star className="size-4 text-yellow-300 fill-current" />
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                   <div className="text-white/70 text-[11px] font-medium">
                     Votes ({votesAmount})

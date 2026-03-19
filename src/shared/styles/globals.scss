@@ -111,3 +111,26 @@ img {
     display: none;
   }
 }
+
+.promo-modal-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #d2189a transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #d2189a;
+    border-radius: 9999px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #e042ae;
+  }
+}

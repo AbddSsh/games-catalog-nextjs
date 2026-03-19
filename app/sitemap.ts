@@ -8,6 +8,8 @@ import { getAllGameSlugs } from "@/entities/game";
 const STATIC_PATH_SEGMENTS = [
   "", // home
   ROUTES.CATALOG.replace(/^\//, ""), // catalog
+  ROUTES.PROMO.replace(/^\//, ""), // promo
+  ROUTES.SAVED.replace(/^\//, ""), // saved
   ROUTES.PRIVACY.replace(/^\//, ""), // privacy
   ROUTES.SITEMAP.replace(/^\//, ""), // sitemap
 ] as const;

@@ -106,7 +106,7 @@ export default async function CategoryPage({
         freeToPlay: translations.common.free_to_play,
         loadMore: translations.common.load_more,
         back: translations.common.back,
-        next: translations.common.back,
+        next: translations.common?.next ?? "Next",
       }}
     />
   );
