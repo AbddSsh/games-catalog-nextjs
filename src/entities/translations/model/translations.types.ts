@@ -1,7 +1,3 @@
-/**
- * Translations types based on official API specification
- * All UI text comes from backend
- */
 
 // Common UI translations
 export interface ITranslationsCommon {
@@ -15,6 +11,7 @@ export interface ITranslationsCommon {
   categories: string;
   games: string;
   back: string;
+  next: string;
   close: string;
   menu: string;
 }

@@ -11,6 +11,7 @@ import NextTopLoader from "nextjs-toploader";
 import Head from "next/head";
 import { Suspense } from "react";
 import Script from "next/script";
+import { ScrollTopButton } from "@/widgets/scroll-top";
 
 const nunitoSans = Nunito_Sans({
   subsets: ["latin", "cyrillic"],
@@ -208,6 +209,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <main className="max-w-[1400px] flex-grow w-full pb-[40px] mobile-xl:px-[25px] px-[15px]">
           {children}
         </main>
+
+        <ScrollTopButton />
 
         <Suspense fallback={null}>
           <Footer

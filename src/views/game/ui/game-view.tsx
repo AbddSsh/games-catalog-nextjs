@@ -318,46 +318,28 @@ export function GameView({ game, locale, translations }: IGameViewProps) {
                         quality={100}
                         className="object-cover"
                       />
-                      {(relatedGame.tags?.length ?? 0) > 0 && (
-                        <div className="absolute left-2 top-2 flex flex-wrap gap-1">
+                    </div>
+                    {/* Под названием: tags, genres (фиолетовый) */}
+                    <div className="mt-2">
+                      <h3 className="font-bold text-sm text-text-primary group-hover:text-accent-purple line-clamp-1">
+                        {relatedGame.name}
+                      </h3>
+                      {(relatedGame.tags?.length > 0 || relatedGame.genres?.length > 0) && (
+                        <div className="mt-2 flex flex-wrap gap-1">
                           {relatedGame.tags?.map((tag, idx) => {
                             const isObj = typeof tag === "object" && tag !== null && "name" in tag;
                             const name = isObj ? (tag as { name: string }).name : String(tag);
-                            const color = isObj && (tag as { color?: string }).color ? (tag as { color: string }).color : undefined;
+                            const color = isObj && (tag as unknown as { color?: string }).color ? (tag as unknown as { color: string }).color : undefined;
                             const key = isObj ? (tag as { slug: string }).slug : `tag-${idx}`;
                             return (
                               <span
                                 key={key}
                                 className={cn(
-                                  "rounded-full px-2 py-0.5 text-xs font-medium text-white",
-                                  !color && "bg-option-green"
+                                  "rounded-[4px] px-2 py-0.5 text-xs font-medium text-white"
                                 )}
                                 style={color ? { backgroundColor: color } : undefined}
                               >
                                 {name}
-                              </span>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                    {/* Под названием: platforms (синий), genres (фиолетовый) */}
-                    <div className="mt-2">
-                      <h3 className="font-bold text-sm text-text-primary group-hover:text-accent-purple line-clamp-1">
-                        {relatedGame.name}
-                      </h3>
-                      {(relatedGame.platforms?.length > 0 || relatedGame.genres?.length > 0) && (
-                        <div className="mt-2 flex flex-wrap gap-1">
-                          {relatedGame.platforms?.map((p, idx) => {
-                            const isObj = typeof p === "object" && p !== null && "name" in p;
-                            const label = isObj ? (p as { name: string }).name : String(p);
-                            const key = isObj ? (p as { slug: string }).slug : `p-${idx}`;
-                            return (
-                              <span
-                                key={key}
-                                className="rounded-[4px] bg-option-blue px-2 py-0.5 text-xs font-medium text-white"
-                              >
-                                {label}
                               </span>
                             );
                           })}
