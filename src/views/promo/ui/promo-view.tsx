@@ -1,12 +1,13 @@
 import { getPromoGames } from "@/entities/game";
 import { PromoCard } from "./promo-card";
-import { Pagination } from "@/features/pagination";
-import { ROUTES } from "@/shared/router";
+// import { Pagination } from "@/features/pagination";
+// import { ROUTES } from "@/shared/router";
 
 interface IPromoViewProps {
   locale: string;
-  page?: number;
-  elements?: number;
+  // Temporarily disabled pagination props
+  // page?: number;
+  // elements?: number;
   translations: {
     loadMore: string;
     back: string;
@@ -17,11 +18,12 @@ interface IPromoViewProps {
 
 export async function PromoView({
   locale,
-  page = 1,
-  elements,
+  // Temporarily disabled pagination props
+  // page = 1,
+  // elements,
   translations,
 }: IPromoViewProps) {
-  const { items, pagination } = await getPromoGames({ locale, page, elements });
+  const { items } = await getPromoGames({ locale });
 
   return (
     <section className="flex flex-col gap-10 pt-[40px]">
@@ -35,18 +37,19 @@ export async function PromoView({
         ))}
       </div>
 
-      {(pagination.totalPages > 1 || items.length < pagination.totalItems) && (
-        <Pagination
-          currentPage={pagination.page}
-          totalPages={pagination.totalPages}
-          locale={locale}
-          basePath={ROUTES.PROMO}
-          currentElements={elements}
-          elementsStep={elements}
-          totalItems={pagination.totalItems}
-          translations={translations}
-        />
-      )}
+      {/* Pagination (temporarily disabled) */}
+      {/* {(pagination.totalPages > 1 || items.length < pagination.totalItems) && ( */}
+      {/*   <Pagination */}
+      {/*     currentPage={pagination.page} */}
+      {/*     totalPages={pagination.totalPages} */}
+      {/*     locale={locale} */}
+      {/*     basePath={ROUTES.PROMO} */}
+      {/*     currentElements={elements} */}
+      {/*     elementsStep={elements} */}
+      {/*     totalItems={pagination.totalItems} */}
+      {/*     translations={translations} */}
+      {/*   /> */}
+      {/* )} */}
     </section>
   );
 }

@@ -18,8 +18,9 @@ interface ICatalogPageProps {
     settings?: string;
     platforms?: string;
     features?: string;
-    page?: string;
-    elements?: string;
+    // Temporarily disabled pagination params
+    // page?: string;
+    // elements?: string;
     view?: string;
     sort?: string;
   }>;
@@ -74,8 +75,9 @@ export default async function CatalogPage({
     features: parseFilterParam(search.features),
   };
 
-  const page = search.page ? parseInt(search.page, 10) : 1;
-  const elements = search.elements ? Math.max(12, parseInt(search.elements, 10)) : 12;
+  // Temporarily disable pagination params parsing
+  // const page = search.page ? parseInt(search.page, 10) : 1;
+  // const elements = search.elements ? Math.max(12, parseInt(search.elements, 10)) : 12;
   const viewMode = (search.view === "list" ? "list" : "grid") as TViewMode;
   const sort = (search.sort || "recommended") as TSortOption;
 
@@ -90,8 +92,6 @@ export default async function CatalogPage({
       locale={lang}
       searchQuery={search.q}
       filters={filters}
-      page={page}
-      elements={elements}
       viewMode={viewMode}
       sort={sort}
       translations={{
