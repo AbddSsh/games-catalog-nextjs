@@ -28,7 +28,7 @@ export async function PromoView({
   return (
     <section className="flex flex-col gap-10 pt-[40px]">
       <h1 className="text-3xl font-bold text-text-primary">
-        Best Online Games 2026
+        Best Free Online Games 2026
       </h1>
 
       <div className="flex flex-col gap-3">
