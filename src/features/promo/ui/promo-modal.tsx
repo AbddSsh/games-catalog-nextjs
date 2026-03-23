@@ -17,7 +17,6 @@ import {
   DialogContent,
   DialogTitle,
   Skeleton,
-  useCarousel,
   type CarouselApi,
 } from "@/shared/ui";
 import Link from "next/link";
@@ -27,33 +26,6 @@ interface IPromoModalProps {
   locale: string;
   open: boolean;
   onClose: () => void;
-}
-
-function PromoThumbnailsNav() {
-  const { scrollPrev, scrollNext, canScrollPrev, canScrollNext } = useCarousel();
-
-  return (
-    <>
-      <button
-        type="button"
-        onClick={scrollPrev}
-        disabled={!canScrollPrev}
-        aria-label="Previous thumbnails"
-        className="absolute left-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/40 p-2 text-black transition-colors hover:bg-white/60 disabled:cursor-not-allowed disabled:opacity-30"
-      >
-        <ChevronLeft className="size-6" />
-      </button>
-      <button
-        type="button"
-        onClick={scrollNext}
-        disabled={!canScrollNext}
-        aria-label="Next thumbnails"
-        className="absolute right-0 top-1/2 z-10 -translate-y-1/2 rounded-full bg-white/40 p-2 text-black transition-colors hover:bg-white/60 disabled:cursor-not-allowed disabled:opacity-30"
-      >
-        <ChevronRight className="size-6" />
-      </button>
-    </>
-  );
 }
 
 export function PromoModal({ slug, locale, open, onClose }: IPromoModalProps) {
