@@ -1,5 +1,5 @@
 import { getPromoGames } from "@/entities/game";
-import { PromoCard } from "./promo-card";
+import { PromoCard } from "@/widgets/promo";
 // import { Pagination } from "@/features/pagination";
 // import { ROUTES } from "@/shared/router";
 
@@ -24,6 +24,7 @@ export async function PromoView({
   translations,
 }: IPromoViewProps) {
   const { items } = await getPromoGames({ locale });
+  void translations;
 
   return (
     <section className="flex flex-col gap-10 pt-[40px]">
@@ -38,18 +39,18 @@ export async function PromoView({
       </div>
 
       {/* Pagination (temporarily disabled) */}
-      {/* {(pagination.totalPages > 1 || items.length < pagination.totalItems) && ( */}
-      {/*   <Pagination */}
-      {/*     currentPage={pagination.page} */}
-      {/*     totalPages={pagination.totalPages} */}
-      {/*     locale={locale} */}
-      {/*     basePath={ROUTES.PROMO} */}
-      {/*     currentElements={elements} */}
-      {/*     elementsStep={elements} */}
-      {/*     totalItems={pagination.totalItems} */}
-      {/*     translations={translations} */}
-      {/*   /> */}
-      {/* )} */}
+      {/* {(pagination.totalPages > 1 || items.length < pagination.totalItems) && (
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          locale={locale}
+          basePath={ROUTES.PROMO}
+          currentElements={elements}
+          elementsStep={elements}
+          totalItems={pagination.totalItems}
+          translations={translations}
+        />
+      )} */}
     </section>
   );
 }

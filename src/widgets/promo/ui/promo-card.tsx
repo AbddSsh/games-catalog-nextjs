@@ -3,13 +3,13 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import { appendSearchParamsToUrl } from "@/shared/lib";
-import { PromoModal, PromoVideoModal } from "@/widgets/promo-modal";
 import type { IGamePromo } from "@/entities/game";
 import Link from "next/link";
 import { Button, Skeleton } from "@/shared/ui";
 import gameCatalogIcon from "@/shared/icons/game-catalog-icon.png";
 import { useTrackingParams } from "@/shared/hooks";
-import { CircleDollarSign, Info, Loader, Monitor, Play, Star, Swords, Crosshair } from "lucide-react";
+import { Info, Loader, Play, Star } from "lucide-react";
+import { PromoModal, PromoVideoModal } from "@/features/promo";
 
 interface IPromoCardProps {
   game: IGamePromo;

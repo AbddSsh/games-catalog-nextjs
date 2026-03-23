@@ -26,6 +26,7 @@ export interface IGetPromoGamesParams {
   locale: string;
   page?: number;
   elements?: number;
+  option?: string;
 }
 
 export async function getPromoGames(
@@ -33,13 +34,14 @@ export async function getPromoGames(
 ): Promise<IPaginatedResponse<IGamePromo>> {
   const { apiGet } = await import("@/shared/api");
   const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
-  const { locale, page, elements } = params;
+  const { locale, page, elements, option } = params;
 
   return apiGet<IPaginatedResponse<IGamePromo>>("/promo/games", {
     locale,
     params: {
       ...(page && { page }),
       ...(elements && { elements }),
+      ...(option && { option }),
     },
     next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.PROMO_GAMES] },
   });
