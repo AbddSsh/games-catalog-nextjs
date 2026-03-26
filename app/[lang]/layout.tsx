@@ -104,6 +104,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           name="impact-site-verification"
           content="6f677166-c996-4c2d-adcb-b423bb34b92d"
         />
+        <Script id="impact-stat-script" strategy="afterInteractive">
+          {`(function(i,m,p,a,c,t){c.ire_o=p;c[p]=c[p]||function(){(c[p].a=c[p].a||[]).push(arguments)};t=a.createElement(m);var z=a.getElementsByTagName(m)[0];t.async=1;t.src=i;z.parentNode.insertBefore(t,z)})('https://utt.impactcdn.com/P-A6449679-f1c0-48fe-af23-fd0658b591eb1.js','script','impactStat',document,window);impactStat('transformLinks');impactStat('trackImpression');`}
+        </Script>
         <meta name="msapplication-TileColor" content="#091121" />
         <meta name="theme-color" content="#091121" />
         {/* Google Tag Manager */}
