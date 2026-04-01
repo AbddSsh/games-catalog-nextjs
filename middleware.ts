@@ -95,7 +95,7 @@ async function fetchLocaleCodes(origin: string): Promise<string[]> {
 }
 
 /** Пути, которые Next.js отдаёт сам (sitemap, robots) — не переписывать под [lang]. */
-const SKIP_REWRITE_PATHS = ["/sitemap.xml", "/sitemap-index.xml", "/robots.txt"];
+const SKIP_REWRITE_PATHS = ["/sitemap.xml", "/sitemap-index.xml", "/robots.txt", "/llms.txt"];
 
 export async function middleware(request: NextRequest) {
   const { pathname, origin } = request.nextUrl;
@@ -155,6 +155,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/((?!api/|_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!api/|_next/static|_next/image|favicon.ico|.*\\..*).*)",
   ],
 };

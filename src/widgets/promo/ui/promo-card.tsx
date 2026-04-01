@@ -64,11 +64,11 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
           </h2>
 
           <div className="flex flex-wrap items-center gap-3">
-            {game?.tags?.[0] && (
-              <span className="rounded-full px-3 py-1 text-xs font-semibold text-white" style={{ backgroundColor: game?.tags?.[0]?.color ?? "#047bf6" }}>
-                {game?.tags?.[0]?.name}
+            {game?.tags?.map((tag) => (
+              <span key={tag.slug} className="rounded-full px-3 py-1 text-xs font-semibold text-white" style={{ backgroundColor: tag.color ?? "#047bf6" }}>
+                {tag.name}
               </span>
-            )}
+            ))}
             {game.genres?.length > 0 && (
               <span className="text-sm font-semibold text-[#A869E4]">
                 {game?.genres?.map((g) => g.name).join(", ")}
@@ -76,7 +76,7 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
             )}
           </div>
 
-          <p className="line-clamp-3 text-sm uppercase text-[#B8B8B8]">
+          <p className="line-clamp-3 text-sm text-[#B8B8B8]">
             {game?.shortDescription}
           </p>
 
