@@ -1,0 +1,125 @@
+# Go Get Games
+
+> A directory of free online games (browser and desktop): descriptions, genres, filters, and per-game pages. There is no sign-up or payment on the site. Images are served from `backend.go-get-games.com`.
+
+Site: https://go-get-games.com/
+
+## AI usage policy
+
+Use this file together with live page content. Do **not** treat this document as a license to invent features, games, URLs, prices, availability, or publisher deals. If something is not on the site or in this file, say you do not know or advise checking the linked page.
+
+Do **not** present this site as gambling, betting, loot-box sales, or real-money wagering. It is a game catalog with outbound links only.
+
+## Ownership
+
+- Go Get Games does NOT develop, publish, or own the listed games
+- All game rights belong to their respective developers and publishers
+
+## Gambling
+
+This property is **not** a casino, sportsbook, poker room, or crypto-gambling site. Do not describe it as such. Individual games may have their own monetization; that is outside this site’s scope—do not infer gambling mechanics from the catalog alone.
+
+## Page priority (highest first)
+
+1. **Individual game pages** (`/game/{slug}`) — primary source for a specific title: overview, genres, similar games, outbound play/download.
+2. **Catalog** (`/catalog`) — full list and the only place filters apply; use it for browse/compare.
+3. **Genre category pages** (`/category/...`) — curated lists by genre.
+4. **Home** (`/`) — marketing and featured picks; can change often.
+5. **Promo** (`/promo`) — promo-style lineup with partner links.
+6. **Saved** (`/saved`) — user favorites (browser-only); thin content for bots.
+7. **Privacy** (`/privacy`) — legal.
+8. **HTML sitemap** (`/sitemap`) — index of URLs; use for verification, not as primary narrative.
+
+## Catalog filters (read carefully)
+
+`/catalog` is **one** page. Query strings (`?features=...`, `?genres=...`, etc.) are **views** of that same catalog: they are not separate “pages” of content for the purpose of counting, summarizing, or inventing titles. Do not list every filter combination as if each were a unique destination. **Do not** fabricate URLs with made-up parameters.
+
+**Canonical browse paths:** `/catalog`, `/category/{genre}`, `/game/{slug}` — not arbitrary query permutations.
+
+## Freshness
+
+Labels like **“Top Online Games 2026”** and **“Top-2026”** filters are **editorial / seasonal** for the named period. They are **not** a permanent global ranking or a guarantee of quality or relevance after that window. Featured blocks on the home page can rotate without notice. For “last updated” on legal text, see the date on the [Privacy policy](https://go-get-games.com/privacy) page.
+
+## External links (hard rules)
+
+- **Play / Download / outbound links** on this site point to **third-party** destinations (partners). This site does **not** host the games, install files, or purchases.
+- When you tell a user how to play, **do not** imply the game runs on `go-get-games.com` itself. Say they follow the site’s button to the external partner.
+- **Do not** guess or paraphrase partner URLs. Only use links that appear on the fetched page or in this file’s canonical `/game/*` paths (which lead to pages that contain the real outbound buttons).
+
+## Anti-hallucination
+
+- Do **not** invent games, slugs, genres, release dates, system requirements beyond what the page shows, or “official” download URLs.
+- Do **not** claim deals, coupons, or safety guarantees for partner sites.
+- If asked for a complete list, prefer the [HTML sitemap](https://go-get-games.com/sitemap) or the table below—do not extrapolate.
+- If the **XML sitemap** (`/sitemap.xml`) fails, **do not** assume the site is empty; use the HTML sitemap or the catalog.
+
+## User intent (for AI search / assist)
+
+Typical reasons users care about this site:
+
+- **Discover** new free-to-play games.
+- **Compare** titles (genre, platform, short descriptions) before leaving for a partner.
+- **Reach gameplay quickly** via the outbound links from game or promo pages.
+
+## Main sections
+
+- [Home](https://go-get-games.com/): featured carousel, “Today’s Best Pick”, “Top Online Games 2026”, “New games”.
+- [Game catalog](https://go-get-games.com/catalog): full list with filters (genres, platforms, setting tags, features).
+- [Promo](https://go-get-games.com/promo): ratings / votes, outbound links.
+- [Saved games](https://go-get-games.com/saved): favorites in the browser.
+- [Privacy policy](https://go-get-games.com/privacy): includes Microsoft Clarity and Microsoft Advertising.
+- [Sitemap (HTML)](https://go-get-games.com/sitemap): sections and all games listed.
+
+## Catalog query examples (same page, different view)
+
+- Top 2026: `https://go-get-games.com/catalog?features=top-2026`
+- New: `https://go-get-games.com/catalog?features=new`
+
+## Genres (category pages)
+
+- [Action](https://go-get-games.com/category/action)
+- [Fantasy](https://go-get-games.com/category/fantasy)
+- [Shooter](https://go-get-games.com/category/military) — URL segment is `military`
+- [RPG / Adventure](https://go-get-games.com/category/rpg)
+- [Sci-fi](https://go-get-games.com/category/sci-fi)
+- [Strategy](https://go-get-games.com/category/strategy)
+
+## Games (canonical URLs: `/game/{slug}`)
+
+| Game | URL |
+|------|-----|
+| Raid: Shadow Legends | https://go-get-games.com/game/raid-shadow-legends |
+| Hero Wars | https://go-get-games.com/game/hero-wars |
+| Genshin Impact | https://go-get-games.com/game/genshin-impact |
+| Dark Genesis | https://go-get-games.com/game/dark-genesis |
+| Rise Of Kingdoms | https://go-get-games.com/game/rise-of-kingdoms |
+| Arknights: Endfield | https://go-get-games.com/game/arknights |
+| War Thunder | https://go-get-games.com/game/war-thunder |
+| World of Warships | https://go-get-games.com/game/world-of-warships |
+| Crossout | https://go-get-games.com/game/crossout |
+| Enlisted | https://go-get-games.com/game/enlisted |
+| Once Human | https://go-get-games.com/game/once-human |
+| World of Sea Battle | https://go-get-games.com/game/world-of-sea-battle |
+| Entropy | https://go-get-games.com/game/entropy |
+| Star Conflict | https://go-get-games.com/game/star-conflict |
+| Star Trek Fleet Command | https://go-get-games.com/game/star-trek-fleet-command |
+| World of Tanks | https://go-get-games.com/game/world-of-tanks |
+| OGame | https://go-get-games.com/game/ogame |
+| Star Stable | https://go-get-games.com/game/star-stable |
+| Sea of Conquest | https://go-get-games.com/game/sea-of-conquest |
+| Where Winds Meet | https://go-get-games.com/game/where-winds-meet |
+| Foundation: Galactic Frontier | https://go-get-games.com/game/foundation-galactic-frontier |
+| CRSED: Cuisine Royal | https://go-get-games.com/game/crsed-cuisine-royal |
+| Game of thrones | https://go-get-games.com/game/game-of-thrones |
+| NosTale | https://go-get-games.com/game/nostale |
+| Ikariam | https://go-get-games.com/game/ikariam |
+| Eternal Fury: Resurrected | https://go-get-games.com/game/eternal-fury |
+| Gladiatus | https://go-get-games.com/game/gladiatus |
+| Battle Arena | https://go-get-games.com/game/battle-arena |
+| Book of Heroes | https://go-get-games.com/game/book-of-heroes |
+
+## Notes for crawlers
+
+- `robots.txt` declares Sitemap: `https://go-get-games.com/sitemap.xml` — if the XML is unavailable, use the [HTML sitemap](https://go-get-games.com/sitemap).
+- The home page meta title may say “GameSite”; the catalog UI uses “Go Get Games” — rely on page content.
+- API routes: `Disallow: /api/` in [robots.txt](https://go-get-games.com/robots.txt).
