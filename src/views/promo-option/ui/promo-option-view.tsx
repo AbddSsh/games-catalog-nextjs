@@ -1,6 +1,8 @@
 import { getPromoGames, getGameBySlug } from "@/entities/game";
 import { notFound } from "next/navigation";
 import { PromoCard, PromoFeaturedCard } from "@/widgets/promo";
+import { CatalogCta } from "@/widgets/catalog-cta";
+import { getHomePage } from "@/entities/page";
 
 interface IPromoOptionViewProps {
   locale: string;
@@ -53,6 +55,8 @@ export async function PromoOptionView({
     featuredBannerImage = detail?.bannerImage ?? null;
   }
 
+  const pageConfig = await getHomePage(locale);
+
   return (
     <section className="flex flex-col gap-10 pt-[40px] max-w-[1080px] mx-auto">
       <h1 className="text-3xl font-bold text-text-primary">
@@ -70,6 +74,8 @@ export async function PromoOptionView({
           <PromoCard key={game.id} game={game} locale={locale} />
         ))}
       </div>
+      {/* Catalog CTA */}
+      <CatalogCta data={pageConfig.catalogCta} locale={locale} />
     </section>
   );
 }

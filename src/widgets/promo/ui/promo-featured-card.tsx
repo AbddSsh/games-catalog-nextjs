@@ -28,9 +28,30 @@ export function PromoFeaturedCard({ game, bannerImage }: IPromoFeaturedCardProps
   const ratingPercent = Math.max(0, Math.min(100, ratingValue));
 
   return (
-    <Link href={trackingLinkWithParams} target="_blank" className="mb-[30px] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.25)] border border-[#3A2452] relative overflow-hidden rounded-[15px] bg-[#110C2C] min-h-[290px] flex flex-col md:flex-row">
+    <Link
+      href={trackingLinkWithParams}
+      target="_blank"
+      className="group mb-[30px] drop-shadow-[0px_4px_4px_rgba(0,0,0,0.25)] relative rounded-[15px] bg-[#110C2C] min-h-[290px] flex flex-col md:flex-row"
+    >
+      {/* Hover border (2.02px gradient) */}
+      {/* <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-[3] rounded-[15px] opacity-0 transition-opacity duration-300 group-hover:opacity-75 bg-[linear-gradient(90deg,_#B774FF_0%,_#3B9BC4_52.4%,_#B067FF_100%)] p-[2.02px] group-hover:!shadow-[0_0_14.6px_rgba(195,180,219,0.64)]"
+      >
+        <div className="h-full w-full rounded-[15px] shadow-[inset_0_0_25.64px_0_#A869E4] bg-[linear-gradient(90deg,_rgba(31,26,59,0)_0%,_rgba(31,26,59,0.51)_0%,_rgba(31,26,59,0.77)_0%,_#1F1A3B_0%,_#1F1A3B_0%)]" />
+      </div> */}
+
+        <div
+          aria-hidden
+          className="group-hover:!shadow-[0_0_14.6px_rgba(195,180,219,0.64)] pointer-events-none absolute inset-0 z-[0] rounded-[15px] opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        />
+        <div
+          aria-hidden
+          className="shadow-none transition-[box-shadow,filter,opacity] duration-300 ease-out group-hover:shadow-[inset_0_0_25.64px_0_#A869E4] pointer-events-none absolute inset-0 z-[3] rounded-[15px] border-[2.02px] border-[#A869E4] opacity-0 group-hover:opacity-100"
+        />
+
       {/* Banner image */}
-      <div className="relative w-full md:w-[55%] md:absolute md:inset-y-0 md:left-0 aspect-[16/9] md:aspect-auto">
+      <div className="rounded-l-[15px] overflow-hidden relative z-[1] w-full md:w-[55%] md:absolute md:inset-y-0 md:left-0 aspect-[16/9] md:aspect-auto">
         {isBannerLoading && (
           <Skeleton className="absolute inset-0 flex items-center justify-center bg-[#110C2C/50] z-[1]">
             <Loader className="size-6 animate-spin text-muted-foreground" />
@@ -41,16 +62,15 @@ export function PromoFeaturedCard({ game, bannerImage }: IPromoFeaturedCardProps
           alt={game?.name}
           fill
           quality={100}
-          sizes="(max-width: 768px) 100vw, 45vw"
           className={isBannerLoading
-            ? "object-cover transition-opacity duration-300 opacity-0"
-            : "object-cover transition-opacity duration-300 opacity-100"
+            ? "object-cover transition-[opacity,transform] duration-300 opacity-0"
+            : "object-cover transition-[opacity,transform] duration-300 ease-out opacity-100 group-hover:scale-105"
           }
           onLoadingComplete={() => setIsBannerLoading(false)}
         />
         {/* Gradient overlay — fades image into card background */}
         <div
-          className="absolute inset-y-0 left-0 right-[-1px] hidden md:block"
+          className="absolute inset-y-0 left-0 right-0 hidden md:block"
           style={{
             background: "linear-gradient(to right, rgba(17,12,44,0) 0%, rgba(17,12,44,0.55) 60%, rgba(17,12,44,0.9) 85%, #110C2C 100%)",
           }}
@@ -65,7 +85,7 @@ export function PromoFeaturedCard({ game, bannerImage }: IPromoFeaturedCardProps
       </div>
 
       {/* Content */}
-      <div className="relative z-10 md:ml-auto md:w-[50%] flex flex-col justify-center gap-4 py-8 pr-7">
+      <div className="relative z-[10] md:ml-auto md:w-[50%] flex flex-col justify-center gap-4 py-8 pr-7">
         {/* Title + rating */}
         <div className="flex items-center justify-between gap-5">
           <h2 className="text-2xl md:text-3xl font-bold text-white">
@@ -117,12 +137,19 @@ export function PromoFeaturedCard({ game, bannerImage }: IPromoFeaturedCardProps
         </p>
 
         {/* CTA */}
+        <div className="relative w-fit mt-1">
+          {/* Gradient "2px border" on card hover */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute -inset-[2px] rounded-[11px] opacity-0 transition-opacity duration-300 group-hover:opacity-100 bg-[linear-gradient(90deg,_#F4DBAC_0%,_#A88C56_25%,_#FFFB3B_50%,_#AF8C4C_75%,_#FFF7BD_100%)]"
+          />
           <Button
             size="lg"
-            className="w-fit mt-1 min-w-[200px] drop-shadow-[0px_4px_4px_rgba(244,209,94,0.51)] text-[#212121] font-bold text-2xl px-10 py-2 rounded-[9px] h-auto bg-gradient-to-r from-[#F7DA6C] to-[#E8AC27] hover:scale-105 transition-all duration-300"
+            className="relative z-[1] w-fit min-w-[200px] border-0 drop-shadow-[0px_4px_4px_rgba(244,209,94,0.51)] text-[#212121] font-bold text-2xl px-10 py-2 rounded-[9px] h-auto bg-gradient-to-r from-[#C2913C] via-[#F6E078] to-[#A76F15] transition-all duration-300 group-hover:from-[#F4DBAC] group-hover:via-[#FFF7BD] group-hover:to-[#AF8C4C] group-hover:drop-shadow-[0px_0_11.21px_rgba(244,209,94,0.51)]"
           >
             Play Now
           </Button>
+        </div>
       </div>
     </Link>
   );

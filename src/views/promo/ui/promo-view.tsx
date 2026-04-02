@@ -1,7 +1,9 @@
 import { getPromoGames, getGameBySlug } from "@/entities/game";
+import { CatalogCta } from "@/widgets/catalog-cta";
 import { PromoCard, PromoFeaturedCard } from "@/widgets/promo";
 // import { Pagination } from "@/features/pagination";
 // import { ROUTES } from "@/shared/router";
+import { getHomePage } from "@/entities/page";
 
 interface IPromoViewProps {
   locale: string;
@@ -25,6 +27,8 @@ export async function PromoView({
 }: IPromoViewProps) {
   const { items } = await getPromoGames({ locale });
   void translations;
+
+  const pageConfig = await getHomePage(locale);
 
   const featuredGame = items[0] ?? null;
   const restGames = items.slice(1);
@@ -66,6 +70,9 @@ export async function PromoView({
           translations={translations}
         />
       )} */}
+
+      {/* Catalog CTA */}
+      <CatalogCta data={pageConfig.catalogCta} locale={locale} />
     </section>
   );
 }
