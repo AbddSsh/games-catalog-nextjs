@@ -32,14 +32,27 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
 
   return (
     <>
-      <article className="flex flex-col md:flex-row gap-12">
+      <Link
+        href={trackingLinkWithParams}
+        target="_blank"
+        className="block"
+      >
+      <article
+        className="group relative flex flex-col md:flex-row gap-12 rounded-[18px] bg-transparent cursor-pointer"
+      >
+        {/* Hover only: gradient + border */}
+        <div
+          aria-hidden
+          className="group-hover:!shadow-[0_0_14.6px_rgba(255,255,255,0.25)] pointer-events-none absolute inset-0 z-[0] rounded-[18px] bg-gradient-to-r from-[#A869E4]/5 via-[#A869E4]/10 to-[#A869E4]/5 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+        />
+        <div
+          aria-hidden
+          className="shadow-none transition-[box-shadow,filter,opacity] duration-300 ease-out group-hover:shadow-[inset_0_0_17.32px_rgba(255,255,255,0.25)] pointer-events-none absolute inset-0 z-[3] rounded-[18px] border-[1px] border-[#A869E4] opacity-0 group-hover:opacity-100"
+        />
+
         {/* Left: poster */}
-        <div className="relative w-full max-w-[175px] overflow-hidden rounded-[18px] bg-slate-700 md:w-[175px]">
-          <Link
-            href={trackingLinkWithParams}
-            target="_blank"
-            className="relative block w-full aspect-[1/1.45]"
-          >
+        <div className="relative z-[1] w-full max-w-[175px] overflow-hidden rounded-[18px] bg-white/[0.03] md:w-[175px]">
+          <div className="relative block w-full aspect-[1/1.45]">
             {isPosterLoading && (
               <Skeleton className="absolute inset-0 flex items-center justify-center bg-muted z-[1]">
                 <Loader className="size-6 animate-spin text-muted-foreground" />
@@ -51,14 +64,16 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
               fill
               quality={100}
               sizes="175px"
-              className={isPosterLoading ? "object-cover transition-[transform,opacity] duration-300 opacity-0" : "object-cover transition-[transform,opacity] duration-300 opacity-100"}
+              className={`object-cover transition-[transform,opacity] duration-300 ease-out group-hover:scale-[1.05] ${
+                isPosterLoading ? "opacity-0" : "opacity-100"
+              }`}
               onLoadingComplete={() => setIsPosterLoading(false)}
             />
-          </Link>
+          </div>
         </div>
 
         {/* Middle: title + meta + description */}
-        <div className="flex flex-1 flex-col justify-center gap-5">
+        <div className="relative z-[1] flex flex-1 flex-col justify-center gap-5">
           <h2 className="text-2xl font-bold text-white">
             {game?.name}
           </h2>
@@ -80,28 +95,25 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
             {game?.shortDescription}
           </p>
 
-          <Link
-            href={trackingLinkWithParams}
-            target="_blank"
+          <Button
+            size="lg"
+            className="min-w-[200px] w-fit flex gap-[10px] bg-[#6C5CE7] group-hover:bg-[#D2189A] hover:bg-[#D2189A] text-white font-bold text-lg px-10 py-1 rounded-full h-auto transition-colors duration-300"
           >
-            <Button
-              size="lg"
-              className="min-w-[200px] flex gap-[10px] bg-button hover:bg-button/90 text-white font-bold text-lg px-10 py-1 rounded-full h-auto"
-            >
-              <Image src={gameCatalogIcon} alt="game catalog" width={23} quality={100} className="size-1object-contain h-auto" />
-              Play
-            </Button>
-          </Link>
+            <Image src={gameCatalogIcon} alt="game catalog" width={23} quality={100} className="size-1object-contain h-auto" />
+            Play
+          </Button>
         </div>
 
         {/* Right: controls + tags */}
-        <div className="w-full xl:w-1/3 xl:max-w-none xl:flex-[0_0_33%] md:w-[45%] md:max-w-none md:flex-[0_0_45%] my-[30px] rounded-[18px] bg-white/[0.03] p-[25px] border-[1px] border-[#4D3C5C]/50">
+        <div className="relative z-[1] w-full xl:w-1/3 xl:max-w-none xl:flex-[0_0_33%] md:w-[45%] md:max-w-none md:flex-[0_0_45%] my-[30px] mr-[30px] rounded-[18px] bg-white/[0.03] p-[25px] border-none transition-[transform] duration-300 ease-out group-hover:scale-[1.05]">
               <div className="flex items-center justify-between gap-5">
                 <div className="flex gap-3">
                   {game?.videoUrl && (
                     <button
                       type="button"
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         setIsVideoOpen(true);
                         setIsInfoOpen(false);
                       }}
@@ -113,7 +125,9 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
                   )}
                   <button
                     type="button"
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       setIsVideoOpen(false);
                       setIsInfoOpen(true);
                     }}
@@ -166,6 +180,7 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
               )}
         </div>
       </article>
+      </Link>
 
       <PromoModal
         slug={game?.slug}
