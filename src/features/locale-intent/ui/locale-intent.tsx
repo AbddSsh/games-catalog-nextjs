@@ -222,7 +222,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
             <button
               type="button"
               onClick={() => submitLocale(suggestedLocaleConfig.code)}
-              className="h-11 rounded-full bg-[#D2189A] text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#D2189A]/80"
+              className="h-11 rounded-full bg-[#D2189A] text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#D2189A]/80 focus:outline-none"
             >
               Yes, continue
             </button>
