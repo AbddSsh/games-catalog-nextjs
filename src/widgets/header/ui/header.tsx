@@ -44,7 +44,7 @@ export function Header({ locale, locales, navigation = [], translations }: IHead
           {!hidePromoBlocks && (
             <div className="grid grid-flow-col gap-4 justify-items-end">
               <Suspense fallback={null}>
-                <LanguageSelector currentLocale={locale} locales={locales} />
+                {/* <LanguageSelector currentLocale={locale} locales={locales} /> */}
               </Suspense>
               <Suspense fallback={null}>
                 <div className="hidden md:block">

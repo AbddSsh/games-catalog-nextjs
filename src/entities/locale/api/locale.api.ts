@@ -6,8 +6,7 @@ export interface ILocaleConfig {
   status: string;
   isDefault: boolean;
   fallback: string | null;
-  dateFormat: string;
-  currency: string;
+  flagIcon: string;
 }
 
 const MOCK_LOCALES: ILocaleConfig[] = [
@@ -19,8 +18,7 @@ const MOCK_LOCALES: ILocaleConfig[] = [
     status: "active",
     isDefault: true,
     fallback: null,
-    dateFormat: "MM/DD/YYYY",
-    currency: "USD",
+    flagIcon: "/flags/en.svg",
   },
   {
     code: "sk",
@@ -30,8 +28,7 @@ const MOCK_LOCALES: ILocaleConfig[] = [
     status: "active",
     isDefault: false,
     fallback: "en",
-    dateFormat: "DD.MM.YYYY",
-    currency: "EUR",
+    flagIcon: "/flags/sk.svg",
   },
   {
     code: "pt",
@@ -41,8 +38,7 @@ const MOCK_LOCALES: ILocaleConfig[] = [
     status: "active",
     isDefault: false,
     fallback: "en",
-    dateFormat: "DD/MM/YYYY",
-    currency: "EUR",
+    flagIcon: "/flags/pt.svg",
   },
 ];
 

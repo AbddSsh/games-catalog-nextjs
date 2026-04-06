@@ -49,12 +49,6 @@ export async function PromoOptionView({
   const featuredGame = items[0] ?? null;
   const restGames = items.slice(1);
 
-  let featuredBannerImage: string | null = null;
-  if (featuredGame) {
-    const detail = await getGameBySlug(featuredGame.slug, locale);
-    featuredBannerImage = detail?.bannerImage ?? null;
-  }
-
   const pageConfig = await getHomePage(locale);
 
   return (
@@ -64,8 +58,8 @@ export async function PromoOptionView({
       </h1>
 
       <div className="flex flex-col gap-3">
-        {featuredGame && featuredBannerImage ? (
-          <PromoFeaturedCard game={featuredGame} bannerImage={featuredBannerImage} locale={locale} />
+        {featuredGame && featuredGame.bannerImage ? (
+          <PromoFeaturedCard game={featuredGame} bannerImage={featuredGame.bannerImage} locale={locale} />
         ) : featuredGame ? (
           <PromoCard game={featuredGame} locale={locale} />
         ) : null}

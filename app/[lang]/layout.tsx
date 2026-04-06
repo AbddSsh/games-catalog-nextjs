@@ -12,6 +12,7 @@ import Head from "next/head";
 import { Suspense } from "react";
 import Script from "next/script";
 import { ScrollTopButton } from "@/widgets/scroll-top";
+import { LocaleIntent } from "@/features/locale-intent";
 
 const nunitoSans = Nunito_Sans({
   subsets: ["latin", "cyrillic"],
@@ -205,6 +206,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           navigation={pageConfig.navigation?.header}
           translations={translations}
         />
+        <Suspense fallback={null}>
+          <LocaleIntent currentLocale={locale} locales={locales} />
+        </Suspense>
 
         <main className="max-w-[1400px] flex-grow w-full pb-[40px] mobile-xl:px-[25px] px-[15px]">
           {children}
