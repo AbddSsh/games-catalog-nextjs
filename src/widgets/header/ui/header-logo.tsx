@@ -1,7 +1,3 @@
-/**
- * Header Logo Component
- */
-
 interface IHeaderLogoProps {
   text?: string;
   imageUrl?: string;

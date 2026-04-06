@@ -7,6 +7,8 @@
 export const DEFAULT_LOCALE = "en";
 
 export const LOCALE_COOKIE_NAME = "NEXT_LOCALE";
+export const LOCALE_SELECTED_COOKIE_NAME = "locale_selected";
+export const LOCALE_SUGGESTED_COOKIE_NAME = "locale_suggested";
 
 export const LOCALE_HEADER_NAME = "x-locale";
 
@@ -23,16 +25,20 @@ export function isLocaleSupported(
   return supportedCodes.includes(locale);
 }
 
+export function normalizeLocaleCandidate(value: string | null | undefined): string | null {
+  if (!value) return null;
+  return value.toLowerCase().trim();
+}
+
 /**
- * Get preferred locale from Accept-Language header
- * Uses supported codes from API
+ * Первый язык из Accept-Language, который есть в списке активных локалей API; иначе null.
  */
-export function parseAcceptLanguage(
+export function parseFirstSupportedAcceptLanguage(
   acceptLanguage: string | null,
   supportedCodes: string[]
-): TLocaleCode {
+): string | null {
   if (!acceptLanguage || supportedCodes.length === 0) {
-    return DEFAULT_LOCALE;
+    return null;
   }
 
   const languages = acceptLanguage
@@ -52,5 +58,16 @@ export function parseAcceptLanguage(
     }
   }
 
-  return DEFAULT_LOCALE;
+  return null;
+}
+
+/**
+ * Get preferred locale from Accept-Language header
+ * Uses supported codes from API
+ */
+export function parseAcceptLanguage(
+  acceptLanguage: string | null,
+  supportedCodes: string[]
+): TLocaleCode {
+  return parseFirstSupportedAcceptLanguage(acceptLanguage, supportedCodes) ?? DEFAULT_LOCALE;
 }
