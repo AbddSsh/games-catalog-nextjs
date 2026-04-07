@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Search } from "lucide-react";
 import type { ILocaleConfig } from "@/entities/locale";
@@ -89,7 +90,6 @@ function LocaleFlagImage({
 }
 
 export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
-  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -150,50 +150,58 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
     setSelectedLocale(suggestedLocale);
   }, [currentLocale, hasGclid, selectedCookieLocale, suggestedLocale]);
 
-  useEffect(() => {
-    if (!pendingRedirect) return;
+  const pendingRedirectHref = useMemo(() => {
+    if (!pendingRedirect) return "";
+    return buildLocalizedPath(pathname, currentLocale, pendingRedirect, localeCodes, search);
+  }, [pathname, currentLocale, pendingRedirect, localeCodes, search]);
 
-    const handleDocumentClick = (event: MouseEvent) => {
-      const target = event.target as HTMLElement | null;
-      if (target?.closest("[data-locale-intent-modal='true']")) return;
+  const selectedLocaleHref = useMemo(
+    () => buildLocalizedPath(pathname, currentLocale, selectedLocale, localeCodes, search),
+    [pathname, currentLocale, selectedLocale, localeCodes, search]
+  );
 
-      const nextPath = buildLocalizedPath(
-        pathname,
-        currentLocale,
-        pendingRedirect,
-        localeCodes,
-        search
-      );
-
-      event.preventDefault();
+  const handlePendingRedirectClick = () => {
+    if (pendingRedirect) {
       setCookie(LOCALE_SELECTED_COOKIE_NAME, pendingRedirect);
-      setPendingRedirect(null);
-      setIsQuestionOpen(false);
-      setIsListOpen(false);
-      router.push(nextPath);
-    };
-
-    document.addEventListener("click", handleDocumentClick, true);
-    return () => {
-      document.removeEventListener("click", handleDocumentClick, true);
-    };
-  }, [currentLocale, localeCodes, pathname, pendingRedirect, router, search]);
-
-  const submitLocale = (targetLocale: string) => {
-    const nextPath = buildLocalizedPath(pathname, currentLocale, targetLocale, localeCodes, search);
-    setCookie(LOCALE_SELECTED_COOKIE_NAME, targetLocale);
+    }
     setPendingRedirect(null);
     setIsQuestionOpen(false);
     setIsListOpen(false);
-    router.push(nextPath);
+  };
+
+  const handleSelectedLocaleClick = () => {
+    setCookie(LOCALE_SELECTED_COOKIE_NAME, selectedLocale);
+    setPendingRedirect(null);
+    setIsQuestionOpen(false);
+    setIsListOpen(false);
   };
 
   if (!suggestedLocaleConfig || hasGclid || !!selectedCookieLocale) {
     return null;
   }
 
+  const overlayLink = pendingRedirectHref ? (
+    <Link
+      href={pendingRedirectHref}
+      onClick={handlePendingRedirectClick}
+      className="pointer-events-auto fixed inset-0 z-50 bg-black/60"
+      aria-hidden="true"
+      tabIndex={-1}
+    />
+  ) : undefined;
+
   return (
     <>
+      {pendingRedirect && !isQuestionOpen && !isListOpen && pendingRedirectHref && (
+        <Link
+          href={pendingRedirectHref}
+          onClick={handlePendingRedirectClick}
+          className="fixed inset-0 z-50"
+          aria-hidden="true"
+          tabIndex={-1}
+        />
+      )}
+
       <Dialog
         open={isQuestionOpen}
         onOpenChange={(isOpen) => {
@@ -204,6 +212,8 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
         <DialogContent
           showClose={false}
           data-locale-intent-modal="true"
+          overlaySlot={overlayLink}
+          onInteractOutside={(e) => e.preventDefault()}
           className="gap-8 max-w-md border-none !rounded-[28px] bg-[#200D33] p-10 text-white"
         >
           <div className="flex justify-center">
@@ -219,13 +229,13 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
             Are you from the {suggestedLocaleConfig.nativeName}?
           </DialogTitle>
           <div className="flex flex-col gap-2">
-            <button
-              type="button"
-              onClick={() => submitLocale(suggestedLocaleConfig.code)}
-              className="h-11 rounded-full bg-[#D2189A] text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#D2189A]/80 focus:outline-none"
+            <Link
+              href={pendingRedirectHref}
+              onClick={handlePendingRedirectClick}
+              className="flex h-11 items-center justify-center rounded-full bg-[#D2189A] text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#D2189A]/80 focus:outline-none"
             >
               Yes, continue
-            </button>
+            </Link>
             <button
               type="button"
               onClick={() => {
@@ -250,6 +260,8 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
         <DialogContent
           showClose={false}
           data-locale-intent-modal="true"
+          overlaySlot={overlayLink}
+          onInteractOutside={(e) => e.preventDefault()}
           className="max-w-md !rounded-[28px] border-none bg-[#200D33] p-6 text-white"
         >
           <button
@@ -307,13 +319,13 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
             })}
           </div>
 
-          <button
-            type="button"
-            onClick={() => submitLocale(selectedLocale)}
-            className="h-11 w-full rounded-full bg-[#FF1FC7] text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#ff1fc7]/90"
+          <Link
+            href={selectedLocaleHref}
+            onClick={handleSelectedLocaleClick}
+            className="flex h-11 w-full items-center justify-center rounded-full bg-[#FF1FC7] text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#ff1fc7]/90"
           >
             Continue
-          </button>
+          </Link>
         </DialogContent>
       </Dialog>
     </>
