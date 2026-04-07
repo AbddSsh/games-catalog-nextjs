@@ -33,14 +33,15 @@ type DialogContentProps = React.ComponentPropsWithoutRef<
   typeof DialogPrimitive.Content
 > & {
   showClose?: boolean;
+  overlaySlot?: React.ReactNode;
 };
 
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DialogContentProps
->(({ className, children, showClose = true, ...props }, ref) => (
+>(({ className, children, showClose = true, overlaySlot, ...props }, ref) => (
   <DialogPortal>
-    <DialogOverlay />
+    {overlaySlot !== undefined ? overlaySlot : <DialogOverlay />}
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
