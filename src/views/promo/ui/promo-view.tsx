@@ -14,6 +14,12 @@ interface IPromoViewProps {
     loadMore: string;
     back: string;
     next: string;
+    promo: {
+      title: { first: string; second: string };
+      video: string;
+      info: string;
+      play: string;
+    };
   };
 }
 
@@ -26,7 +32,7 @@ export async function PromoView({
   translations,
 }: IPromoViewProps) {
   const { items } = await getPromoGames({ locale });
-  void translations;
+  const promoTranslations = translations.promo;
 
   const pageConfig = await getHomePage(locale);
 
@@ -36,18 +42,18 @@ export async function PromoView({
   return (
     <section className="flex flex-col gap-10 pt-[40px] max-w-[1080px] mx-auto">
       <h1 className="text-3xl font-bold text-text-primary">
-        Best Free Online Games 2026
+        {promoTranslations.title.first} {promoTranslations.title.second}
       </h1>
 
       <div className="flex flex-col gap-3">
         {featuredGame && featuredGame.bannerImage ? (
-          <PromoFeaturedCard game={featuredGame} bannerImage={featuredGame.bannerImage} locale={locale} />
+          <PromoFeaturedCard game={featuredGame} bannerImage={featuredGame.bannerImage} locale={locale} translations={{ play: promoTranslations.play }} />
         ) : featuredGame ? (
-          <PromoCard game={featuredGame} locale={locale} />
+          <PromoCard game={featuredGame} locale={locale} translations={promoTranslations} />
         ) : null}
 
         {restGames.map((game) => (
-          <PromoCard key={game.id} game={game} locale={locale} />
+          <PromoCard key={game.id} game={game} locale={locale} translations={promoTranslations} />
         ))}
       </div>
 

@@ -7,6 +7,8 @@ export type {
   ITranslationsErrors,
   ITranslationsFooter,
   ITranslationsMeta,
+  ITranslationsCountry,
+  ITranslationsPromo,
   ITranslations,
 } from "./model/translations.types";
 

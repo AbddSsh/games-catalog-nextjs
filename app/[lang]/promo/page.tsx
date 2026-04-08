@@ -73,6 +73,15 @@ export default async function PromoPage({ params, searchParams }: IPromoPageProp
         loadMore: translations?.common?.load_more ?? "Load More",
         back: translations?.common?.back ?? "Back",
         next: translations?.common?.next ?? "Next",
+        promo: {
+          title: {
+            first: translations?.promo?.title?.first ?? "Best Free Online Games",
+            second: translations?.promo?.title?.second ?? "2026",
+          },
+          video: translations?.promo?.video ?? "Video",
+          info: translations?.promo?.info ?? "Info",
+          play: translations?.promo?.play ?? "Play",
+        },
       }}
     />
   );

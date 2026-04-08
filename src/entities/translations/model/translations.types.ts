@@ -102,6 +102,25 @@ export interface ITranslationsMeta {
   default_description: string;
 }
 
+export interface ITranslationsCountry {
+  are_you_from: string;
+  yes_continue: string;
+  no_choose_another_country: string;
+  choose_a_country: string;
+  enter_a_country: string;
+  continue: string;
+}
+
+export interface ITranslationsPromo {
+  title: {
+    first: string;
+    second: string;
+  };
+  video: string;
+  info: string;
+  play: string;
+}
+
 // Complete translations object (GET /api/translations/:locale)
 export interface ITranslations {
   locale: string;
@@ -113,4 +132,6 @@ export interface ITranslations {
   errors: ITranslationsErrors;
   footer: ITranslationsFooter;
   meta: ITranslationsMeta;
+  country: ITranslationsCountry;
+  promo: ITranslationsPromo;
 }
