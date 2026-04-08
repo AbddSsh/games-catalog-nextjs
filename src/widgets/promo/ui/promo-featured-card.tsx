@@ -13,9 +13,12 @@ interface IPromoFeaturedCardProps {
   game: IGamePromo;
   bannerImage: string;
   locale: string;
+  translations: {
+    play: string;
+  };
 }
 
-export function PromoFeaturedCard({ game, bannerImage }: IPromoFeaturedCardProps) {
+export function PromoFeaturedCard({ game, bannerImage, translations }: IPromoFeaturedCardProps) {
   const [isBannerLoading, setIsBannerLoading] = useState(true);
   const trackingParams = useTrackingParams();
   const trackingLinkWithParams = useMemo(
@@ -147,7 +150,7 @@ export function PromoFeaturedCard({ game, bannerImage }: IPromoFeaturedCardProps
             size="lg"
             className="relative z-[1] w-fit min-w-[200px] border-0 drop-shadow-[0px_4px_4px_rgba(244,209,94,0.51)] text-[#212121] font-bold text-2xl px-10 py-2 rounded-[9px] h-auto bg-gradient-to-r from-[#C2913C] via-[#F6E078] to-[#A76F15] transition-all duration-300 group-hover:from-[#F4DBAC] group-hover:via-[#FFF7BD] group-hover:to-[#AF8C4C] group-hover:drop-shadow-[0px_0_11.21px_rgba(244,209,94,0.51)]"
           >
-            Play Now
+            {translations.play}
           </Button>
         </div>
       </div>

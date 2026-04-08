@@ -56,6 +56,15 @@ export default async function PromoOptionPage({ params }: IPromoOptionPageProps)
         loadMore: translations?.common?.load_more ?? "Load More",
         back: translations?.common?.back ?? "Back",
         next: translations?.common?.next ?? "Next",
+        promo: {
+          title: {
+            first: translations?.promo?.title?.first ?? "Best Free Online",
+            second: translations?.promo?.title?.second ?? "Games 2026",
+          },
+          video: translations?.promo?.video ?? "Video",
+          info: translations?.promo?.info ?? "Info",
+          play: translations?.promo?.play ?? "Play",
+        },
       }}
     />
   );

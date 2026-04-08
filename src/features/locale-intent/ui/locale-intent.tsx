@@ -6,7 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Search } from "lucide-react";
 import type { ILocaleConfig } from "@/entities/locale";
+import type { ITranslationsCountry, ITranslations } from "@/entities/translations";
 import { DEFAULT_LOCALE, LOCALE_SELECTED_COOKIE_NAME, LOCALE_SUGGESTED_COOKIE_NAME } from "@/shared/config";
+import { apiGet } from "@/shared/api";
 import { Dialog, DialogContent, DialogTitle, Input } from "@/shared/ui";
 
 interface ILocaleIntentProps {
@@ -98,6 +100,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
   const [query, setQuery] = useState("");
   const [selectedLocale, setSelectedLocale] = useState(currentLocale);
   const [pendingRedirect, setPendingRedirect] = useState<string | null>(null);
+  const [countryTranslations, setCountryTranslations] = useState<ITranslationsCountry | null>(null);
 
   const search = searchParams.toString();
   const hasGclid = searchParams.has("gclid");
@@ -121,6 +124,20 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
       );
     });
   }, [locales, query]);
+
+  // Получение переводов страны для предложенной локали
+  useEffect(() => {
+    if (!suggestedLocale || hasGclid || !!selectedCookieLocale) return;
+
+    let cancelled = false;
+    apiGet<ITranslations>(`/translations/${suggestedLocale}`)
+      .then((data) => {
+        if (!cancelled) setCountryTranslations(data.country);
+      })
+      .catch(() => {});
+
+    return () => { cancelled = true; };
+  }, [suggestedLocale, hasGclid, selectedCookieLocale]);
 
   // DEBUG: вывод детекции локали в браузерную консоль (удалить эффект после дебага)
   useEffect(() => {
@@ -176,7 +193,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
     setIsListOpen(false);
   };
 
-  if (!suggestedLocaleConfig || hasGclid || !!selectedCookieLocale) {
+  if (!suggestedLocaleConfig || hasGclid || !!selectedCookieLocale || !countryTranslations) {
     return null;
   }
 
@@ -226,7 +243,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
             />
           </div>
           <DialogTitle className="text-center text-base font-semibold">
-            Are you from the {suggestedLocaleConfig.nativeName}?
+            {countryTranslations.are_you_from} {suggestedLocaleConfig.nativeName}?
           </DialogTitle>
           <div className="flex flex-col gap-2">
             <Link
@@ -234,7 +251,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
               onClick={handlePendingRedirectClick}
               className="flex h-11 items-center justify-center rounded-full bg-[#D2189A] text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#D2189A]/80 focus:outline-none"
             >
-              Yes, continue
+              {countryTranslations.yes_continue}
             </Link>
             <button
               type="button"
@@ -244,7 +261,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
               }}
               className="h-11 rounded-full bg-[#2C1A3D] text-sm font-semibold text-white/90 transition hover:bg-[#2C1A3D]/80"
             >
-              No, choose another country
+              {countryTranslations.no_choose_another_country}
             </button>
           </div>
         </DialogContent>
@@ -277,7 +294,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
           </button>
 
           <DialogTitle className="mb-2 text-center text-xl font-bold uppercase">
-            Choose a country
+            {countryTranslations.choose_a_country}
           </DialogTitle>
 
           <div className="relative mb-3 rounded-full border-[2px] border-[#382947]">
@@ -286,7 +303,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
               value={query}
               autoFocus
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Enter a country"
+              placeholder={countryTranslations.enter_a_country}
               className="h-10 rounded-full border-none bg-[#2C1A3D] pl-10 text-white placeholder:text-white/40 shadow-[inset_0px_5px_12.2px_0px_#8C8C8C2B]"
             />
           </div>
@@ -324,7 +341,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
             onClick={handleSelectedLocaleClick}
             className="flex h-11 w-full items-center justify-center rounded-full bg-[#FF1FC7] text-sm font-bold uppercase tracking-wide text-white transition hover:bg-[#ff1fc7]/90"
           >
-            Continue
+            {countryTranslations.continue}
           </Link>
         </DialogContent>
       </Dialog>

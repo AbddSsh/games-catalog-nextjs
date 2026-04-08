@@ -11,6 +11,12 @@ interface IPromoOptionViewProps {
     loadMore: string;
     back: string;
     next: string;
+    promo: {
+      title: { first: string; second: string };
+      video: string;
+      info: string;
+      play: string;
+    };
   };
 }
 
@@ -44,7 +50,7 @@ export async function PromoOptionView({
   }
 
   const optionTitle = formatOptionTitle(option);
-  void translations;
+  const promoTranslations = translations.promo;
 
   const featuredGame = items[0] ?? null;
   const restGames = items.slice(1);
@@ -54,18 +60,18 @@ export async function PromoOptionView({
   return (
     <section className="flex flex-col gap-10 pt-[40px] max-w-[1080px] mx-auto">
       <h1 className="text-3xl font-bold text-text-primary">
-        Best Free Online {optionTitle} Games 2026
+        {promoTranslations.title.first} {optionTitle} {promoTranslations.title.second}
       </h1>
 
       <div className="flex flex-col gap-3">
         {featuredGame && featuredGame.bannerImage ? (
-          <PromoFeaturedCard game={featuredGame} bannerImage={featuredGame.bannerImage} locale={locale} />
+          <PromoFeaturedCard game={featuredGame} bannerImage={featuredGame.bannerImage} locale={locale} translations={{ play: promoTranslations.play }} />
         ) : featuredGame ? (
-          <PromoCard game={featuredGame} locale={locale} />
+          <PromoCard game={featuredGame} locale={locale} translations={promoTranslations} />
         ) : null}
 
         {restGames.map((game) => (
-          <PromoCard key={game.id} game={game} locale={locale} />
+          <PromoCard key={game.id} game={game} locale={locale} translations={promoTranslations} />
         ))}
       </div>
       {/* Catalog CTA */}

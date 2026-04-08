@@ -14,9 +14,14 @@ import { PromoModal, PromoVideoModal } from "@/features/promo";
 interface IPromoCardProps {
   game: IGamePromo;
   locale: string;
+  translations: {
+    video: string;
+    info: string;
+    play: string;
+  };
 }
 
-export function PromoCard({ game, locale }: IPromoCardProps) {
+export function PromoCard({ game, locale, translations }: IPromoCardProps) {
   const [isInfoOpen, setIsInfoOpen] = useState(false);
   const [isVideoOpen, setIsVideoOpen] = useState(false);
   const [isPosterLoading, setIsPosterLoading] = useState(true);
@@ -100,7 +105,7 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
             className="min-w-[200px] w-fit flex gap-[10px] bg-[#6C5CE7] group-hover:bg-[#D2189A] hover:bg-[#D2189A] text-white font-bold text-lg px-10 py-1 rounded-full h-auto transition-colors duration-300"
           >
             <Image src={gameCatalogIcon} alt="game catalog" width={23} quality={100} className="size-1object-contain h-auto" />
-            Play
+            {translations.play}
           </Button>
         </div>
 
@@ -120,7 +125,7 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
                       className="text-button w-full flex items-center gap-2 rounded-[6px] border border-white/10 bg-white/5 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide hover:bg-white/10"
                     >
                       <Play className="size-4" />
-                      Video
+                      {translations.video}
                     </button>
                   )}
                   <button
@@ -134,7 +139,7 @@ export function PromoCard({ game, locale }: IPromoCardProps) {
                     className="text-button w-full flex items-center gap-2 rounded-[6px] border border-white/10 bg-white/5 px-2 py-1.5 text-[11px] font-semibold uppercase tracking-wide hover:bg-white/10"
                   >
                     <Info className="size-4" />
-                    Info
+                    {translations.info}
                   </button>
                 </div>
 
