@@ -20,6 +20,7 @@ import {
   type CarouselApi,
 } from "@/shared/ui";
 import Link from "next/link";
+import { GameOverviewBlocks } from "@/widgets/game-overview-blocks";
 
 interface IPromoModalProps {
   slug: string;
@@ -299,21 +300,10 @@ export function PromoModal({ slug, locale, open, onClose }: IPromoModalProps) {
               {loading && <Skeleton className="aspect-video w-full rounded-[14px] bg-white/10" />}
 
               {game?.gameOverview?.length ? (
-                <div className="space-y-8">
-                  {game.gameOverview.map((section, index) => (
-                    <div key={`${section.title ?? "section"}-${index}`}>
-                      {section.title ? (
-                        <h3 className="mb-2 text-[18px] font-black text-[#72B7FF]">
-                          {section.title}
-                        </h3>
-                      ) : null}
-                      <p
-                        className="text-sm font-normal text-[#BFBFBF]"
-                        dangerouslySetInnerHTML={{ __html: section.text }}
-                      />
-                    </div>
-                  ))}
-                </div>
+                <GameOverviewBlocks
+                  blocks={game.gameOverview}
+                  trackingCtaUrl={trackingLinkWithParams}
+                />
               ) : null}
 
               {loading && (
@@ -329,19 +319,6 @@ export function PromoModal({ slug, locale, open, onClose }: IPromoModalProps) {
                 </div>
               )}
 
-              {loading && (
-                <Skeleton className="h-12 w-full rounded-full bg-[#309800]/40" />
-              )}
-
-              {!!trackingLinkWithParams && game && (
-                <Link
-                  href={trackingLinkWithParams}
-                  target="_blank"
-                  className="block w-full rounded-full bg-[#309800] py-3 text-center text-[16px] font-bold text-white hover:bg-[#309800]/90 uppercase"
-                >
-                  {game.ctaText}
-                </Link>
-              )}
             </div>
       </DialogContent>
     </Dialog>

@@ -5,9 +5,31 @@ export type {
   IRelatedGame,
   IGameBase,
   IGameDetail,
+  IGameFact,
   IGamesQueryParams,
   IGamesSearchResponse,
   IGamesByFilterResponse,
+  ENUM_GO_KIND_TYPE,
+  ENUM_SF_KIND_TYPE,
+  TGameOverviewBlock,
+  TSpecialFeatureBlock,
+  IBlockSectionHeading,
+  IBlockTitleBody,
+  IBlockParagraph,
+  IBlockStepItem,
+  IBlockStepsRow,
+  IBlockFaqSection,
+  IBlockCtaBanner,
+  IBlockBottomCta,
+  IBlockSystemRequirements,
+  IBlockKeyFeaturesGrid,
+  IBlockProsCons,
+  IBlockCtaFooter,
+} from "./model/game.types";
+
+export {
+  ENUM_GO_KIND,
+  ENUM_SF_KIND,
 } from "./model/game.types";
 
 export {
