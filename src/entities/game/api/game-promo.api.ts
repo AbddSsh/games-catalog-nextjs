@@ -1,5 +1,5 @@
-import type { IContentParagraph, IPaginatedResponse } from "@/shared/types";
-import type { IGameBase } from "../model/game.types";
+import type { IPaginatedResponse } from "@/shared/types";
+import type { IGameBase, TGameOverviewBlock } from "../model/game.types";
 
 export interface IGamePromo extends IGameBase {
   videoUrl: string | null;
@@ -18,7 +18,7 @@ export interface IGamePromo extends IGameBase {
 export interface IGamePromoDetail extends IGameBase {
   screenshots: string[];
   videoUrl: string | null;
-  gameOverview: IContentParagraph[];
+  gameOverview: TGameOverviewBlock[];
   trackingLink: string;
 }
 
@@ -54,7 +54,7 @@ export async function getPromoGameBySlug(
   try {
     const { apiGet } = await import("@/shared/api");
     const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
-    return await apiGet<IGamePromoDetail>(`/promo/games/${slug}`, {
+    return await apiGet<IGamePromoDetail>(`/test/promo/games/${slug}`, {
       locale,
       next: {
         revalidate: CACHE_REVALIDATE,
