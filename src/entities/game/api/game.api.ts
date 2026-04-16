@@ -54,7 +54,7 @@ export async function getGameBySlug(
   try {
     const { apiGet } = await import("@/shared/api");
     const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
-    const game = await apiGet<IGameDetail>(`/test/games/${slug}`, {
+    const game = await apiGet<IGameDetail>(`/games/${slug}`, {
       locale,
       next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.GAMES, CACHE_TAGS.GAME(slug)] },
     });
