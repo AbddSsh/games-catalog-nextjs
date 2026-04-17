@@ -187,6 +187,7 @@ export function PrivacyView({ lastUpdated }: IPrivacyViewProps) {
           <a
             href="https://privacy.microsoft.com/privacystatement"
             target="_blank"
+            rel="noopener noreferrer"
             className="text-primary underline hover:no-underline"
           >
             Microsoft Privacy Statement

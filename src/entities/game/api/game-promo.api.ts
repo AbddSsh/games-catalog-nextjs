@@ -1,5 +1,5 @@
-import type { IPaginatedResponse } from "@/shared/types";
-import type { IGameBase, TGameOverviewBlock } from "../model/game.types";
+import type { IContentParagraph, IPaginatedResponse } from "@/shared/types";
+import type { IGameBase } from "../model/game.types";
 
 export interface IGamePromo extends IGameBase {
   videoUrl: string | null;
@@ -18,7 +18,7 @@ export interface IGamePromo extends IGameBase {
 export interface IGamePromoDetail extends IGameBase {
   screenshots: string[];
   videoUrl: string | null;
-  gameOverview: TGameOverviewBlock[];
+  gameOverview: IContentParagraph[];
   trackingLink: string;
 }
 
