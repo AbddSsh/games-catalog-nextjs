@@ -14,6 +14,8 @@ export interface IFetchOptions extends Omit<RequestInit, "method" | "body"> {
   params?: Record<string, string | number | boolean | undefined>;
   /** Опции кэша Next.js (revalidate, tags). Работает только в Server Components / Route Handlers. */
   next?: INextCacheOptions;
+  /** Таймаут запроса в миллисекундах. По умолчанию 10000 мс. */
+  timeoutMs?: number;
 }
 
 export interface IApiClientConfig {
@@ -27,6 +29,8 @@ const DEFAULT_CONFIG: IApiClientConfig = {
     "Content-Type": "application/json",
   },
 };
+const API_GET_TIMEOUT_MS = 30000;
+const API_GET_RETRIES_ON_TIMEOUT = 1;
 
 /**
  * Build URL with query parameters
@@ -91,34 +95,48 @@ export async function apiGet<T>(
   endpoint: string,
   options: IFetchOptions = {}
 ): Promise<T> {
-  const { locale, params, ...fetchOptions } = options;
+  const { locale, params, timeoutMs = API_GET_TIMEOUT_MS, ...fetchOptions } = options;
 
   const url = buildUrl(endpoint, locale, params);
+  const { next: nextCache, ...restFetchOptions } = fetchOptions as IFetchOptions & {
+    next?: INextCacheOptions;
+  };
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 секунд таймаут
+  for (let attempt = 0; attempt <= API_GET_RETRIES_ON_TIMEOUT; attempt += 1) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
-  try {
-    const { next: nextCache, ...restFetchOptions } = fetchOptions as IFetchOptions & { next?: INextCacheOptions };
-    const response = await fetch(url, {
-      ...restFetchOptions,
-      method: "GET",
-      headers: {
-        ...DEFAULT_CONFIG.defaultHeaders,
-        ...restFetchOptions.headers,
-      },
-      signal: controller.signal,
-      ...(nextCache && Object.keys(nextCache).length > 0 ? { next: nextCache } : {}),
-    });
-    clearTimeout(timeoutId);
-    return handleResponse<T>(response);
-  } catch (error) {
-    clearTimeout(timeoutId);
-    if (error instanceof Error && error.name === 'AbortError') {
-      throw new Error('Request timeout');
+    try {
+      const response = await fetch(url, {
+        ...restFetchOptions,
+        method: "GET",
+        headers: {
+          ...DEFAULT_CONFIG.defaultHeaders,
+          ...restFetchOptions.headers,
+        },
+        signal: controller.signal,
+        ...(nextCache && Object.keys(nextCache).length > 0 ? { next: nextCache } : {}),
+      });
+      clearTimeout(timeoutId);
+      return handleResponse<T>(response);
+    } catch (error) {
+      clearTimeout(timeoutId);
+      const isAbortError = error instanceof Error && error.name === "AbortError";
+      const hasNextAttempt = attempt < API_GET_RETRIES_ON_TIMEOUT;
+
+      if (isAbortError && hasNextAttempt) {
+        continue;
+      }
+
+      if (isAbortError) {
+        throw new Error("Request timeout");
+      }
+
+      throw error;
     }
-    throw error;
   }
+
+  throw new Error("Request timeout");
 }
 
 /**

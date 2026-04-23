@@ -9,6 +9,10 @@ interface IPromoOptionPageProps {
     lang: string;
     option: string;
   }>;
+  searchParams: Promise<{
+    page?: string;
+    elements?: string;
+  }>;
 }
 
 function formatOptionLabel(option: string): string {
@@ -44,14 +48,26 @@ export async function generateMetadata({
   };
 }
 
-export default async function PromoOptionPage({ params }: IPromoOptionPageProps) {
-  const { lang, option } = await params;
+export default async function PromoOptionPage({
+  params,
+  searchParams,
+}: IPromoOptionPageProps) {
+  const [{ lang, option }, search] = await Promise.all([params, searchParams]);
+  const parsedPage = search.page ? parseInt(search.page, 10) : NaN;
+  const parsedElements = search.elements ? parseInt(search.elements, 10) : NaN;
+  const page = Number.isFinite(parsedPage) ? Math.max(1, parsedPage) : 1;
+  const elements = Number.isFinite(parsedElements)
+    ? Math.max(6, parsedElements)
+    : 6;
+
   const translations = await getTranslations(lang);
 
   return (
     <PromoOptionView
       locale={lang}
       option={option}
+      page={page}
+      elements={elements}
       translations={{
         loadMore: translations?.common?.load_more ?? "Load More",
         back: translations?.common?.back ?? "Back",

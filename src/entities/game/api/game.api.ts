@@ -5,6 +5,8 @@ import type {
   IGamesSearchResponse,
   IGamesByFilterResponse,
 } from "../model/game.types";
+import { apiGet } from "@/shared/api";
+import { CACHE_REVALIDATE } from "@/shared/config";
 
 export async function getGames(params: {
   locale: string;
@@ -18,12 +20,10 @@ export async function getGames(params: {
   page?: number;
   elements?: number;
 }): Promise<IPaginatedResponse<IGameBase>> {
-  const { apiGet } = await import("@/shared/api");
   const { locale, q, page, elements, ...otherParams } = params;
   
   // If search query exists, use search endpoint with only locale, q, page, elements
-  const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
-  const nextCache = { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.GAMES] };
+  const nextCache = { revalidate: CACHE_REVALIDATE };
   if (q && q.trim().length > 0) {
     return apiGet<IPaginatedResponse<IGameBase>>("/games/search", {
       locale,
@@ -52,11 +52,9 @@ export async function getGameBySlug(
   locale: string
 ): Promise<IGameDetail | null> {
   try {
-    const { apiGet } = await import("@/shared/api");
-    const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
     const game = await apiGet<IGameDetail>(`/games/${slug}`, {
       locale,
-      next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.GAMES, CACHE_TAGS.GAME(slug)] },
+      next: { revalidate: CACHE_REVALIDATE },
     });
 
     return {
@@ -77,7 +75,6 @@ export async function searchGames(
   page: number = 1,
   elements: number = 20
 ): Promise<IGamesSearchResponse> {
-  const { apiGet } = await import("@/shared/api");
   return apiGet<IGamesSearchResponse>("/games/search", {
     locale,
     params: { q: query, page, elements },
@@ -90,7 +87,6 @@ export async function getGamesByFilter(
   page: number = 1,
   elements: number = 20
 ): Promise<IGamesByFilterResponse> {
-  const { apiGet } = await import("@/shared/api");
   return apiGet<IGamesByFilterResponse>("/games/by-filter", {
     locale,
     params: { filter, page, elements },
@@ -99,12 +95,10 @@ export async function getGamesByFilter(
 
 export async function getAllGameSlugs(): Promise<string[]> {
   try {
-    const { apiGet } = await import("@/shared/api");
-    const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
     const response = await apiGet<IPaginatedResponse<IGameBase>>("/games", {
       locale: "en",
       params: { elements: 1000 },
-      next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.GAMES] },
+      next: { revalidate: CACHE_REVALIDATE },
     });
     return response.items.map((game) => game.slug);
   } catch {

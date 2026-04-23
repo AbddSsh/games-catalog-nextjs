@@ -3,15 +3,15 @@ import { getGames } from "@/entities/game";
 import { getFilters } from "@/entities/filter";
 import { GameGrid } from "@/widgets/game-grid";
 import { GameFilters } from "@/features/game-filters";
-// import { Pagination } from "@/features/pagination";
+import { Pagination } from "@/features/pagination";
 import { ViewModeToggle, type TViewMode } from "@/features/view-mode-toggle";
 import { SortSelect, type TSortOption } from "@/features/sort-select";
 import { Breadcrumbs, type IBreadcrumbItem } from "@/shared/ui";
 import type { IAppliedFilters } from "@/entities/filter";
-// import { ROUTES } from "@/shared/router";
+import { ROUTES } from "@/shared/router";
 import { localePath } from "@/shared/lib";
 
-// const ELEMENTS_PER_PAGE = 12;
+const ELEMENTS_PER_PAGE = 12;
 
 interface ICatalogViewProps {
   locale: string;
@@ -38,9 +38,8 @@ export async function CatalogView({
   locale,
   searchQuery,
   filters = {},
-  // Temporarily disabled pagination props
-  // page = 1,
-  // elements = ELEMENTS_PER_PAGE,
+  page = 1,
+  elements = ELEMENTS_PER_PAGE,
   viewMode = "grid",
   sort = "recommended",
   translations,
@@ -54,14 +53,14 @@ export async function CatalogView({
       settings: filters.settings?.join(","),
       platforms: filters.platforms?.join(","),
       features: filters.features?.join(","),
-      // page,
-      // elements,
+      page,
+      elements,
       sort,
     }),
     getFilters(locale),
   ]);
 
-  const { items: games } = gamesResponse;
+  const { items: games, pagination } = gamesResponse;
 
   // Need translations passed from parent
   const breadcrumbs: IBreadcrumbItem[] = [
@@ -123,25 +122,24 @@ export async function CatalogView({
             }}
           />
 
-          {/* Pagination (temporarily disabled) */}
-          {/* {(pagination.totalPages > 1 || games.length < pagination.totalItems) && ( */}
-          {/*   <Suspense fallback={null}> */}
-          {/*     <Pagination */}
-          {/*       currentPage={pagination.page} */}
-          {/*       totalPages={pagination.totalPages} */}
-          {/*       locale={locale} */}
-          {/*       basePath={ROUTES.CATALOG} */}
-          {/*       currentElements={elements} */}
-          {/*       elementsStep={ELEMENTS_PER_PAGE} */}
-          {/*       totalItems={pagination.totalItems} */}
-          {/*       translations={{ */}
-          {/*         loadMore: translations.loadMore, */}
-          {/*         back: translations.back, */}
-          {/*         next: translations.next, */}
-          {/*       }} */}
-          {/*     /> */}
-          {/*   </Suspense> */}
-          {/* )} */}
+          {(pagination.totalPages > 1 || pagination.elements < pagination.totalItems) && (
+            <Suspense fallback={null}>
+              <Pagination
+                currentPage={pagination.page}
+                totalPages={pagination.totalPages}
+                locale={locale}
+                basePath={ROUTES.CATALOG}
+                currentElements={elements}
+                elementsStep={ELEMENTS_PER_PAGE}
+                totalItems={pagination.totalItems}
+                translations={{
+                  loadMore: translations.loadMore,
+                  back: translations.back,
+                  next: translations.next,
+                }}
+              />
+            </Suspense>
+          )}
         </div>
       </div>
     </div>

@@ -1,7 +1,9 @@
 "use client";
 
-import { useCallback, useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { FilterX } from "lucide-react";
 import {
   Checkbox,
   Accordion,
@@ -24,7 +26,6 @@ export function GameFilters({
   appliedFilters = {},
   locale,
 }: IGameFiltersProps) {
-  const router = useRouter();
   const searchParams = useSearchParams();
 
   const [activeFilters, setActiveFilters] = useState<IAppliedFilters>({
@@ -55,53 +56,31 @@ export function GameFilters({
     }
   }, [appliedFilters.genres, appliedFilters.settings, appliedFilters.platforms, appliedFilters.features]);
 
-  const pushFiltersToUrl = useCallback(
-    (filters: IAppliedFilters) => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.delete("genres");
-      params.delete("settings");
-      params.delete("platforms");
-      params.delete("features");
-      params.delete("page");
-      // Clear search query when filters are applied
-      params.delete("q");
-      if (filters.genres?.length) params.set("genres", buildFilterParam(filters.genres));
-      if (filters.settings?.length) params.set("settings", buildFilterParam(filters.settings));
-      if (filters.platforms?.length) params.set("platforms", buildFilterParam(filters.platforms));
-      if (filters.features?.length) params.set("features", buildFilterParam(filters.features));
-      const queryString = params.toString();
-      router.push(`${localePath(locale, ROUTES.CATALOG)}${queryString ? `?${queryString}` : ""}`);
-    },
-    [router, searchParams, locale]
-  );
+  const getFiltersHref = (nextFilters: IAppliedFilters): string => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete("genres");
+    params.delete("settings");
+    params.delete("platforms");
+    params.delete("features");
+    params.delete("page");
+    // Keep previous behavior: clear search query when any filter set changes
+    params.delete("q");
+    if (nextFilters.genres?.length) params.set("genres", buildFilterParam(nextFilters.genres));
+    if (nextFilters.settings?.length) params.set("settings", buildFilterParam(nextFilters.settings));
+    if (nextFilters.platforms?.length) params.set("platforms", buildFilterParam(nextFilters.platforms));
+    if (nextFilters.features?.length) params.set("features", buildFilterParam(nextFilters.features));
+    const queryString = params.toString();
+    return `${localePath(locale, ROUTES.CATALOG)}${queryString ? `?${queryString}` : ""}`;
+  };
 
-  const handleFilterChange = useCallback(
-    (groupKey: keyof IAppliedFilters, value: string, checked: boolean) => {
-      const currentValues = activeFilters[groupKey] || [];
-      const newValues = checked
-        ? [...currentValues, value]
-        : currentValues.filter((v) => v !== value);
-      const next = { ...activeFilters, [groupKey]: newValues };
-      setActiveFilters(next);
-      pushFiltersToUrl(next);
-    },
-    [activeFilters, pushFiltersToUrl]
-  );
-
-  const clearFilters = useCallback(() => {
-    setActiveFilters({
-      genres: [],
-      settings: [],
-      platforms: [],
-      features: [],
-    });
-    // Preserve search query if any
+  const getClearFiltersHref = (): string => {
+    // Keep previous behavior: clear all params except q
     const params = new URLSearchParams();
     const q = searchParams.get("q");
     if (q) params.set("q", q);
     const queryString = params.toString();
-    router.push(`${localePath(locale, ROUTES.CATALOG)}${queryString ? `?${queryString}` : ""}`);
-  }, [router, locale, searchParams]);
+    return `${localePath(locale, ROUTES.CATALOG)}${queryString ? `?${queryString}` : ""}`;
+  };
 
   const filterGroups = [
     { key: "genres" as const, name: "Genres", options: filters.genres },
@@ -121,12 +100,16 @@ export function GameFilters({
       <div className="flex items-center justify-between">
         <h3 className="text-base font-black text-accent-purple">Filters</h3>
         {hasActiveFilters && (
-          <span
-            onClick={clearFilters}
-            className="cursor-pointer text-xs text-text-muted hover:text-text-primary"
+          <Link
+            href={getClearFiltersHref()}
+            scroll={false}
+            prefetch={false}
+            aria-label="Clear filters"
+            title="Clear filters"
+            className="inline-flex items-center justify-center rounded-md p-1 text-text-muted hover:text-text-primary hover:bg-bg-card-hover transition-colors"
           >
-            Clear all
-          </span>
+            <FilterX className="h-4 w-4" />
+          </Link>
         )}
       </div>
 
@@ -148,28 +131,33 @@ export function GameFilters({
                 {group.options.map((option) => {
                   const currentValues = activeFilters[group.key] || [];
                   const isChecked = currentValues.includes(option.slug);
+                  const nextValues = isChecked
+                    ? currentValues.filter((v) => v !== option.slug)
+                    : [...currentValues, option.slug];
+                  const nextFilters = { ...activeFilters, [group.key]: nextValues };
+                  const href = getFiltersHref(nextFilters);
 
                   return (
-                    <label
+                    <Link
                       key={option.slug}
+                      href={href}
+                      scroll={false}
+                      prefetch={false}
+                      onClick={() => setActiveFilters(nextFilters)}
                       className="flex cursor-pointer items-center gap-2 text-xs font-normal text-text-primary transition-colors hover:text-text-muted"
                     >
                       <Checkbox
                         id={`${group.key}-${option.slug}`}
                         checked={isChecked}
-                        onCheckedChange={(checked) =>
-                          handleFilterChange(
-                            group.key,
-                            option.slug,
-                            checked as boolean
-                          )
-                        }
+                        aria-hidden="true"
+                        tabIndex={-1}
+                        className="pointer-events-none"
                       />
                       <span className="flex-1">{option.name}</span>
                       <span className="text-xs text-text-secondary">
                         ({option.count})
                       </span>
-                    </label>
+                    </Link>
                   );
                 })}
               </div>

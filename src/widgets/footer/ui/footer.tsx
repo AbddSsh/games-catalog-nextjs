@@ -6,7 +6,6 @@ import { Gamepad2 } from "lucide-react";
 import { cn, localePath } from "@/shared/lib";
 import type { INavItem } from "@/shared/types";
 import type { ITranslations } from "@/entities/translations";
-import { RevalidateButtons } from "@/features/revalidate-buttons";
 import { ROUTES } from "@/shared/router";
 
 interface IFooterProps {
@@ -125,7 +124,6 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
             Saved games
           </Link>
         </div>
-        {/* <RevalidateButtons /> */}
         {/* Copyright */}
         <div className="mt-8 text-center text-xs text-text-muted">
           {translations.footer.copyright}

@@ -1,3 +1,6 @@
+import { apiGet } from "@/shared/api";
+import { CACHE_REVALIDATE } from "@/shared/config";
+
 export interface ILocaleConfig {
   code: string;
   language: string;
@@ -43,10 +46,8 @@ const MOCK_LOCALES: ILocaleConfig[] = [
 ];
 
 export async function getLocales(): Promise<ILocaleConfig[]> {
-  const { apiGet } = await import("@/shared/api");
-  const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
   return apiGet<ILocaleConfig[]>("/locales", {
-    next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.LOCALES] },
+    next: { revalidate: CACHE_REVALIDATE },
   });
   // МОК (раскомментировать если бэк не отдаёт локали):
   // return Promise.resolve(MOCK_LOCALES);

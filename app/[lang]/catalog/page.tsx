@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CatalogView } from "@/views/catalog";
 import { getTranslations } from "@/entities/translations";
-import { getLocales } from "@/entities/locale";
 import { getCanonicalUrl, getAlternatesLanguages, parseFilterParam } from "@/shared/lib";
 import type { TViewMode } from "@/features/view-mode-toggle";
 import type { TSortOption } from "@/features/sort-select";
@@ -18,13 +17,14 @@ interface ICatalogPageProps {
     settings?: string;
     platforms?: string;
     features?: string;
-    // Temporarily disabled pagination params
-    // page?: string;
-    // elements?: string;
+    page?: string;
+    elements?: string;
     view?: string;
     sort?: string;
   }>;
 }
+
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -50,18 +50,6 @@ export async function generateMetadata({
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    const locales = await getLocales();
-    // Фильтруем только активные локали
-    const activeLocales = locales.filter((l) => l.status === "active");
-    return activeLocales.map((l) => ({ lang: l.code }));
-  } catch (error) {
-    console.error("Error generating static params for catalog:", error);
-    return [];
-  }
-}
-
 export default async function CatalogPage({
   params,
   searchParams,
@@ -75,9 +63,12 @@ export default async function CatalogPage({
     features: parseFilterParam(search.features),
   };
 
-  // Temporarily disable pagination params parsing
-  // const page = search.page ? parseInt(search.page, 10) : 1;
-  // const elements = search.elements ? Math.max(12, parseInt(search.elements, 10)) : 12;
+  const parsedPage = search.page ? parseInt(search.page, 10) : NaN;
+  const parsedElements = search.elements ? parseInt(search.elements, 10) : NaN;
+  const page = Number.isFinite(parsedPage) ? Math.max(1, parsedPage) : 1;
+  const elements = Number.isFinite(parsedElements)
+    ? Math.max(12, parsedElements)
+    : 12;
   const viewMode = (search.view === "list" ? "list" : "grid") as TViewMode;
   const sort = (search.sort || "recommended") as TSortOption;
 
@@ -92,6 +83,8 @@ export default async function CatalogPage({
       locale={lang}
       searchQuery={search.q}
       filters={filters}
+      page={page}
+      elements={elements}
       viewMode={viewMode}
       sort={sort}
       translations={{
