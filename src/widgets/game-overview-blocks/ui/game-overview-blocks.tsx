@@ -11,6 +11,7 @@ import {
 } from "@/shared/ui";
 import {
   ENUM_GO_KIND,
+  type ENUM_GO_KIND_TYPE,
   type TGameOverviewBlock,
   type IBlockSectionHeading,
   type IBlockTitleBody,
@@ -27,30 +28,42 @@ interface IGameOverviewBlocksProps {
 }
 
 export function GameOverviewBlocks({ blocks, trackingCtaUrl }: IGameOverviewBlocksProps) {
-  const SECTION_HEADING = blocks.find((block) => block.kind === ENUM_GO_KIND.SECTION_HEADING) as IBlockSectionHeading | undefined;
-  const TITLE_BODY = blocks.find((block) => block.kind === ENUM_GO_KIND.TITLE_BODY) as IBlockTitleBody | undefined;
-  const CTA_BANNER = blocks.find((block) => block.kind === ENUM_GO_KIND.CTA_BANNER) as IBlockCtaBanner | undefined;
-  const STEPS_ROW = blocks.find((block) => block.kind === ENUM_GO_KIND.STEPS_ROW) as IBlockStepsRow | undefined;
-
-  const USED_IN_TOP_GROUP = new Set<TGameOverviewBlock>([
-    ...(SECTION_HEADING ? [SECTION_HEADING] : []),
-    ...(TITLE_BODY ? [TITLE_BODY] : []),
-    ...(CTA_BANNER ? [CTA_BANNER] : []),
-    ...(STEPS_ROW ? [STEPS_ROW] : []),
+  const TOP_GROUP_KINDS = new Set<ENUM_GO_KIND_TYPE>([
+    ENUM_GO_KIND.SECTION_HEADING,
+    ENUM_GO_KIND.TITLE_BODY,
+    ENUM_GO_KIND.PARAGRAPH,
+    ENUM_GO_KIND.CTA_BANNER,
+    ENUM_GO_KIND.STEPS_ROW,
+  ]);
+  const TOP_GROUP_END_KINDS = new Set<ENUM_GO_KIND_TYPE>([
+    ENUM_GO_KIND.FAQ_SECTION,
+    ENUM_GO_KIND.BOTTOM_CTA,
   ]);
 
+  const TOP_GROUP_BLOCKS: TGameOverviewBlock[] = [];
+  let TOP_GROUP_ENDED = false;
+
+  for (const block of blocks) {
+    if (TOP_GROUP_END_KINDS.has(block.kind)) {
+      TOP_GROUP_ENDED = true;
+      continue;
+    }
+
+    if (!TOP_GROUP_ENDED && TOP_GROUP_KINDS.has(block.kind)) {
+      TOP_GROUP_BLOCKS.push(block);
+    }
+  }
+
+  const USED_IN_TOP_GROUP = new Set(TOP_GROUP_BLOCKS);
   const REMAINING_BLOCKS = blocks.filter((block) => !USED_IN_TOP_GROUP.has(block));
 
   return (
     <div className="space-y-2.5">
-      {(SECTION_HEADING || TITLE_BODY || CTA_BANNER || STEPS_ROW) && (
+      {TOP_GROUP_BLOCKS.length > 0 && (
         <div className="space-y-6 rounded-[13px] bg-[#0C0E1A] p-6">
-          {SECTION_HEADING && <SectionHeading block={SECTION_HEADING} />}
-          {TITLE_BODY && <TitleBody block={TITLE_BODY} />}
-          {CTA_BANNER && (
-            <CtaBanner block={CTA_BANNER} trackingCtaUrl={trackingCtaUrl} />
-          )}
-          {STEPS_ROW && <StepsRow block={STEPS_ROW} />}
+          {TOP_GROUP_BLOCKS.map((block, i) => (
+            <OverviewBlock key={`top-${block.kind}-${i}`} block={block} trackingCtaUrl={trackingCtaUrl} />
+          ))}
         </div>
       )}
 

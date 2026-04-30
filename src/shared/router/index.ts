@@ -1,1 +1,8 @@
-export { ROUTES, type ROUTES_TYPE, getCategoryRoute, getGameRoute } from "./routes";
+export {
+  ROUTES,
+  type ROUTES_TYPE,
+  getCategoryRoute,
+  getGameRoute,
+  getBlogRoute,
+  getBlogArticleRoute,
+} from "./routes";

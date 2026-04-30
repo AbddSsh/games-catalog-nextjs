@@ -105,3 +105,23 @@ export async function getAllGameSlugs(): Promise<string[]> {
     return [];
   }
 }
+
+export async function getTryThisWeekGames(
+  locale: string
+): Promise<IGameBase[]> {
+  try {
+    const response = await apiGet<IPaginatedResponse<IGameBase>>("/games", {
+      locale,
+      params: {
+        page: 1,
+        elements: 3,
+        sort: "priority",
+      },
+      next: { revalidate: CACHE_REVALIDATE },
+    });
+
+    return response.items;
+  } catch {
+    return [];
+  }
+}
