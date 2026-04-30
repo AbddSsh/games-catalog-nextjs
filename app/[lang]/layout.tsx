@@ -10,7 +10,6 @@ import "@/shared/styles/globals.scss";
 import NextTopLoader from "nextjs-toploader";
 import Head from "next/head";
 import { Suspense } from "react";
-import Script from "next/script";
 import { ScrollTopButton } from "@/widgets/scroll-top";
 import { LocaleIntent } from "@/features/locale-intent";
 
@@ -25,18 +24,6 @@ interface ILangLayoutProps {
   params: Promise<{
     lang: string;
   }>;
-}
-
-export async function generateStaticParams() {
-  try {
-    const locales = await getLocales();
-    // Фильтруем только активные локали
-    const activeLocales = locales.filter((l) => l.status === "active");
-    return activeLocales.map((l) => ({ lang: l.code }));
-  } catch (error) {
-    console.error("Error generating static params for layout:", error);
-    return [];
-  }
 }
 
 export async function generateMetadata({

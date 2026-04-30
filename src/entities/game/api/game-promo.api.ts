@@ -1,5 +1,7 @@
 import type { IPaginatedResponse } from "@/shared/types";
 import type { IGameBase, TGameOverviewBlock } from "../model/game.types";
+import { apiGet } from "@/shared/api";
+import { CACHE_REVALIDATE } from "@/shared/config";
 
 export interface IGamePromo extends IGameBase {
   videoUrl: string | null;
@@ -32,8 +34,6 @@ export interface IGetPromoGamesParams {
 export async function getPromoGames(
   params: IGetPromoGamesParams
 ): Promise<IPaginatedResponse<IGamePromo>> {
-  const { apiGet } = await import("@/shared/api");
-  const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
   const { locale, page, elements, option } = params;
 
   return apiGet<IPaginatedResponse<IGamePromo>>("/promo/games", {
@@ -43,7 +43,7 @@ export async function getPromoGames(
       ...(elements && { elements }),
       ...(option && { option }),
     },
-    next: { revalidate: CACHE_REVALIDATE, tags: [CACHE_TAGS.PROMO_GAMES] },
+    next: { revalidate: CACHE_REVALIDATE },
   });
 }
 
@@ -52,13 +52,10 @@ export async function getPromoGameBySlug(
   locale: string
 ): Promise<IGamePromoDetail | null> {
   try {
-    const { apiGet } = await import("@/shared/api");
-    const { CACHE_REVALIDATE, CACHE_TAGS } = await import("@/shared/config/cache.config");
     return await apiGet<IGamePromoDetail>(`/promo/games/${slug}`, {
       locale,
       next: {
         revalidate: CACHE_REVALIDATE,
-        tags: [CACHE_TAGS.PROMO_GAMES, CACHE_TAGS.PROMO_GAME(slug)],
       },
     });
   } catch {

@@ -1,6 +1,7 @@
 export const ROUTES = {
   HOME: "/",
   CATALOG: "/catalog",
+  BLOG: "/blog",
   CATEGORY: "/category",
   GAME: "/game",
   PROMO: "/promo",
@@ -17,6 +18,14 @@ export function getCategoryRoute(slug: string): string {
 
 export function getGameRoute(slug: string): string {
   return `${ROUTES.GAME}/${slug}`;
+}
+
+export function getBlogRoute(): string {
+  return ROUTES.BLOG;
+}
+
+export function getBlogArticleRoute(slug: string): string {
+  return `${ROUTES.BLOG}/${slug}`;
 }
 
 export function getPromoRoute(): string {

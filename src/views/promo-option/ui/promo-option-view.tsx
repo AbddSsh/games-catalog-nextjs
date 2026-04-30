@@ -1,12 +1,16 @@
-import { getPromoGames, getGameBySlug } from "@/entities/game";
+import { getPromoGames } from "@/entities/game";
 import { notFound } from "next/navigation";
 import { PromoCard, PromoFeaturedCard } from "@/widgets/promo";
 import { CatalogCta } from "@/widgets/catalog-cta";
 import { getHomePage } from "@/entities/page";
+import { Pagination } from "@/features/pagination";
+import { ROUTES } from "@/shared/router";
 
 interface IPromoOptionViewProps {
   locale: string;
   option: string;
+  page: number;
+  elements: number;
   translations: {
     loadMore: string;
     back: string;
@@ -30,13 +34,17 @@ function formatOptionTitle(option: string): string {
 export async function PromoOptionView({
   locale,
   option,
+  page,
+  elements,
   translations,
 }: IPromoOptionViewProps) {
   let items: Awaited<ReturnType<typeof getPromoGames>>["items"] = [];
+  let pagination: Awaited<ReturnType<typeof getPromoGames>>["pagination"] | null = null;
 
   try {
-    const response = await getPromoGames({ locale, option });
+    const response = await getPromoGames({ locale, option, page, elements });
     items = response.items;
+    pagination = response.pagination;
   } catch (error) {
     const status = error instanceof Error
       ? Number(error.message.match(/API Error\s+(\d+)/)?.[1])
@@ -74,6 +82,20 @@ export async function PromoOptionView({
           <PromoCard key={game.id} game={game} locale={locale} translations={promoTranslations} />
         ))}
       </div>
+
+      {pagination && (pagination.totalPages > 1 || pagination.elements < pagination.totalItems) && (
+        <Pagination
+          currentPage={pagination.page}
+          totalPages={pagination.totalPages}
+          locale={locale}
+          basePath={`${ROUTES.PROMO}/${option}`}
+          currentElements={elements}
+          elementsStep={6}
+          totalItems={pagination.totalItems}
+          translations={translations}
+        />
+      )}
+
       {/* Catalog CTA */}
       <CatalogCta data={pageConfig.catalogCta} locale={locale} />
     </section>

@@ -38,6 +38,7 @@ export {
   searchGames,
   getGamesByFilter,
   getAllGameSlugs,
+  getTryThisWeekGames,
 } from "./api/game.api";
 
 export type {

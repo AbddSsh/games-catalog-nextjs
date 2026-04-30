@@ -4,10 +4,12 @@ import { ROUTES } from "@/shared/router";
 import { getLocales } from "@/entities/locale";
 import { getAllCategorySlugs } from "@/entities/category";
 import { getAllGameSlugs } from "@/entities/game";
+import { getAllBlogSlugs } from "@/entities/blog";
 
 const STATIC_PATH_SEGMENTS = [
   "", // home
   ROUTES.CATALOG.replace(/^\//, ""), // catalog
+  ROUTES.BLOG.replace(/^\//, ""), // blog
   ROUTES.PROMO.replace(/^\//, ""), // promo
   ROUTES.SAVED.replace(/^\//, ""), // saved
   ROUTES.PRIVACY.replace(/^\//, ""), // privacy
@@ -28,10 +30,11 @@ function toSitemapEntry(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const [locales, categorySlugs, gameSlugs] = await Promise.all([
+  const [locales, categorySlugs, gameSlugs, blogSlugs] = await Promise.all([
     getLocales(),
     getAllCategorySlugs(),
     getAllGameSlugs(),
+    getAllBlogSlugs(),
   ]);
 
   const activeLocales = locales.filter((l) => l.status === "active");
@@ -57,6 +60,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     for (const slug of gameSlugs) {
       const pathSegments = `${ROUTES.GAME.replace(/^\//, "")}/${slug}`;
+      entries.push(toSitemapEntry(getCanonicalUrl(lang, pathSegments), 0.6));
+    }
+
+    for (const slug of blogSlugs) {
+      const pathSegments = `${ROUTES.BLOG.replace(/^\//, "")}/${slug}`;
       entries.push(toSitemapEntry(getCanonicalUrl(lang, pathSegments), 0.6));
     }
   }

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { getCategories } from "@/entities/category";
-import { getGames } from "@/entities/game";
+import { getAllGameSlugs, getGames } from "@/entities/game";
+import { getAllBlogSlugs } from "@/entities/blog";
 import { ROUTES, getCategoryRoute, getGameRoute } from "@/shared/router";
 import { localePath } from "@/shared/lib";
 
@@ -11,12 +12,25 @@ interface ISitemapPageProps {
 }
 
 export async function SitemapPage({ locale }: ISitemapPageProps) {
-  const [categories, gamesResponse] = await Promise.all([
+  const [categories, gamesResponse, allGameSlugs, allBlogSlugs] = await Promise.all([
     getCategories(locale),
     getGames({ locale, elements: SITEMAP_GAMES_LIMIT }),
+    getAllGameSlugs(),
+    getAllBlogSlugs(),
   ]);
 
   const games = gamesResponse?.items ?? [];
+  const gameNameBySlug = new Map(games.map((game) => [game.slug, game.name]));
+  const uniqueGameSlugs = Array.from(new Set([
+    ...allGameSlugs,
+    ...games.map((game) => game.slug),
+  ]));
+
+  const formatSlugLabel = (slug: string): string =>
+    slug
+      .split("-")
+      .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+      .join(" ");
 
   return (
     <section className="flex flex-col gap-8 pt-[40px]">
@@ -45,6 +59,12 @@ export async function SitemapPage({ locale }: ISitemapPageProps) {
           href={localePath(locale, ROUTES.PROMO)}
         >
           Promo games
+        </Link>
+        <Link
+          className="w-fit font-medium text-accent-purple hover:underline"
+          href={localePath(locale, ROUTES.BLOG)}
+        >
+          Blog
         </Link>
         <Link
           className="w-fit font-medium text-accent-purple hover:underline"
@@ -86,19 +106,39 @@ export async function SitemapPage({ locale }: ISitemapPageProps) {
         </div>
       )}
 
-      {games.length > 0 && (
+      {allBlogSlugs.length > 0 && (
+        <div className="flex flex-col gap-2 text-sm">
+          <h2 className="text-xl font-medium uppercase text-text-primary">
+            Blog
+          </h2>
+          <ul className="flex flex-col gap-1">
+            {allBlogSlugs.map((slug) => (
+              <li key={slug}>
+                <Link
+                  className="w-fit font-medium text-accent-purple hover:underline"
+                  href={localePath(locale, `${ROUTES.BLOG}/${slug}`)}
+                >
+                  {formatSlugLabel(slug)}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {uniqueGameSlugs.length > 0 && (
         <div className="flex flex-col gap-2 text-sm">
           <h2 className="text-xl font-medium uppercase text-text-primary">
             Games
           </h2>
           <ul className="flex flex-col gap-1">
-            {games.map((game) => (
-              <li key={game.id}>
+            {uniqueGameSlugs.map((slug) => (
+              <li key={slug}>
                 <Link
                   className="w-fit font-medium text-accent-purple hover:underline"
-                  href={localePath(locale, getGameRoute(game.slug))}
+                  href={localePath(locale, getGameRoute(slug))}
                 >
-                  {game.name}
+                  {gameNameBySlug.get(slug) ?? formatSlugLabel(slug)}
                 </Link>
               </li>
             ))}

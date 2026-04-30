@@ -78,7 +78,7 @@ export function HeaderNav({ locale, items, translations }: IHeaderNavProps) {
     : DEFAULT_NAV_ITEMS;
 
   return (
-    <nav className="grid md:grid-cols-[1fr_repeat(3,0.5fr)] grid-cols-2 items-center md:gap-4 gap-2 justify-items-end">
+    <nav className="grid md:grid-cols-[1fr_repeat(4,0.5fr)] grid-cols-2 items-center md:gap-4 gap-2 justify-items-end">
       {navItems.map((item, index) => {
         const href = localePath(locale, item.href);
         const isActive = isLinkActive(item.href, pathname, searchParams);
