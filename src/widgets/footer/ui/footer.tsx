@@ -106,6 +106,12 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
             Privacy Policy
           </Link>
           <Link
+            href={localePath(locale, ROUTES.CONTACT_US)}
+            className="text-[12px] font-black text-text-primary transition-colors hover:text-accent-purple"
+          >
+            Contact Us
+          </Link>
+          <Link
             href={localePath(locale, ROUTES.SITEMAP)}
             className="text-[12px] font-black text-text-primary transition-colors hover:text-accent-purple"
           >

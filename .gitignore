@@ -50,3 +50,10 @@ next-env.d.ts
 
 # blog dogs
 /blog-dogs
+
+# vscode
+.vscode/*
+
+# claude
+CLAUDE.md
+.claude/*

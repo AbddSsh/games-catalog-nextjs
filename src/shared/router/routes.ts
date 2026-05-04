@@ -7,6 +7,7 @@ export const ROUTES = {
   PROMO: "/promo",
   SAVED: "/saved",
   PRIVACY: "/privacy",
+  CONTACT_US: "/contact-us",
   SITEMAP: "/sitemap",
 } as const;
 
