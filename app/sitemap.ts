@@ -13,6 +13,7 @@ const STATIC_PATH_SEGMENTS = [
   ROUTES.PROMO.replace(/^\//, ""), // promo
   ROUTES.SAVED.replace(/^\//, ""), // saved
   ROUTES.PRIVACY.replace(/^\//, ""), // privacy
+  ROUTES.CONTACT_US.replace(/^\//, ""), // contact-us
   ROUTES.SITEMAP.replace(/^\//, ""), // sitemap
 ] as const;
 
