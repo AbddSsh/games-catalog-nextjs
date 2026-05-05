@@ -9,6 +9,7 @@ export type {
   ITranslationsMeta,
   ITranslationsCountry,
   ITranslationsPromo,
+  ITranslationsBlog,
   ITranslations,
 } from "./model/translations.types";
 

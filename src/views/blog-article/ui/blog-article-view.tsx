@@ -1,8 +1,7 @@
-import type { ICategoryCard } from "@/entities/category";
-import type { IGameBase } from "@/entities/game";
 import type { IBlogArticleCard, IBlogArticleDetail } from "@/entities/blog";
-import { BlogSidebar } from "@/widgets/blog-sidebar";
+import type { ITranslationsBlog } from "@/entities/translations";
 import { BlogReadersChoice } from "@/widgets/blog-readers-choice";
+import { BlogArticleRecommended } from "@/widgets/blog-article-recommended";
 import { BlogArticleContent } from "@/widgets/blog-article-content";
 import { Breadcrumbs } from "@/shared/ui";
 import { getBlogRoute } from "@/shared/router";
@@ -12,20 +11,18 @@ interface IBlogArticleViewProps {
   locale: string;
   article: IBlogArticleDetail;
   readersChoice: IBlogArticleCard[];
-  categories: ICategoryCard[];
-  tryThisWeek: IGameBase[];
+  translations: ITranslationsBlog;
 }
 
 export function BlogArticleView({
   locale,
   article,
   readersChoice,
-  categories,
-  tryThisWeek,
+  translations,
 }: IBlogArticleViewProps) {
   const breadcrumbs = [
     { label: "Home", href: localePath(locale) },
-    { label: "Blog", href: localePath(locale, getBlogRoute()) },
+    { label: translations.title, href: localePath(locale, getBlogRoute()) },
     { label: article.articleHeader.title },
   ];
 
@@ -35,14 +32,19 @@ export function BlogArticleView({
 
       <div className="grid gap-6 laptop:grid-cols-[minmax(0,1fr)_300px] laptop:gap-5 desktop:grid-cols-[minmax(0,1fr)_320px]">
         <BlogArticleContent article={article} />
-        <BlogSidebar
-          locale={locale}
-          categories={categories}
-          tryThisWeek={tryThisWeek}
-        />
+        <aside className="space-y-3">
+          <BlogArticleRecommended
+            locale={locale}
+            recommendedArticles={article.recommendedArticles}
+          />
+        </aside>
       </div>
 
-      <BlogReadersChoice locale={locale} items={readersChoice} />
+      <BlogReadersChoice
+        locale={locale}
+        items={readersChoice}
+        title={translations.readersChoiceSection.title}
+      />
     </div>
   );
 }

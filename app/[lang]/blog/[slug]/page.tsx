@@ -6,11 +6,10 @@ import {
   getBlogArticleBySlug,
   getBlogReadersChoice,
 } from "@/entities/blog";
-import { getCategories } from "@/entities/category";
-import { getTryThisWeekGames } from "@/entities/game";
 import { getAlternatesLanguages, getCanonicalUrl } from "@/shared/lib";
 import { ROUTES } from "@/shared/router";
 import { getLocales } from "@/entities/locale";
+import { getTranslations } from "@/entities/translations";
 
 interface IBlogArticlePageProps {
   params: Promise<{
@@ -72,11 +71,10 @@ export default async function BlogArticlePage({
 }: IBlogArticlePageProps) {
   const { lang, slug } = await params;
 
-  const [article, readersChoice, categories, tryThisWeek] = await Promise.all([
+  const [article, readersChoice, translations] = await Promise.all([
     getBlogArticleBySlug(slug, lang),
     getBlogReadersChoice(lang, 5).then((response) => response.items),
-    getCategories(lang),
-    getTryThisWeekGames(lang),
+    getTranslations(lang),
   ]);
 
   if (!article) {
@@ -88,8 +86,25 @@ export default async function BlogArticlePage({
       locale={lang}
       article={article}
       readersChoice={readersChoice}
-      categories={categories}
-      tryThisWeek={tryThisWeek}
+      translations={translations?.blog ?? {
+        title: "Blog",
+        allArticles: "All Articles",
+        findGameSection: {
+          title: "Find your game",
+          subtitle: "What genre do you prefer?",
+          ctaText: "Show me games",
+        },
+        gamesSection: {
+          title: "Try this week",
+        },
+        sortModal: {},
+        readersChoiceSection: {
+          title: "Reader's Choice",
+        },
+        searchString: {
+          placeholder: "Search articles",
+        },
+      }}
     />
   );
 }

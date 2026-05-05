@@ -1,13 +1,5 @@
 import type { IPaginatedResponse, ISeoMeta } from "@/shared/types";
 
-export const ENUM_BLOG_SORT = {
-  PUBLISHED_AT_DESC: "publishedAt_desc",
-  PUBLISHED_AT_ASC: "publishedAt_asc",
-  REACTIONS_DESC: "reactions_desc",
-} as const;
-
-export type ENUM_BLOG_SORT_TYPE = typeof ENUM_BLOG_SORT[keyof typeof ENUM_BLOG_SORT];
-
 export const ENUM_BLOG_ERROR_CODE = {
   MISSING_LOCALE: "MISSING_LOCALE",
   BLOG_ARTICLE_NOT_FOUND: "BLOG_ARTICLE_NOT_FOUND",
@@ -53,6 +45,19 @@ export interface IBlogArticleCard {
   rating: number;
   reactionsCount: number;
   chip?: IBlogChip;
+}
+
+export interface IBlogArticleRecommendedItem {
+  slug: string;
+  articleTitle: string;
+  articleSubTitle: string;
+  bannerImage?: string;
+  rating: number;
+}
+
+export interface IBlogArticleRecommendedSection {
+  title: string;
+  items: IBlogArticleRecommendedItem[];
 }
 
 export interface IBlogListHero {
@@ -210,6 +215,7 @@ export type TBlogArticleBodyBlock =
 export interface IBlogArticleDetail {
   slug: string;
   articleHeader: IBlogArticleHeader;
+  recommendedArticles?: IBlogArticleRecommendedSection;
   articleBody: {
     blocks: TBlogArticleBodyBlock[];
   };
@@ -223,5 +229,5 @@ export interface IGetBlogArticlesListParams {
   q?: string;
   page?: number;
   elements?: number;
-  sort?: ENUM_BLOG_SORT_TYPE;
+  sort?: string;
 }

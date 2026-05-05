@@ -8,19 +8,26 @@ interface IBlogSidebarProps {
   locale: string;
   categories: ICategoryCard[];
   tryThisWeek: IGameBase[];
+  findGameSectionTitle: string;
+  findGameSectionSubtitle: string;
+  findGameSectionCtaText: string;
+  gamesSectionTitle: string;
 }
 
 export function BlogSidebar({
   locale,
   categories,
   tryThisWeek,
+  findGameSectionTitle,
+  findGameSectionSubtitle,
+  findGameSectionCtaText,
+  gamesSectionTitle,
 }: IBlogSidebarProps) {
   return (
-    // laptop:sticky top-[140px] laptop:self-start
     <aside className="space-y-3">
       <div className="space-y-4 rounded-[16px] border border-[#A869E442] bg-[linear-gradient(120.81deg,rgba(168,105,228,0.07)_6.11%,rgba(255,255,255,0.07)_95.17%),linear-gradient(270deg,rgba(21,21,52,0.79)_0%,#151534_97.51%)] p-5">
-        <h3 className="text-[18px] font-bold uppercase leading-none text-[#B944DB]">Find your game</h3>
-        <p className="text-[17px] font-normal leading-none text-[#DEDEDE]">What genre do you prefer?</p>
+        <h3 className="text-[18px] font-bold uppercase leading-none text-[#B944DB]">{findGameSectionTitle}</h3>
+        <p className="text-[17px] font-normal leading-none text-[#DEDEDE]">{findGameSectionSubtitle}</p>
         <div className="flex flex-wrap gap-1.5">
           {categories.slice(0, 8).map((category) => (
             <Link
@@ -36,12 +43,12 @@ export function BlogSidebar({
           href={localePath(locale, ROUTES.CATALOG)}
           className="block rounded-full bg-[#C12FC7] py-2.5 text-center text-[16.8px] font-bold leading-none text-white transition-opacity hover:opacity-90"
         >
-          Show me games
+          {findGameSectionCtaText}
         </Link>
       </div>
 
       <div className="space-y-4 rounded-[16px] border border-[#A869E442] bg-[linear-gradient(120.81deg,rgba(168,105,228,0.07)_6.11%,rgba(255,255,255,0.07)_95.17%)] p-5">
-        <h3 className="text-[18px] font-bold leading-none text-[#6DD963]">Try this week</h3>
+        <h3 className="text-[18px] font-bold leading-none text-[#6DD963]">{gamesSectionTitle}</h3>
         <div className="space-y-2.5">
           {tryThisWeek.map((game) => (
             <Link
