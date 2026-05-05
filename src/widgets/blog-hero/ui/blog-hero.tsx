@@ -8,6 +8,7 @@ import { Input } from "@/shared/ui";
 interface IBlogHeroProps {
   locale: string;
   title: string;
+  searchPlaceholder: string;
   chips: IBlogChip[];
   activeCategory?: string;
   searchQuery?: string;
@@ -31,6 +32,7 @@ function getChipHref(locale: string, chipSlug: string, searchQuery?: string): st
 export function BlogHero({
   locale,
   title,
+  searchPlaceholder,
   chips,
   activeCategory,
   searchQuery,
@@ -84,7 +86,7 @@ export function BlogHero({
                     name="q"
                     defaultValue={searchQuery}
                     disabled
-                    placeholder="Search articles"
+                    placeholder={searchPlaceholder}
                     className="peer h-[37px] rounded-[9px] border border-[#924293] bg-[#D9D9D903] px-5 pr-10 text-sm tracking-wide text-[#ab87cf] shadow-[0_0_4px_0_#D2189A,inset_0_0_8.1px_0_#D2189A] placeholder:text-[#ab87cf] focus-visible:ring-0 focus-visible:ring-offset-0 disabled:cursor-not-allowed disabled:opacity-60 [appearance:textfield] [&::-webkit-search-cancel-button]:appearance-none [&::-webkit-search-decoration]:appearance-none"
                   />
                   <Search className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#ab87cf] peer-[:not(:placeholder-shown)]:hidden" />

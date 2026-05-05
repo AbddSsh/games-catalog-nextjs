@@ -1,6 +1,7 @@
 import type { ICategoryCard } from "@/entities/category";
 import type { IGameBase } from "@/entities/game";
-import type { IBlogArticleCard, IBlogListResponse, ENUM_BLOG_SORT_TYPE } from "@/entities/blog";
+import type { IBlogArticleCard, IBlogListResponse } from "@/entities/blog";
+import type { ITranslationsBlog } from "@/entities/translations";
 import { BlogHero } from "@/widgets/blog-hero";
 import { BlogList } from "@/widgets/blog-list";
 import { BlogSidebar } from "@/widgets/blog-sidebar";
@@ -18,7 +19,8 @@ interface IBlogViewProps {
   tryThisWeek: IGameBase[];
   activeCategory?: string;
   searchQuery?: string;
-  currentSort?: ENUM_BLOG_SORT_TYPE;
+  currentSort?: string;
+  translations: ITranslationsBlog;
 }
 
 export function BlogView({
@@ -30,11 +32,12 @@ export function BlogView({
   activeCategory,
   searchQuery,
   currentSort,
+  translations,
 }: IBlogViewProps) {
   const isCategoryMode = Boolean(activeCategory);
   const breadcrumbs = [
-    { label: "Home", href: localePath(locale) },
-    { label: "Blog", href: localePath(locale, ROUTES.BLOG) },
+    { label: "Home", href: localePath(locale) }, // TODO: move to translations.common/home scope when backend provides it
+    { label: translations.title, href: localePath(locale, ROUTES.BLOG) },
   ];
 
   return (
@@ -43,7 +46,8 @@ export function BlogView({
 
       <BlogHero
         locale={locale}
-        title={listData.heroTitle}
+        title={translations.title}
+        searchPlaceholder={translations.searchString.placeholder}
         chips={listData.chips}
         activeCategory={activeCategory}
         searchQuery={searchQuery}
@@ -58,7 +62,8 @@ export function BlogView({
           <BlogList
             locale={locale}
             items={listData.items}
-            title={isCategoryMode ? "" : "All Articles"}
+            title={isCategoryMode ? "" : translations?.allArticles ?? "All Articles"}
+            sortModal={translations.sortModal}
             currentSort={currentSort}
             activeCategory={activeCategory}
             searchQuery={searchQuery}
@@ -77,10 +82,20 @@ export function BlogView({
           locale={locale}
           categories={categories}
           tryThisWeek={tryThisWeek}
+          findGameSectionTitle={translations.findGameSection.title}
+          findGameSectionSubtitle={translations.findGameSection.subtitle}
+          findGameSectionCtaText={translations.findGameSection.ctaText}
+          gamesSectionTitle={translations.gamesSection.title}
         />
       </div>
 
-      {!isCategoryMode ? <BlogReadersChoice locale={locale} items={readersChoice} /> : null}
+      {!isCategoryMode ? (
+        <BlogReadersChoice
+          locale={locale}
+          items={readersChoice}
+          title={translations.readersChoiceSection.title}
+        />
+      ) : null}
     </div>
   );
 }

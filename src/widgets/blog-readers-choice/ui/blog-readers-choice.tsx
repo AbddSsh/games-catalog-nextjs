@@ -8,9 +8,10 @@ import { useCallback, useEffect, useState } from "react";
 interface IBlogReadersChoiceProps {
   locale: string;
   items: IBlogArticleCard[];
+  title: string;
 }
 
-export function BlogReadersChoice({ locale, items }: IBlogReadersChoiceProps) {
+export function BlogReadersChoice({ locale, items, title }: IBlogReadersChoiceProps) {
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: false,
@@ -41,7 +42,7 @@ export function BlogReadersChoice({ locale, items }: IBlogReadersChoiceProps) {
   return (
     <section className="space-y-5">
       <div className="flex items-center justify-between gap-8">
-        <h2 className="text-[34px] font-extrabold leading-none text-text-primary">Reader&apos;s Choice</h2>
+        <h2 className="text-[34px] font-extrabold leading-none text-text-primary">{title}</h2>
         <div className="flex items-center gap-2">
           <button
             type="button"

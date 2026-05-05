@@ -77,6 +77,40 @@ export default async function LangLayout({
   return (
     <html lang={locale} className={`dark ${nunitoSans.variable}`}>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
+window.gtag = window.gtag || function(){window.dataLayer.push(arguments);};
+try {
+  var c = JSON.parse(localStorage.getItem('ggg_cookie_consent') || '{}');
+  window.gtag('consent', 'default', {
+    analytics_storage: c.analytics ? 'granted' : 'denied',
+    ad_storage: c.marketing ? 'granted' : 'denied',
+    ad_user_data: c.marketing ? 'granted' : 'denied',
+    ad_personalization: c.marketing ? 'granted' : 'denied',
+    wait_for_update: 500
+  });
+  window.dataLayer.push({
+    event: 'consent_init',
+    consent_analytics: c.analytics ? 'granted' : 'denied',
+    consent_marketing: c.marketing ? 'granted' : 'denied'
+  });
+} catch (e) {
+  window.gtag('consent', 'default', {
+    analytics_storage: 'denied',
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    wait_for_update: 500
+  });
+  window.dataLayer.push({
+    event: 'consent_init',
+    consent_analytics: 'denied',
+    consent_marketing: 'denied'
+  });
+}`,
+          }}
+        />
         {/* Google Tag Manager - as high in head as possible */}
         <script
           dangerouslySetInnerHTML={{

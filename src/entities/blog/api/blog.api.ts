@@ -29,10 +29,20 @@ export async function getBlogArticleBySlug(
   locale: string
 ): Promise<IBlogArticleDetail | null> {
   try {
-    return await apiGet<IBlogArticleDetail>(`/blog/${slug}`, {
+    const response = await apiGet<IBlogArticleDetail>(`/blog/${slug}`, {
       locale,
       next: { revalidate: CACHE_REVALIDATE },
     });
+
+    return {
+      ...response,
+      recommendedArticles: response.recommendedArticles
+        ? {
+            ...response.recommendedArticles,
+            items: response.recommendedArticles.items ?? [],
+          }
+        : undefined,
+    };
   } catch {
     return null;
   }

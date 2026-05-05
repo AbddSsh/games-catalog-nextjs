@@ -65,6 +65,9 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
   
   // Use provided navigation or default
   const navItems = navigation.length > 0 ? navigation : DEFAULT_FOOTER_NAV;
+  const handleCookieSettingsClick = () => {
+    window.dispatchEvent(new CustomEvent("open-cookie-settings"));
+  };
 
   return (
     <footer className="bg-bg-main w-full">
@@ -129,6 +132,13 @@ export function Footer({ locale, navigation = [], translations }: IFooterProps) 
           >
             Saved games
           </Link>
+          <button
+            type="button"
+            onClick={handleCookieSettingsClick}
+            className="text-[12px] font-black text-text-primary transition-colors hover:text-accent-purple"
+          >
+            Cookie Settings
+          </button>
         </div>
         {/* Copyright */}
         <div className="mt-8 text-center text-xs text-text-muted">

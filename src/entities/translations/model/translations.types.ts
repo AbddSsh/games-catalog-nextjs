@@ -121,6 +121,26 @@ export interface ITranslationsPromo {
   play: string;
 }
 
+export interface ITranslationsBlog {
+  title: string;
+  allArticles: string;
+  findGameSection: {
+    title: string;
+    subtitle: string;
+    ctaText: string;
+  };
+  gamesSection: {
+    title: string;
+  };
+  sortModal: Record<string, string>;
+  readersChoiceSection: {
+    title: string;
+  };
+  searchString: {
+    placeholder: string;
+  };
+}
+
 // Complete translations object (GET /api/translations/:locale)
 export interface ITranslations {
   locale: string;
@@ -134,4 +154,5 @@ export interface ITranslations {
   meta: ITranslationsMeta;
   country: ITranslationsCountry;
   promo: ITranslationsPromo;
+  blog: ITranslationsBlog;
 }

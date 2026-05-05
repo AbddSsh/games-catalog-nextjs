@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BlogView } from "@/views/blog";
 import {
-  ENUM_BLOG_SORT,
   getBlogArticlesList,
   getBlogReadersChoice,
 } from "@/entities/blog";
@@ -68,11 +67,12 @@ export default async function BlogPage({
     : Number.isFinite(parsedElements) && parsedElements > 0
       ? parsedElements
       : BLOG_DEFAULT_ELEMENTS;
-  const sort = search.sort === ENUM_BLOG_SORT.PUBLISHED_AT_ASC
-    ? ENUM_BLOG_SORT.PUBLISHED_AT_ASC
-    : search.sort === ENUM_BLOG_SORT.REACTIONS_DESC
-      ? ENUM_BLOG_SORT.REACTIONS_DESC
-      : ENUM_BLOG_SORT.PUBLISHED_AT_DESC;
+  const translations = await getTranslations(lang);
+  const blogSortModal = translations?.blog.sortModal ?? {};
+  const blogSortKeys = Object.keys(blogSortModal);
+  const sort = search.sort && blogSortKeys.includes(search.sort)
+    ? search.sort
+    : blogSortKeys[0];
 
   const [listData, readersChoice, categories, tryThisWeek] = await Promise.all([
     getBlogArticlesList({
@@ -92,22 +92,41 @@ export default async function BlogPage({
     notFound();
   }
 
-  const currentChip = listData.chips.find((chip) => chip.slug === category);
-  const resolvedTitle = currentChip?.label || listData.heroTitle;
+  const blogTranslations = translations?.blog ?? {
+    title: listData.heroTitle,
+    allArticles: "All Articles",
+    findGameSection: {
+      title: "Find your game",
+      subtitle: "What genre do you prefer?",
+      ctaText: "Show me games",
+    },
+    gamesSection: {
+      title: "Try this week",
+    },
+    sortModal: {
+      publishedAt_desc: "Latest",
+      publishedAt_asc: "Oldest",
+      reactions_desc: "Most Popular",
+    },
+    readersChoiceSection: {
+      title: "Reader's Choice",
+    },
+    searchString: {
+      placeholder: "Search articles",
+    },
+  };
 
   return (
     <BlogView
       locale={lang}
-      listData={{
-        ...listData,
-        heroTitle: resolvedTitle,
-      }}
+      listData={listData}
       readersChoice={readersChoice}
       categories={categories}
       tryThisWeek={tryThisWeek}
       activeCategory={category}
       searchQuery={q}
       currentSort={sort}
+      translations={blogTranslations}
     />
   );
 }
