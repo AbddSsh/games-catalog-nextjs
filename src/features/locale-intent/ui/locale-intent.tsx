@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowLeft, Check, Search } from "lucide-react";
@@ -184,6 +184,7 @@ function LocaleFlagImage({
 }
 
 export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
+  const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -349,6 +350,9 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
   };
 
   const handleCookieConsentSubmit = (analytics: boolean, marketing: boolean) => {
+    const nextRedirectHref = pendingRedirectHref;
+    const nextPendingRedirect = pendingRedirect;
+
     const nextConsent: TCookieConsentSettings = {
       analytics,
       marketing,
@@ -363,12 +367,18 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
     setIsCookieOnlyMode(false);
     setIsQuestionOpen(false);
     setIsListOpen(false);
+
+    if (nextPendingRedirect && nextRedirectHref) {
+      setCookie(LOCALE_SELECTED_COOKIE_NAME, nextPendingRedirect);
+      setPendingRedirect(null);
+      router.push(nextRedirectHref);
+    }
   };
 
   const renderCookieSettingsSection = (showDivider: boolean) => (
     <>
       {showDivider ? (
-        <div className="mt-12 h-0 w-[448px] self-center border-t border-[#B08871]/[0.22]" />
+        <div className="mt-8 h-0 w-[448px] self-center border-t border-[#B08871]/[0.22]" />
       ) : null}
 
       <div className={showDivider ? "mt-5 space-y-0" : "mt-0 space-y-0"}>
@@ -438,7 +448,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
         <button
           type="button"
           onClick={() => handleCookieConsentSubmit(false, false)}
-          className="h-[50px] w-[238px] rounded-[13px] bg-[#8A18D2] px-4 text-[14.94px] font-bold leading-[20.37px] text-white transition hover:bg-[#8A18D2]/85"
+          className="h-[50px] w-full rounded-[13px] bg-[#8A18D2] px-4 text-[14.94px] font-bold leading-[20.37px] text-white transition hover:bg-[#8A18D2]/85"
         >
           Continue without accepting
         </button>
@@ -614,7 +624,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
           <Link
             href={selectedLocaleHref}
             onClick={handleSelectedLocaleClick}
-            className="flex h-[56px] w-full items-center justify-center rounded-[13px] bg-[#FF1FC7] text-[16.8px] font-bold uppercase leading-[22.9px] tracking-wide text-white transition hover:bg-[#ff1fc7]/90"
+            className="flex h-[56px] w-full items-center justify-center rounded-full bg-[#FF1FC7] text-[16.8px] font-bold uppercase leading-[22.9px] tracking-wide text-white transition hover:bg-[#ff1fc7]/90"
           >
             {countryTranslations.continue}
           </Link>
