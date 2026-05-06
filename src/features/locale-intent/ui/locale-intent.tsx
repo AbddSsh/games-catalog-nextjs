@@ -526,7 +526,7 @@ export function LocaleIntent({ currentLocale, locales }: ILocaleIntentProps) {
                     setIsQuestionOpen(false);
                     setIsListOpen(true);
                   }}
-                  className="h-[56px] rounded-[22px] bg-[#402955] text-[16.8px] font-semibold leading-[22.9px] text-white/90 transition hover:bg-[#402955]/80"
+                  className="h-[56px] rounded-[22px] bg-[#402955] text-[16.8px] font-semibold leading-[22.9px] text-white/90 transition hover:bg-[#402955]/80 focus:outline-none focus-visible:outline-none focus-visible:ring-0"
                 >
                   {countryTranslations.no_choose_another_country}
                 </button>
